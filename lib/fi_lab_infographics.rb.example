@@ -8,6 +8,8 @@ module FiLabInfographics
   mattr_accessor :jira_test
   mattr_accessor :jira_success_message
   mattr_accessor :jira_default_project
+  mattr_accessor :client_id
+  mattr_accessor :client_secret
 #   @@nodejs = 'http://192.168.1.100:80' 
   @@nodejs = 'http://193.205.211.69:1026' 
   @@timeout = 5
@@ -18,6 +20,8 @@ module FiLabInfographics
   @@jira_test = 1
   @@jira_default_project = 'FIL'
   @@jira_success_message = 'Thanks for reporting your issue. You will receive a notification for every update to the issue.'
+  @@client_id = '900'
+  @@client_secret = '3ba57db2c3f309b0fe43f22b09752437afd01abf89fc0c6c12151e4cb968f3a0b30fbcaee31f6ecd39bd5183aa0d0c5508e38b47a6afd9d6d1e0ca22c3577bc3'
 
   class << self
     def setup

@@ -199,11 +199,13 @@
 		  onMarkerClick: function(events, index) {
   // 		    alert(selectedMarkers[index].name);
 		      var aTag = $("a[name='"+selectedMarkers[index].name+"']");
-		      $('html,body').animate({scrollTop: aTag.offset().top},'slow');
-		      $('.field-service').css('text-weight','normal');
-		      $('.field-service').css('color','#8C8C8C');
-		      $('.'+selectedMarkers[index].name).css('text-weight','bold');
-		      $('.'+selectedMarkers[index].name).css('color','black');	    
+		      var position = aTag.offset().top-41;
+// 		      console.log(aTag.offset().top+"--"+position);
+		      $('html,body').animate({scrollTop:  position+ 'px'},'slow');
+		      $('.field-service a').css('text-weight','normal');
+		      $('.field-service a').css('color','#3b73af');
+		      $('.'+selectedMarkers[index].name+' a').css('text-weight','bold');
+		      $('.'+selectedMarkers[index].name+' a').css('color','black');	    
 		  }//,
 		  /*series: {
 			    regions: [{values: {"IT":20,"DE":90},
@@ -222,7 +224,399 @@
 		  $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		  
 
-		  function ajaxFun() { $.ajax (
+		  //check and shift two map points too close 
+		  function checkLatLong (points)
+		  {
+		      if(points.count <= 1) return points;
+		      $.each(points, function( regionToCheckKey, regionToCheck )
+		      {
+			  $.each(points, function( regionKey, region )
+			  {
+			      if (regionToCheck["name"] != region["name"])
+			      {
+				if (Math.abs((regionToCheck["latLng"])[0] - (region["latLng"])[0]) < 0.2)
+				  (regionToCheck["latLng"])[0] = (regionToCheck["latLng"])[0]+0.5
+				
+				if (Math.abs((regionToCheck["latLng"])[1] - (region["latLng"])[1]) < 0.2)
+				  (regionToCheck["latLng"])[1] = (regionToCheck["latLng"])[1]+0.5
+				
+			      }
+			  });
+		      });
+		    
+		    return points
+		  }
+  
+		  function ajaxFunInit() { 
+		  
+		  $.ajax (
+			    {
+				  type: "GET",
+				  url: "../api/v1/region/totData",//to know how many regions
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				  
+				    var totData = json;
+				    if(totData == null || totData == "undefined") return;
+				    
+				    selectedMarkers = [];
+				    var markers = {};
+				    
+				    var idRegions = totData["total_regions_ids"];
+				    var idRegionsCount = totData["total_regions_count"];
+				    //draw table with # empty raws
+				    var allRows = "";
+				    for (var i=0;i<idRegionsCount;i++)
+				    {
+					var theRegionId = totData["total_regions_ids"][i];
+					allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed' id='"+theRegionId+"'>"+
+								  "<DIV CLASS='field field-group field-group-expand'>"+
+									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
+								  "</DIV>"+"<a name=\""+theRegionId+"\"></a>"+
+								  "<DIV CLASS='field field-service field-service-node "+theRegionId+"'></DIV>"+			
+							  "</DIV><DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 559px; height: 59px;' id='message-"+theRegionId+"'>Loading...</div></DIV>";
+				    }
+				    
+				    $('#tableContent').html(allRows);
+				    
+				    
+				    var height = $('#world-map-nodes').height()+$('#status').height()+80;
+				    $('.wrapper').css("cssText", "height: "+height+"px !important;");
+				    
+				    $(".row-message").hide();				  
+				    $('.field-group-expand').click( function()
+				    {
+					    var $image = $(this).children();
+					    if( $image.hasClass('collapse' ) )
+					    {
+						    $image.removeClass('collapse' );
+						    $image.addClass('expand' );
+					    }
+					    else
+					    {
+						    $image.removeClass('expand' );
+						    $image.addClass('collapse' );
+					    }
+					    var $parent = $(this).parent();
+					    
+					    var $message = $parent.next(".row-message");
+					    $message.slideToggle(function()
+					    {
+						    if( $parent.hasClass('row-status-closed' ) )
+						    {
+							    $parent.removeClass('row-status-closed' );
+							    $parent.addClass('row-status-opened' );
+						    }
+						    else
+						    {
+							    $parent.removeClass('row-status-opened' );
+							    $parent.addClass('row-status-closed' );
+						    }
+					    });
+				    });
+				    
+				    //for each region do:
+				    $.each(idRegions, function( index, regionId ) {
+				      $.ajax (
+						    {
+							  type: "GET",
+							  url: "../api/v1/region/"+regionId,//to know name, lat and long of a region
+							  contentType: "application/json; charset=utf-8",
+							  data: {},
+							  dataType: "json",
+							  cache: false,
+							  success: function(json){
+							  
+							      var dataRegion = json;
+// 							      
+							      //write regionName in each raw and put region data into array hash
+							      $('.'+regionId).html("<a href='../node/"+regionId+"'>"+dataRegion["name"]+"</a>");	
+// 							      console.log(dataRegion[name]);
+							      var markersData = {};
+							      markersData["latLng"] =  [parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude'])];
+							      markersData["name"] = dataRegion["name"];
+							      markersData["style"] = 'rgba(0,0,0,0.5)';
+							      
+							      markers[regionId] = markersData; 
+							      
+							      $.ajax (
+							      {
+								    type: "GET",
+								    url: "../api/v1/region/services/"+regionId,//to know status services of the region
+								    contentType: "application/json; charset=utf-8",
+								    data: {},
+								    dataType: "json",
+								    cache: false,
+								    success: function(json){
+									
+								      var services = json;
+								      
+								      var servicesNames = Object.keys(services);
+								      
+								      var statusColor;
+								      if(services['overallStatus']['value']=="red") statusColor = 'rgba(255,0,0,1.0)';
+								      else if(services['overallStatus']['value']=="green") statusColor = 'rgba(0,255,0,1.0)';
+								      else if(services['overallStatus']['value']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+								      else if(services['overallStatus']['value']=="gray") statusColor = 'rgba(0,0,0,0.5)';
+								      
+								      markers[regionId]["style"] = {fill: statusColor, r:5};
+								      
+	    // 							  selectedMarkers = $.map(markers, function(val, key) { return val; });
+								      selectedMarkers.push(markers[regionId]);
+								      selectedMarkers = checkLatLong(selectedMarkers);
+	    // 							  console.log(selectedMarkers);
+								      mapNodes.removeAllMarkers();
+								      mapNodes.addMarkers(selectedMarkers);
+								      
+								      
+								      //complete table with jira and services status
+									
+								      var colorValueOverall = services["overallStatus"]['value'];
+								      var colorPng = colorValueOverall + "light.png";
+								      allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+								      
+								      $.each(servicesNames, function( index, value ) {
+									if(value != "overallStatus")
+									{
+										colorPng = services[value]["value"]+"light.png";
+										allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+									}
+								      });
+								      
+								      var jira_url = services["overallStatus"]["jira_project_url"]
+								      if( !jira_url) jira_url = "#";
+								      
+								      $("#"+regionId).append(allSubRows+"<DIV CLASS='field field-service field-service-status-support'>"+
+										      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+										      "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+									      "</DIV>");
+									      
+								     $("#message-"+regionId).html(services["overallStatus"]['description']);			      
+								      
+									
+								    },
+								    error: function(xhr, textStatus, errorThrown){
+								    
+								    $("#"+regionId).append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
+										      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+										      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
+									      "</DIV>");
+								    
+								    var statusColor = 'rgba(0,0,0,0.5)';							  
+								    markers[regionId]["style"] = {fill: statusColor, r:5};
+								    
+	    // 							selectedMarkers = $.map(markers, function(val, key) { return val; });
+								    selectedMarkers.push(markers[regionId]);
+								    selectedMarkers = checkLatLong(selectedMarkers);
+	    // 							console.log(selectedMarkers);
+								    mapNodes.removeAllMarkers();
+								    mapNodes.addMarkers(selectedMarkers);
+								      
+								    //put a symbol in the raw to show that it has failed
+									var errore = "<%= FiLabInfographics.nodata %>";
+									if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+										errore = xhr.responseText;
+				  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+									$('#errorMessage').html(errore);
+				    //     				alert('request failed->'+textStatus);
+				    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+								    } 
+							      }
+							    )
+							  
+							  },
+							  error: function(xhr, textStatus, errorThrown){
+							  //put a symbol in the raw to show that it has failed
+							      var errore = "<%= FiLabInfographics.nodata %>";
+							      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+								      errore = xhr.responseText;
+			// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+							      $('#errorMessage').html(errore);
+			  //     				alert('request failed->'+textStatus);
+			  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+							  } 
+						    }
+					    )
+				    });
+				    
+				    //for each region do:
+// 				    $.each(idRegions, function( index, regionId ) {
+// 				    
+// 					$.ajax (
+// 						  {
+// 							type: "GET",
+// 							url: "../api/v1/region/services/"+regionId,//to know status services of the region
+// 							contentType: "application/json; charset=utf-8",
+// 							data: {},
+// 							dataType: "json",
+// 							cache: false,
+// 							success: function(json){
+// 							    
+// 							  var services = json;
+// 							  
+// 							  var servicesNames = Object.keys(services);
+// 							  
+// 							  var statusColor;
+// 							  if(services['overallStatus']['value']=="red") statusColor = 'rgba(255,0,0,1.0)';
+// 							  else if(services['overallStatus']['value']=="green") statusColor = 'rgba(0,255,0,1.0)';
+// 							  else if(services['overallStatus']['value']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+// 							  else if(services['overallStatus']['value']=="gray") statusColor = 'rgba(0,0,0,0.5)';
+// 							  
+// 							  markers[regionId]["style"] = {fill: statusColor, r:5};
+// 							  
+// // 							  selectedMarkers = $.map(markers, function(val, key) { return val; });
+// 							  selectedMarkers.push(markers[regionId]);
+// 							  selectedMarkers = checkLatLong(selectedMarkers);
+// // 							  console.log(selectedMarkers);
+// 							  mapNodes.removeAllMarkers();
+// 							  mapNodes.addMarkers(selectedMarkers);
+// 							  
+// 							  
+// 							  //complete table with jira and services status
+// 							    
+// 							  var colorValueOverall = services["overallStatus"]['value'];
+// 							  var colorPng = colorValueOverall + "light.png";
+// 							  allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+// 							  
+// 							  $.each(servicesNames, function( index, value ) {
+// 							    if(value != "overallStatus")
+// 							    {
+// 								    colorPng = services[value]["value"]+"light.png";
+// 								    allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+// 							    }
+// 							  });
+// 							  
+// 							  var jira_url = services["overallStatus"]["jira_project_url"]
+// 							  if( !jira_url) jira_url = "#";
+// 							  
+// 							  $("#"+regionId).append(allSubRows+"<DIV CLASS='field field-service field-service-status-support'>"+
+// 									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+// 									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+// 								  "</DIV>");
+// 							    
+// 							},
+// 							error: function(xhr, textStatus, errorThrown){
+// 							
+// 							$("#"+regionId).append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
+// 									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+// 									  "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
+// 								  "</DIV>");
+// 							
+// 							var statusColor = 'rgba(0,0,0,0.5)';							  
+// 							markers[regionId]["style"] = {fill: statusColor, r:5};
+// 							
+// // 							selectedMarkers = $.map(markers, function(val, key) { return val; });
+// 							selectedMarkers.push(markers[regionId]);
+// 							selectedMarkers = checkLatLong(selectedMarkers);
+// // 							console.log(selectedMarkers);
+// 							mapNodes.removeAllMarkers();
+// 							mapNodes.addMarkers(selectedMarkers);
+// 							  
+// 							//put a symbol in the raw to show that it has failed
+// 							    var errore = "<%= FiLabInfographics.nodata %>";
+// 							    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+// 								    errore = xhr.responseText;
+// 		      // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+// 							    $('#errorMessage').html(errore);
+// 			//     				alert('request failed->'+textStatus);
+// 			//     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 							} 
+// 						  }
+// 						)
+				    
+// 				    });
+				    
+				    
+				    
+				    //draw all points on map with status colors
+				     /*$.each(markers, function( idRegion, value ) {
+				      
+				      console.log(selectedMarkers);
+				    });*/				    
+				    
+				    
+// 				    $(".row-message").hide();
+// 				    $('.field-group-federation').click( function()
+// 				    {
+// 					    var $image = $(this).children();
+// 					    if( $image.hasClass('collapse' ) )
+// 					    {
+// 						    $image.removeClass('collapse' );
+// 						    $image.addClass('expand' );
+// 					    }
+// 					    else
+// 					    {
+// 						    $image.removeClass('expand' );
+// 						    $image.addClass('collapse' );
+// 					    }
+// 					    var $parent = $(this).parent();
+// 					    
+// 					    var $message = $parent.next(".row-message");
+// 					    $message.slideToggle(function()
+// 					    {
+// 						    if( $parent.hasClass('row-status-closed' ) )
+// 						    {
+// 							    $parent.removeClass('row-status-closed' );
+// 							    $parent.addClass('row-status-opened' );
+// 						    }
+// 						    else
+// 						    {
+// 							    $parent.removeClass('row-status-opened' );
+// 							    $parent.addClass('row-status-closed' );
+// 						    }
+// 					    });
+// 				    });
+// 				    $('.field-group-expand').click( function()
+// 				    {
+// 					    var $image = $(this).children();
+// 					    if( $image.hasClass('collapse' ) )
+// 					    {
+// 						    $image.removeClass('collapse' );
+// 						    $image.addClass('expand' );
+// 					    }
+// 					    else
+// 					    {
+// 						    $image.removeClass('expand' );
+// 						    $image.addClass('collapse' );
+// 					    }
+// 					    var $parent = $(this).parent();
+// 					    
+// 					    var $message = $parent.next(".row-message");
+// 					    $message.slideToggle(function()
+// 					    {
+// 						    if( $parent.hasClass('row-status-closed' ) )
+// 						    {
+// 							    $parent.removeClass('row-status-closed' );
+// 							    $parent.addClass('row-status-opened' );
+// 						    }
+// 						    else
+// 						    {
+// 							    $parent.removeClass('row-status-opened' );
+// 							    $parent.addClass('row-status-closed' );
+// 						    }
+// 					    });
+// 				    });
+				  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				      var errore = "<%= FiLabInfographics.nodata %>";
+				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					      errore = xhr.responseText;
+// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				      $('#errorMessage').html(errore);
+  //     				alert('request failed->'+textStatus);
+  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+			    }
+			  )
+		  };
+		  
+		  function ajaxFun() { 		  
+		  
+		  $.ajax (
 			    {
 				  type: "GET",
 				  url: "../api/v1/region/services",
@@ -243,6 +637,10 @@
 							  var markers = {};
 							  markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
 							  markers["name"] = idRegion;
+							  
+// 							  if(idRegion == "Athens_Neuropublic") markers["latLng"] = [38.5,23.7];
+// 							  console.log(idRegion+":"+markers["latLng"]+"\n");
+							  
 							  var statusColor;
 							  if(regionAttributes["services"]['overallStatus']['value']=="red") statusColor = 'rgba(255,0,0,1.0)';
 							  else if(regionAttributes["services"]['overallStatus']['value']=="green") statusColor = 'rgba(0,255,0,1.0)';
@@ -296,9 +694,9 @@
 							  
 							  allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+
-									  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
 								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
-								  "<DIV CLASS='field field-service field-service-node "+idRegion+"'>"+idRegion+"</DIV>"+
+								  "<DIV CLASS='field field-service field-service-node "+idRegion+"'><a href='../node/"+idRegion+"' target='_blank'>"+idRegion+"</a></DIV>"+
 								  
 								  allSubRows+/*encodeURIComponent(JSON.stringify(regionAttributes["allNodes"]))*/
 								  
@@ -307,9 +705,9 @@
 									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 								  "</DIV>"+			
 							  "</DIV>"+
-							  "<!--<DIV CLASS='row-message'>"+
+							  "<DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 559px; height: 59px;'>"+
 								  regionAttributes["services"]["overallStatus"]['description']+
-							  "</DIV>-->";
+							  "</DIV></DIV>";
 						  }
 						  
 						  /*var allSubHeaders = "";
@@ -418,7 +816,7 @@
 		  )};
 
 		//Chiamo il mio ajax la prima volta
-		ajaxFun();
+		ajaxFunInit();
 		//e poi lo richiamo dopo 30 secondi
 		setInterval(function(){ajaxFun()}, 60000);
 	  });

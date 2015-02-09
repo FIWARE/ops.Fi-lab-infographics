@@ -53,8 +53,9 @@ section.partners {
 }
 
 .parternList img{
-  margin-top: 10px;
-  width: 120px;
+  margin: 10px 5px 0 5px;
+  max-width: 120px;
+  max-height: 100px;
 }
 
 .title {
@@ -107,6 +108,23 @@ padding-bottom: 10px;
 	margin-right: 17px;
 }
 
+.partnerType {
+	float: left;
+	color: #002D67;
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 34px;
+}
+
+.leftDetail {
+	float: left;
+	color: #002D67;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 36px;
+	margin-left: 10px;
+}
+
 .rightDetail {
 	float: right;
 	color: #002D67;
@@ -114,6 +132,11 @@ padding-bottom: 10px;
 	font-weight: bold;
 	margin-top: 34px;
 	margin-right: 17px;
+}
+
+.rightDetail .badge{
+	background-color: #002D67;
+	padding: 3px 9px 2px;
 }
 
 .barPercentage {
@@ -280,7 +303,7 @@ padding-bottom: 10px;
 	height:366px;
 }
 
-#status
+#status, #statusInfo, #statusVm, #statusHost, #statusMessages
 {
 	margin-top:25px;
 }
@@ -573,13 +596,11 @@ img.collapse
 {
 	background-position:-16px 0;
 	width:10px;
-	margin-top:11px;
 }
 img.expand
 {
 	background-position:-26px 0;
 	width:10px;
-	margin-top:11px;
 }
 
 label, input { display:block; }
@@ -607,6 +628,13 @@ input.text{ width:95%;}
   margin-top:25px;
 }
 
+.errorMessage {
+  float:left;
+  color:red;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+
 #cookie-law {
     background: none repeat scroll 0 0 rgba(44, 44, 44, 0.9);
     bottom: 0;
@@ -631,6 +659,147 @@ input.text{ width:95%;}
     position: absolute;
     right: 10px;
     top: 10px;
+}
+
+.menu-toolbar ul li.resources:hover .icon_menu-20-resources{
+    background-position: -88px -114px
+}
+
+.menu-toolbar ul .resources.active .icon_menu-20-resources {
+    background-position: -51px -114px
+}
+
+.menu-toolbar ul.main_nav li:hover a {
+  text-decoration: none;
+}
+
+.menu-toolbar ul.main_nav li:hover a h2{
+  color: #60c1cf;
+}
+
+div.home div.applications header a, div.home div.organizations header a, div.home div.members header a, div.home div.services header a {
+    float: right;
+    font-size: 16px;
+}
+
+div.home div.applications header select, div.home div.organizations header select, div.home div.members header select, div.home div.services header select {
+    float: right;
+    font-size: 14px;
+    height: 22px;
+}
+
+#generalInfo{
+  color: #60c1cf;
+  font-family: "NeoTech-Regular";
+  font-size:22px;
+}
+
+#generalInfo span{
+  color: #ccc;
+  font-family: "NeoTech-Regular";
+  font-size:19px;
+}
+
+div.home div.applications, div.home div.organizations, div.home div.members, div.home div.services {
+    min-height: 348px;
+    padding: 12px;
+    margin-bottom: 43px;
+}
+
+div.home div.organizations {
+    width:42.4286%;
+}
+
+div.home div.services {
+    width: 97%;
+    float: left
+}
+
+div.home div.services input {
+    width: 300px;
+}
+
+#home #errorMessage {
+    margin: 0 auto 20px;
+}
+
+@media (max-width: 767px){
+    #home #errorMessage {
+	width: 95%;
+        margin: 0 auto 20px;
+    }
+
+    #home .home .services {
+	margin: 46px auto 0;
+        width: 92%;
+        min-height: 60px;
+        clear: both;
+        float: none;
+        padding: 12px 12px 12px 12px
+    }
+    
+    .errorMessage {
+      clear: both;
+      float: none;
+      margin: 20px auto;
+      width: 95%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px){
+  #home #errorMessage {
+	width: 74%;
+        margin: 0 auto 20px;
+    }
+
+  #home .home .services{
+      margin: 46px auto 0;
+      width: 71%;
+      min-height: 60px;
+      clear: both;
+      float: none;
+      padding: 12px 12px 12px 12px
+  }
+  
+  .errorMessage {
+      clear: both;
+      float: none;
+      margin: 20px auto;
+      width: 74%;
+    }
+}
+
+div.services {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 1px 1px 15px 0px rgba(50, 50, 50, 0.1);
+    -moz-box-shadow: 1px 1px 15px 0px rgba(50, 50, 50, 0.1);
+    box-shadow: 1px 1px 15px 0px rgba(50, 50, 50, 0.1);
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-color: rgba(0, 0, 0, 0.1)
+}
+
+div.home div.services {
+    padding: 12px 12px 12px 12px;
+    padding: 12px;
+    min-height: 60px
+}
+
+div.home div.services header {
+    margin: -38px 0 15px -12px;
+    font-size: 20px
+}
+
+div.services header{
+    color: #888
+}
+
+div.home div.services section.services-list #status, div.home div.services section.services-list #statusInfo, div.home div.services section.services-list #statusMessages, div.home div.services section.services-list #statusVm, div.home div.services section.services-list #statusHost{
+    margin: 0 auto;
+    width: 587px;
 }
 /*header.navbar nav.navbar-inner .brand {
     margin: 0 0 0 -8px !important;

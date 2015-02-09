@@ -1,0 +1,25 @@
+<div class="nav menu-toolbar affix">
+  <h5 style="float:left;"><%= @nameNode%></h5>
+  <% if @categoryNode and @categoryNode.logo %> 
+    <%= link_to main_app.reward_path do %>
+      <img src="/assets/infographic/<%= @categoryNode.logo %>" style="height:30px"/>
+    <% end %> 
+  <%end%>
+  <div class="clear"></div>
+  <h5 class="tablet"><%= @nameNode%></h5>
+  <ul class="main_nav">
+    <li class="home<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'node' %>">
+      <%= link_to node_path(@idNode) do %>
+        <i class='icon_menu-20-home'></i>
+        <h2>Home</h2>
+      <% end %>
+    </li>
+    <li class="resources<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'history' %>">
+        <%= link_to history_path(@idNode) do %>
+          <i class="icon_menu-20-resources"></i>
+          <h2>History</h2>
+	<% end %>     
+    </li>    
+    <hr class="soften">
+  </ul>
+</div>

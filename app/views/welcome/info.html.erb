@@ -12,7 +12,8 @@
 
 <div class="layoutContainer">
 	<div class="row-fluid">
-	  <div class="span6" style="margin: 0 auto;float: none;">
+	  <!--<div class="span6" style="margin: 0 auto;float: none;">-->
+	  <div class="span6">
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
@@ -70,7 +71,7 @@
 					<img src="/assets/infographic/iconCpu.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<span id="coresNum"></span> core
+					<span id="coresNum"></span> cores
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -85,7 +86,7 @@
 					<img src="/assets/infographic/iconRam.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<span id="ramNum"></span> Mb
+					<span id="ramNum"></span> GB
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -100,7 +101,7 @@
 					<img src="/assets/infographic/iconDisk.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<span id="hdNum"></span> Gb
+					<span id="hdNum"></span> TB
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -125,6 +126,46 @@
 		    </div>
 
 	  </div>
+	  
+	   <div class="span6">
+		<div class="section">
+			<div class="headerSection accordionTitle ">
+				<div class="leftIcon">
+					<img src="/assets/infographic/iconInstitution.png" height="55"/>
+					
+				</div>
+				<div class="partnerType">
+					Institutions
+				</div>
+				<div class="rightDetail">
+					<div id="parternCount"><!--<span class="badge"></span>--></div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="bodySection accordionPanel bigPanel leaveOpen" id="parternList">
+				<div class="parternList">
+					Loading...
+					<!--<img src="/assets/infographic/loghi/acreo.jpg"/>
+					<img src="/assets/infographic/loghi/atos.jpg"/>
+					<img src="/assets/infographic/loghi/cesnet.png"/>
+					<img src="/assets/infographic/loghi/createnet.gif"/>
+					<img src="/assets/infographic/loghi/eng.png"/>
+					<img src="/assets/infographic/loghi/eurescom.jpg"/>
+					<img src="/assets/infographic/loghi/gowex.jpg"/>
+					<img src="/assets/infographic/loghi/orange.jpg"/>
+					<img src="/assets/infographic/loghi/telecom.jpg"/>
+					<img src="/assets/infographic/loghi/telefonica.jpg"/>
+					<img src="/assets/infographic/loghi/thales.gif"/>
+					<img src="/assets/infographic/loghi/tn.png"/>-->
+				</div>
+			</div>
+		
+			<!--<div class="partnerType">
+				<h3>Institutional</h3><span class="badge">14</span>
+			</div>-->
+			
+		</div>
+	</div>
 </div>
         
 
@@ -344,35 +385,50 @@
 		  /** =================================================================
 		  *  Map
 		  **/
+		  
+		  var selectedRegions = [];
+		  var selectedMarkers = [];
+		  var selectedRegionsCpu = [];
+		  var selectedMarkersCpu = [];
+		  var selectedRegionsRam = [];
+		  var selectedMarkersRam = [];
+		  var selectedRegionsDisk = [];
+		  var selectedMarkersDisk = [];
+		  var selectedRegionsVm = [];
+		  var selectedMarkersVm = [];
+				
 		  var map = new jvm.WorldMap({
   // 		var map = $('#world-map').vectorMap({
 		  container: $('#world-map'),
 		  map: 'world_mill_en',
-			  backgroundColor: 'white',
+		  backgroundColor: 'white',
 
-			  regionStyle: {
-							    initial: {
-							      fill: '#999999',
-							      "fill-opacity": 1,
-							      stroke: 'none',
-							      "stroke-width": 0,
-							      "stroke-opacity": 1
-							    },
-							    hover: {
-							      "fill-opacity": 0.8
-							    },
-							    selected: {
-								  fill: '#0071A4'
-							    },
-							    selectedHover: {
-							    }
-						  },
-			  markerStyle: {
-				initial: {
-				  fill: '#ff9900',
-				  stroke: '#383f47'
-				}
-			  }
+		  regionStyle: {
+			    initial: {
+			      fill: '#999999',
+			      "fill-opacity": 1,
+			      stroke: 'none',
+			      "stroke-width": 0,
+			      "stroke-opacity": 1
+			    },
+			    hover: {
+			      "fill-opacity": 0.8
+			    },
+			    selected: {
+				  fill: '#0071A4'
+			    },
+			    selectedHover: {
+			    }
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			}
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].name;	    
+		  }
 
 		  });
 
@@ -404,6 +460,9 @@
 			  fill: '#ff9900',
 			  stroke: '#383f47'
 			}
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].name;	    
 		  },
 		  series: {
 			    regions: [{/*values: {"IT":20,"DE":90},*/
@@ -448,6 +507,9 @@
 			  stroke: '#383f47'
 			}
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].name;	    
+		  },
 		  series: {
 			    regions: [{
 					    scale: ['#C8EEFF', '#0071A4'],
@@ -485,6 +547,9 @@
 		      fill: '#ff9900',
 		      stroke: '#383f47'
 		    }
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].name;	    
 		  },
 		  series: {
 			    regions: [{
@@ -524,6 +589,9 @@
 			  stroke: '#383f47'
 			}
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].name;	    
+		  },
 		  series: {
 			    regions: [{
 					    scale: ['#C8EEFF', '#0071A4'],
@@ -535,7 +603,8 @@
 
 		  $('#world-map-vm').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 
-		  function ajaxFun() { $.ajax (
+		  function ajaxFun() { 
+		    $.ajax (
 			    {
 			      type: "GET",
 			      url: "../api/v1/region",
@@ -554,17 +623,7 @@
 				var nHd = parseInt(json['tot']['total_nb_disk']);
 				var nVm = parseInt(json['tot']['total_nb_vm']);
 				var nRegions = parseInt(json['tot']['total_regions_count']);
-
-				var selectedRegions = [];
-				var selectedMarkers = [];
-				var selectedRegionsCpu = [];
-				var selectedMarkersCpu = [];
-				var selectedRegionsRam = [];
-				var selectedMarkersRam = [];
-				var selectedRegionsDisk = [];
-				var selectedMarkersDisk = [];
-				var selectedRegionsVm = [];
-				var selectedMarkersVm = [];
+				
 
 				$.each(json['regions'], function(key, val) {
   // 				nUsers += parseInt(this['nUser']);
@@ -592,19 +651,19 @@
 				      var markerCpu = {};
 				      markerCpu["latLng"] = [];
 				      markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerCpu["name"] = this['name'] + " (" + this['nb_cores'] + " core)";
+				      markerCpu["name"] = this['name'] + " (" + this['nb_cores'] + " cores)";
 				      selectedMarkersCpu.push(markerCpu);
 
 				      var markerRam = {};
 				      markerRam["latLng"] = [];
 				      markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerRam["name"] = this['name'] + " (" + this['nb_ram'] + " Mb)";
+				      markerRam["name"] = this['name'] + " (" + this['nb_ram'] + " GB)";
 				      selectedMarkersRam.push(markerRam);
 
 				      var markerDisk = {};
 				      markerDisk["latLng"] = [];
 				      markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerDisk["name"] = this['name'] + " (" + this['nb_disk'] + " Gb)";
+				      markerDisk["name"] = this['name'] + " (" + this['nb_disk'] + " TB)";
 				      selectedMarkersDisk.push(markerDisk);
 
 				      var markerVm = {};
@@ -792,6 +851,58 @@
 				  } 
 			  }
 		  );
+		  
+		  $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/institution",//to get institutions
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var institutionsData = json;
+	  			      
+				    if(institutionsData != null && institutionsData != "undefined" )
+				    {
+				      $(".parternList").html("");
+				      
+				      var parternCount = institutionsData.length;
+				      $("#parternCount").html("<span class=\"badge\">"+parternCount+"</span>");
+// 				      var parternRows = Math.ceil(parternCount/3);
+// 				      var heightPanel = parternRows*130;
+				      
+				      
+				      
+				      $.each(institutionsData, function( index, institution ){
+				      
+					if(institution["link"]!= null && institution["link"] != "undefined")
+					  $(".parternList").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+					else
+					  $(".parternList").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+					
+					$('#parternList').css('height',$(".parternList").height()+10);
+					});  
+					
+					if(parternCount==0) $(".parternList").html("No institutions found");
+				      
+				    }
+// 				    $("#imgHistoryMessages").hide();  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $(".parternList").html(errore);
+	  //     				alert('request failed->'+textStatus);
+      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 				    $("#imgHistoryMessages").hide();
+				  } 
+			}
+		      );
+		  
 		  }
 
 

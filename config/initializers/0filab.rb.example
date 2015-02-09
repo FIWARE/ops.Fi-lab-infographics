@@ -4,7 +4,7 @@ FiLabApp.setup do |config|
 
   config.account_server = 'https://account.lab.fi-ware.org'
 
-  config.client_id = ''
+  config.client_id = ''#to login inside app
 
   config.client_secret = ''
 

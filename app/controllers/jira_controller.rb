@@ -1,12 +1,14 @@
 class CustomException < Exception
   attr_accessor :data
-  def initialize(data)
+  attr_accessor :status
+  def initialize(data, status)
     @data = data
+    @status = status
   end
 end
 
 class JiraController < ApplicationController
-  protect_from_forgery except: :createIssue
+  protect_from_forgery :except => [:createIssue,:saveInfo]
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
   def performRequest (data)
@@ -32,15 +34,15 @@ class JiraController < ApplicationController
     rescue Exception => e
         case e
           when Timeout::Error
-            raise CustomException.new("timeout")
+            raise CustomException.new("timeout", nil)
           when Errno::ECONNREFUSED
-            raise CustomException.new("connection refused")
+            raise CustomException.new("connection refused", nil)
           when Errno::ECONNRESET
-            raise CustomException.new("connection reset")
+            raise CustomException.new("connection reset", nil)
           when Errno::EHOSTUNREACH
-            raise CustomException.new("host not reachable")
+            raise CustomException.new("host not reachable", nil)
           else
-            raise CustomException.new("error: #{e.to_s}")
+            raise CustomException.new("error: #{e.to_s}", nil)
         end
     end
 # Logger.info('request');
@@ -64,7 +66,7 @@ class JiraController < ApplicationController
     begin
       result = JSON.parse(data)
     rescue Exception => e
-      raise CustomException.new("Error parsing Data")
+      raise CustomException.new("Error parsing Data", nil)
     end
        
     return result
@@ -111,15 +113,15 @@ class JiraController < ApplicationController
     rescue Exception => e
         case e
           when Timeout::Error
-            raise CustomException.new("timeout")
+            raise CustomException.new("timeout", nil)
           when Errno::ECONNREFUSED
-            raise CustomException.new("connection refused")
+            raise CustomException.new("connection refused", nil)
           when Errno::ECONNRESET
-            raise CustomException.new("connection reset")
+            raise CustomException.new("connection reset", nil)
           when Errno::EHOSTUNREACH
-            raise CustomException.new("host not reachable")
+            raise CustomException.new("host not reachable", nil)
           else
-            raise CustomException.new("error: #{e.to_s}")
+            raise CustomException.new("error: #{e.to_s}", nil)
         end
     end
     
@@ -344,6 +346,48 @@ class JiraController < ApplicationController
     end
     
     
+  end
+  
+  def getInfo
+    idNode = params[:idNode]
+    if idNode != nil
+      dbNode = Node.where(:rid => idNode).first
+      if dbNode == nil
+	render :json=>"Node not found in db: "+idNode, :status => :service_unavailable
+      else 
+	response = Hash.new
+	response["url"]= dbNode.jira_project_url
+	response["id"]= dbNode.jira_project_id
+	render :json => response.to_json
+      end     
+    else render :json=>"Node id not set", :status => :service_unavailable
+    end
+  end
+  
+  def saveInfo
+    idNode = params[:idNode]
+    jiraId = params[:jiraId]
+    jiraUrl = params[:jiraUrl]
+    Rails.logger.info(idNode+"-"+jiraId+"-"+jiraUrl);
+    if idNode != nil
+      dbNode = Node.where(:rid => idNode).first
+      
+      if dbNode == nil
+	render :json=>"Node not found in db: "+idNode, :status => :service_unavailable
+      else 
+	dbNode.jira_project_id = jiraId
+	dbNode.jira_project_url = jiraUrl
+	dbNode.save
+	
+	response = Hash.new
+	response["status"] = "Node set"
+	render :json=>response, :status => 200
+      end
+    else 
+      response = Hash.new
+      response["status"] = "Node id not set"
+      render :json=>response, :status => :service_unavailable
+    end
   end
   
 end

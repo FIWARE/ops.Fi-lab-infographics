@@ -17,7 +17,7 @@
 		     {rid: 'PiraeusN', name: 'PiraeusN', jira_project_url: 'http://jira.fi-ware.org/browse/NEOR', jira_project_id: 'NEOR'},
 	             {rid: 'PiraeusU', name: 'PiraeusU', jira_project_url: 'http://jira.fi-ware.org/browse/UPRC', jira_project_id: 'UPRC'},
 	             {rid: 'Karlskrona', name: 'Karlskrona', jira_project_url: 'http://jira.fi-ware.org/browse/BTH', jira_project_id: 'BTH'},
-	             {rid: 'Volos', name: 'Volos', jira_project_url: 'http://jira.fi-ware.org/browse/UTH', jira_project_id: 'UTH'},
+	             {rid: 'NITOS-UTH', name: 'NITOS-UTH', jira_project_url: 'http://jira.fi-ware.org/browse/UTH', jira_project_id: 'UTH'},
 	             {rid: 'Gent', name: 'Gent', jira_project_url: 'http://jira.fi-ware.org/browse/IM', jira_project_id: 'IM'},
 	             {rid: 'Poznan', name: 'Poznan', jira_project_url: 'http://jira.fi-ware.org/browse/PSNC', jira_project_id: 'PSNC'},
 	             {rid: 'Budapest', name: 'Budapest', jira_project_url: 'http://jira.fi-ware.org/browse/WIG', jira_project_id: 'WIG'},

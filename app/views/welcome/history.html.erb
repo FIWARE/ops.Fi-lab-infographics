@@ -64,7 +64,7 @@
 		<DIV CLASS='field field-header field-header-service'><div style="width:6px;height:6px;background-color:rgba(179, 138, 181,1);float:left;margin-top:12px;"></div>Ram</DIV>
 		<DIV CLASS='field field-header field-header-service'><div style="width:6px;height:6px;background-color:rgba(199, 70, 69,1);float:left;margin-top:12px;"></div>Disk</DIV>
 		<DIV CLASS='field field-header field-header-service'><div style="width:6px;height:6px;background-color:rgba(78, 141, 90,1);float:left;margin-top:12px;"></div>VMs</DIV>
-		<DIV CLASS='field field-header field-header-support'><div style="width:6px;height:6px;background-color:rgba(244,164,96,1);float:left;margin-top:12px;"></div>Power cons.</DIV>
+		<!--<DIV CLASS='field field-header field-header-support'><div style="width:6px;height:6px;background-color:rgba(244,164,96,1);float:left;margin-top:12px;"></div>Power cons.</DIV>-->
 		<DIV CLASS='field field-header field-header-support'><div style="width:6px;height:6px;background-color:rgba(255,105,180,1);float:left;margin-top:12px;"></div>% RAM used</DIV>
 		
 		
@@ -492,7 +492,7 @@
 				      var nb_ram = [];
 				      var nb_disk = [];
 				      var nb_vm = [];
-				      var power_consumption = [];
+// 				      var power_consumption = [];
 				      var percRAMUsed = [];
 				      var finalTimestamps = [];
 				      
@@ -514,7 +514,7 @@
 					measuresList[timestamp]["nb_ram"] == 0 &&
 					measuresList[timestamp]["nb_disk"] == 0 &&
 					measuresList[timestamp]["nb_vm"] == 0 &&
-					measuresList[timestamp]["power_consumption"] == 0 &&
+// 					measuresList[timestamp]["power_consumption"] == 0 &&
 					measuresList[timestamp]["percRAMUsed"] == 0)
 					{//we don't show 0 values that represent node down
 					}
@@ -525,7 +525,7 @@
 					  nb_ram.push(measuresList[timestamp]["nb_ram"]);
 					  nb_disk.push(measuresList[timestamp]["nb_disk"]);
 					  nb_vm.push(measuresList[timestamp]["nb_vm"]);
-					  power_consumption.push(measuresList[timestamp]["power_consumption"]);
+// 					  power_consumption.push(measuresList[timestamp]["power_consumption"]);
 					  percRAMUsed.push(measuresList[timestamp]["percRAMUsed"]);
 					  finalTimestamps.push(timestamp.replace(/T/g , ' ').replace(/:00.000Z/g , ''));
 					}
@@ -584,7 +584,7 @@
 							      pointHighlightFill: "#fff",
 							      pointHighlightStroke: "rgba(78, 141, 90,1)",
 							      data: nb_vm
-							  },
+							  }/*,
 							  {
 							      label: "Power cons.",
 							      fillColor: "rgba(244,164,96,0.2)",//orange
@@ -594,7 +594,7 @@
 							      pointHighlightFill: "#fff",
 							      pointHighlightStroke: "rgba(244,164,96,1)",
 							      data: power_consumption
-							  },
+							  }*/,
 							  {
 							      label: "% RAM used",
 							      fillColor: "rgba(255,105,180,0.2)",//pink

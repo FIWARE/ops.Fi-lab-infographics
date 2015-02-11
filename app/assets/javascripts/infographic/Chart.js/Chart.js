@@ -1385,7 +1385,7 @@
 			if(this.title=="Overall" ||this.title=="Nova" ||this.title=="Neutron" ||this.title=="Cinder" ||this.title=="Glance" ||this.title=="Keystone P.")
 			  myLabels = ["% Green","% Yellow","% Red","% Gray"];
 			else
-			  myLabels = [" Cores"," Cores Enabled"," Gb of RAM"," Tb of Disk"," VMs"," Power cons.","% RAM used"];
+			  myLabels = [" Cores"," Cores Enabled"," Gb of RAM"," Tb of Disk"," VMs"/*," Power cons."*/,"% RAM used"];
 			helpers.each(this.labels,function(label,index){				
 				ctx.fillStyle = this.textColor;
 				if(myLabels.length>0)

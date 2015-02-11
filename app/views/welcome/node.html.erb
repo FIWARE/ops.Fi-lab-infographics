@@ -325,12 +325,12 @@
 				  minorTicks: 5
 				};
 				
-				var percCPULoad = 0;
-				if (dataRegion['percCPULoad']) percCPULoad = parseFloat(dataRegion['percCPULoad']).toFixed(2);
-				var dataCpu = google.visualization.arrayToDataTable([
-				  ['Label', 'Value'],
-				  ['%CPU', parseInt(percCPULoad*100)]
-				]);
+// 				var percCPULoad = 0;
+// 				if (dataRegion['percCPULoad']) percCPULoad = parseFloat(dataRegion['percCPULoad']).toFixed(2);
+// 				var dataCpu = google.visualization.arrayToDataTable([
+// 				  ['Label', 'Value'],
+// 				  ['%CPU', parseInt(percCPULoad*100)]
+// 				]);
 				
 				var percRAMUsed = 0;
 				if (dataRegion['percRAMUsed']) percRAMUsed = parseFloat(dataRegion['percRAMUsed']).toFixed(2);
@@ -346,8 +346,8 @@
 				  ['%Disk', parseInt(percDiskUsed*100)]
   					    ]);
 				
-				var chartCpu = new google.visualization.Gauge(document.getElementById('coreGauge'));
-				chartCpu.draw(dataCpu, options);
+// 				var chartCpu = new google.visualization.Gauge(document.getElementById('coreGauge'));
+// 				chartCpu.draw(dataCpu, options);
 				
 				var chartRam = new google.visualization.Gauge(document.getElementById('ramGauge'));
 				chartRam.draw(dataRam, options);

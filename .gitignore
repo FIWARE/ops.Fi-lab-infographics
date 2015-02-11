@@ -18,7 +18,7 @@
 # Ignore local configurations
 /config/initializers/0filab.rb
 /config/initializers/0infographics.rb 
-/lib/0infographics.rb
+/lib/fi_lab_infographics.rb
 
 # Ignore cache
 /Gemfile.lock

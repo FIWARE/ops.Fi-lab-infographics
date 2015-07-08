@@ -12,7 +12,7 @@ module FiLabInfographics
 #  @@nodejs = 'http://193.205.211.69:1026'
 #  @@nodejs = 'http://127.0.0.1:1336'
 #  @@nodejs ='http://130.206.84.4:1028' 
-  @@nodejs ='http://130.206.84.4:1027'
+  @@nodejs ='http://130.206.84.4:11027'
 
 
   @@timeout = 5

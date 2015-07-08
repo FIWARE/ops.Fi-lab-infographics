@@ -683,7 +683,7 @@
 				      marker["name"] = this['name'];
                                       //console.log(this['timestamp']);
                                       regionTime =( new Date(this['timestamp']).getTime() / 1000)
-                                   
+
                                       my_time=new Date(this['timestamp'])
                                       month=my_time.getMonth()+1;if (month<10)month="0"+month;
                                       
@@ -691,6 +691,13 @@
                                       hours=my_time.getHours();if (hours<10)hours="0"+hours;
                                       mins=my_time.getMinutes();if (mins<10)mins="0"+mins;
                                       the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+
+                                      if (this['name']=="Gent"){
+                                        console.log(this['timestamp'])
+                                        console.log(my_time.getMonth());                                       
+                                        console.log(the_time);
+                                      }
+
                                       if (actualTime>(regionTime+deltaTime)) {
                                         marker["style"]={fill: '#868F98',stroke: '#383f47'};                                        
                                         marker["name"] = this['name']+": Last Update on "+the_time;

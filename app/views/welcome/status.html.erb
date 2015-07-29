@@ -75,10 +75,15 @@
 <% content_for :jsfooter do %>
   <script type="text/javascript">
 
-	  var GREEN  = STATUS_OK  = '<%= STATUS_OK %>',
-	      RED    = STATUS_NOK = '<%= STATUS_NOK %>',
-	      YELLOW = STATUS_POK = '<%= STATUS_POK %>',
-	      GRAY   = STATUS_NA  = '<%= STATUS_NA %>';
+        var STATUS_OK  = 'green';
+        var STATUS_NOK = 'red';
+        var STATUS_POK = 'yellow';
+        var STATUS_NA  = 'gray';
+
+        var GREEN  = STATUS_OK ;
+        var RED    = STATUS_NOK;
+	var YELLOW = STATUS_POK;
+	var GRAY   = STATUS_NA;
 
 	  $(document).ready(function() 
 	  {

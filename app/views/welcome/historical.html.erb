@@ -25,7 +25,8 @@
 
 var STATUS_OK  = "<%= STATUS_OK %>",
     STATUS_NOK = "<%= STATUS_NOK %>",
-    STATUS_POK = "<%= STATUS_POK %>";
+    STATUS_POK = "<%= STATUS_POK %>",
+    STATUS_NA = "<%= STATUS_NA %>";
 
 var selected_chart_id = "chart-histogram";
 
@@ -51,7 +52,7 @@ function ChartCalendar() {
         monthPath = function(t0) {
             var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
                 d0 = +day(t0), w0 = +week(t0),
-                d1 = +day(t1), w1 = +week(t1);
+                d1 = +day(t1)-1, w1 = +week(t1);
             return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
                 + "H" + w0 * cellSize + "V" + 7 * cellSize
                 + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
@@ -98,17 +99,21 @@ function ChartCalendar() {
 
 ChartCalendar.prototype.numvalue = function(status) {
     switch (status) {
+
+
         case STATUS_OK:  return +1;
-        case STATUS_NOK: return -1;
-        default:         return 0;
+        case STATUS_NOK: return -0.8;
+        case STATUS_POK:  return 0.0;
+        default:         return -1;
     }
 };
 
 ChartCalendar.prototype.caption = function(d) {
     switch (this.historical_data[d]) {
         case +1: return d + ": Sanity status OK";
-        case -1: return d + ": Sanity status not OK";
-        default: return d + ": Sanity status partially OK";
+        case  0: return d + ": Sanity status Partially OK";
+        case -0.8: return d + ": Sanity status not OK";
+        default: return d + ": Sanity status Undefined";
     }
 };
 
@@ -296,7 +301,6 @@ $(document).ready(function() {
     });
 
     $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
-
     function ajaxFun() {
         $.ajax ({
             type: "GET",
@@ -308,11 +312,39 @@ $(document).ready(function() {
             success: function(json) {
                 selectedMarkers = [];
                 sanitySuccess = [];
+                var actualTime = Date.now() / 1000
+                var deltaTime = 10800;
                 $.each(json["regions"], function(idRegion, regionAttributes) {
                     if (idRegion != null && regionAttributes != null) {
-                        var markers = {};
+
+                        regionTime =( new Date(this['timestamp']).getTime() / 1000)
+                        my_time=new Date(regionAttributes['timestamp'])
+
+                        var yyyy = my_time.getFullYear().toString();
+                        var mm  = (my_time.getMonth()+1).toString(); // getMonth() is zero-based
+                        var dd  = my_time.getDate().toString();
+                        var hh  = my_time.getHours().toString();
+                        var m_m = my_time.getMinutes().toString();
+                        time2print=yyyy +"-"+ (mm[1]?mm:"0"+mm[0]) +"-"+(dd[1]?dd:"0"+dd[0])+"T"+(hh[1]?hh:"0"+hh[0])+":"+(m_m[1]?m_m:"0"+m_m[0])+":00";
+                        
+                        var markers={}
                         markers["latLng"] = [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
-                        markers["name"] = idRegion;
+
+                        //if (actualTime>(regionTime+deltaTime)){
+                        //  statusColor = 'rgba(0,0,0,0.5)';
+                        //  markers["name"]=regionAttributes['name']+": Last Update on "+time2print;
+                        //  markers["style"] = {fill: statusColor, r:5};
+                        //}
+			//else{ 
+                          if(regionAttributes["sanityLive"]=="red") statusColor = 'rgba(255,0,0,1.0)';
+			  else if(regionAttributes["sanityLive"]=="green") statusColor = 'rgba(0,255,0,1.0)';
+			  else if(regionAttributes["sanityLive"]=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+			  else if(regionAttributes["sanityLive"]=="gray") statusColor = 'rgba(0,0,0,0.5)';
+                          markers["name"]=regionAttributes['name'];
+                          markers["style"] = {fill: statusColor, r:5};
+                        //}
+                        //console.log(regionAttributes["sanityLive"]);
+                        //markers["style"] = {fill: statusColor, r:5};
                         selectedMarkers.push(markers);
                         sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
                     }
@@ -337,6 +369,7 @@ $(document).ready(function() {
             }
         });
     }
+
 
     // Call our ajax the first time
     ajaxFun();

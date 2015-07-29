@@ -1,11 +1,15 @@
 require_dependency 'fi_lab_infographics'
+   STATUS_OK  = 'green';
+   STATUS_NOK = 'red';
+   STATUS_POK = 'yellow';
+   STATUS_NA  = 'undefined';
 
 FiLabInfographics.setup do |config|
   # Node.js proxy for monitoring
   # config.nodejs = 'http://127.0.0.1:1026'
   # config.timeout = 5
   # config.nodata = 'No Data'
-  # config.jira = 'http://jira.fi-ware.org'
+  # config.jira = 'http://jira.fiware.org'
   # config.jira_username = 'jira_username'
   # config.jira_password = 'jira_password'
   # config.jira_test = 1

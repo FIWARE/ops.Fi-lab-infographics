@@ -24,8 +24,8 @@ class RegionController < ApplicationController
 
         #token = client.client_credentials.get_token
 
-        token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
-
+        #token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
+        token = client.password.get_token( FiLabInfographics.jira_username, FiLabInfographics.jira_password, :headers => {'Authorization' => basic_auth_header })
         RegionController.setToken(token)
       rescue Exception => e
         logger.error e
@@ -53,8 +53,8 @@ class RegionController < ApplicationController
           :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/oauth2/authorize', :token_url => FiLabApp.account_server + '/oauth2/token')
 
         #token = client.client_credentials.get_token
-        token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
-
+        #token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
+        token = client.password.get_token( FiLabInfographics.jira_username, FiLabInfographics.jira_password, :headers => {'Authorization' => basic_auth_header })
         RegionController.setToken(token)
       rescue Exception => e
         logger.debug e
@@ -249,8 +249,13 @@ class RegionController < ApplicationController
       end
       
       totValues = Hash.new
-      
+     
+      totValues["basicUsers"]=regionsData["basicUsers"];
+      totValues["trialUsers"]=regionsData["trialUsers"];
+      totValues["communityUsers"]=regionsData["communityUsers"];
       totValues["total_nb_users"] = regionsData["total_nb_users"];
+      totValues["totalUserOrganizations"] = regionsData["totalUserOrganizations"];
+      totValues["totalCloudOrganizations"] = regionsData["totalCloudOrganizations"];
       totValues["total_nb_organizations"] = regionsData["total_nb_organizations"];
       totValues["total_nb_cores"] = regionsData["total_nb_cores"];
       totValues["total_nb_ram"] = regionsData["total_nb_ram"];
@@ -285,6 +290,12 @@ class RegionController < ApplicationController
   def getRegionsDataForNodeId (idNode)
     begin
       regionsData = self.performRequest('regions/' + idNode)
+      #########################################################################
+      #       For this first draft I take an hardcoded startintervall         #
+      #########################################################################
+      #regionsDataLive= self.performRequest('regions/' + idNode+"/services")
+      regionsDataMonthHist = self.performRequest('regions/' + idNode+"/services?since=2015-01-01T00:00&aggregate=m")
+      regionsDataLive= self.performRequest('regions/' + idNode+"/services")
     rescue CustomException => e
       raise e
     end
@@ -335,11 +346,46 @@ class RegionController < ApplicationController
       #if (regionsData["id"]=="Berlin2")
 
       # For testing/demo purposes: data for histogram about historical sanity checks success
-      if ENV["RAILS_ENV"] == "test"
-        require 'json'
-        success = JSON.parse(File.read('test/assets/histogram.json'))[idNode]
-        attributesRegion["percSanitySuccess"] = success
+      #if ENV["RAILS_ENV"] == "test"
+      ####################################################################################
+      #                 Here is where I aggregate the info                               #
+      ####################################################################################
+     
+      #logger.info regionsDataMonthHist
+      sanityTot    =0
+      sanityCounter=0
+      attributesRegion["sanityLive"] = STATUS_NA;
+      if regionsDataLive !=nil && regionsDataLive["measures"] != nil && regionsDataLive["measures"][0]
+         attributesRegion["sanityLive"]=regionsDataLive["measures"][0]["FiHealthStatus"]["value"]
       end
+      if regionsDataMonthHist !=nil &&  regionsDataMonthHist["measures"] != nil 
+        if regionsDataMonthHist["measures"].length>0
+          for sample  in regionsDataMonthHist["measures"]
+
+            sampleVal = sample["FiHealthStatus"]["value_clean"];
+            if sample["FiHealthStatus"]["value_clean"]=="undefined"
+              sampleVal=0.0
+            else
+              sanityCounter=sanityCounter+1;
+            end 
+            sanityTot=sanityTot+sampleVal;
+          end
+        end
+      end
+
+      require 'json'
+      if  sanityCounter==0
+        attributesRegion["percSanitySuccess"] = 0.0
+      end 
+      if sanityCounter!=0
+        attributesRegion["percSanitySuccess"] =  1.0*(sanityTot/sanityCounter)
+      end 
+      #logger.info attributesRegion["percSanitySuccess"]
+      #success = JSON.parse(File.read('test/assets/histogram.json'))[idNode]
+      #attributesRegion["percSanitySuccess"] = success
+      #logger.info regionsDataMonthHist
+      #regionsDataMonthHist
+      #end
 
       return attributesRegion
       #end
@@ -375,6 +421,7 @@ class RegionController < ApplicationController
     serviceGlance = Hash.new
     serviceKP = Hash.new
     serviceOverall = Hash.new
+    serviceSanity = Hash.new
     
     serviceNova["value"] = STATUS_NA;
     serviceNova["description"] = "";
@@ -394,7 +441,10 @@ class RegionController < ApplicationController
     
     serviceKP["value"] = STATUS_NA;
     serviceKP["description"] = "";
-    
+     
+    serviceSanity["value"]=STATUS_NA;
+    serviceSanity["description"]="";
+ 
     serviceOverall["value"] = STATUS_NA;
     serviceOverall["description"] = "No Messages";
     
@@ -451,7 +501,22 @@ class RegionController < ApplicationController
 	end
       end
       
+      if serviceRegionData["FiHealthStatus"] != nil
+        if serviceRegionData["FiHealthStatus"]["value"] != nil && serviceRegionData["FiHealthStatus"]["value"] != "undefined"
+          if serviceRegionData["FiHealthStatus"]["value"]=='green'
+            serviceSanity["value"] = 1;
+          elsif serviceRegionData["FiHealthStatus"]["value"]=='yellow'
+            serviceSanity["value"] = 0.75;
+          elsif serviceRegionData["FiHealthStatus"]["value"]=='red'
+            serviceSanity["value"] = 0.0;
+          end
+        end
+        if serviceRegionData["FiHealthStatus"]["description"] != nil
+          serviceSanity["description"] = serviceRegionData["FiHealthStatus"]["description"];
+        end
+      end
       
+
       if serviceRegionData["OverallStatus"] != nil
 	if serviceRegionData["OverallStatus"]["value"] != nil && serviceRegionData["OverallStatus"]["value"] != "undefined"
 	  serviceOverall["value"] = serviceRegionData["OverallStatus"]["value"];
@@ -469,6 +534,7 @@ class RegionController < ApplicationController
     services["Cinder"] = serviceCinder;
     services["Glance"] = serviceGlance;
     services["Keystone P."] = serviceKP;
+    services["FiHealthStatus"] =  serviceSanity;
     services["overallStatus"] = serviceOverall;
     
     
@@ -480,10 +546,24 @@ class RegionController < ApplicationController
     return services
     
   end
-
+######################################################
   #render historical data about services of one region
+#######################################################
+
   def renderHistoricalForRegion
     idNode = params[:nodeId]
+    if idNode=="Spain"
+       idNode="Spain2"
+    elsif idNode=="Berlin"
+       idNode="Berlin2"
+    elsif idNode=="Lannion"
+       idNode=="Lannion2"
+    elsif idNode=="Karlskrona"
+      idNode=="Karlskrona2"
+    elsif idNode=="Budapest"
+      idNode=="Budapest2"
+    end
+
     begin
       services = self.getHistoricalForNodeId(idNode)
     rescue CustomException => e
@@ -497,31 +577,41 @@ class RegionController < ApplicationController
   #get historical data about services of one region
   def getHistoricalForNodeId (idNode)
 
-    if ENV["RAILS_ENV"] != "test"
-      raise "TODO: available only for testing/demo purposes!"
-    end
+    #if ENV["RAILS_ENV"] != "test"
+    #  raise "TODO: available only for testing/demo purposes!"
+    #end
 
     require 'json'
     require 'date'
 
     result = Hash.new
     result['measures'] = Array.new
-    sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
+    #sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
+
+    begin
+      servicesRegionHistoricalData = self.performRequest('regions/' + idNode + '/services?since=2015-07-21T00:00:00&aggregate=d')
+      if servicesRegionHistoricalData != nil &&  servicesRegionHistoricalData["measures"] != nil
+        #logger.info servicesRegionHistoricalData["measures"]
+        result['measures']=servicesRegionHistoricalData["measures"]
+      end 
+    rescue CustomException => e
+      raise e
+    end
 
     year = Date.today.year
     yday = Date.today.yday
     seed = idNode.sum(2048)
     prng = Random.new(seed)
 
-    for day in 1..yday
-      timestamp = Date.ordinal(year, day).strftime('%Y-%m-%d 00.00')
-      fihealth = sample['FiHealthStatus'].clone
-      random = prng.rand(-10..100)
-      fihealth['value'] = random > 1 ? STATUS_OK : random < 0 ? STATUS_NOK : STATUS_POK
-      sample['timestamp'] = timestamp
-      sample['FiHealthStatus'] = fihealth
-      result['measures'].push(sample.clone)
-    end
+    #for day in 1..yday
+    #  timestamp = Date.ordinal(year, day).strftime('%Y-%m-%d 00.00')
+    #  fihealth = sample['FiHealthStatus'].clone
+    #  random = prng.rand(-10..100)
+    #  fihealth['value'] = random > 1 ? STATUS_OK : random < 0 ? STATUS_NOK : STATUS_POK
+    #  sample['timestamp'] = timestamp
+    #  sample['FiHealthStatus'] = fihealth
+    #  result['measures'].push(sample.clone)
+    #end
 
     return result
 

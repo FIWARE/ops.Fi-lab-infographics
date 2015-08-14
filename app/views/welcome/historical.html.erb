@@ -52,7 +52,7 @@ function ChartCalendar() {
         monthPath = function(t0) {
             var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
                 d0 = +day(t0), w0 = +week(t0),
-                d1 = +day(t1)-1, w1 = +week(t1);
+                d1 = +day(t1), w1 = +week(t1);
             return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
                 + "H" + w0 * cellSize + "V" + 7 * cellSize
                 + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
@@ -164,14 +164,25 @@ function ChartHistogram() {
         .attr("y", -10)
         .attr("dy", ".30em")
         .style("text-anchor", "end")
-        .style("font-size", "x-small")
-        .text("Success");
+        .style("font-size", "x-small");
+        //.text("Success");
 }
 
 ChartHistogram.prototype.update = function(data) {
     var self = this;
-
-    self.x.domain(data.map(function(d) { return d.idNode; }));
+    self.x.domain(data.map(function(d) { 
+    var region_name=d.idNode;
+    if (d.idNode=="Lannion2")
+      region_name="Lannion"
+    else if (d.idNode=="Berlin2")
+      region_name="Berlin"
+    else if (d.idNode=="Spain2")
+      region_name="Spain"
+    else if (d.idNode=="Karlskrona2")
+      region_name="Karlskrona"
+    else if (d.idNode=="Budapest2")
+      region_name="Budapest"
+    return region_name }));
     self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
 
     var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
@@ -194,7 +205,20 @@ ChartHistogram.prototype.update = function(data) {
         .data(data)
         .enter().append("rect")
         .attr("class", function(d) { return "bar " + color(-1 + d.success * 2.0); })
-        .attr("x", function(d) { return self.x(d.idNode); })
+        .attr("x", function(d) { 
+          var region_name_in=d.idNode
+          if (d.idNode=="Lannion2")
+            region_name_in="Lannion"
+          else if (d.idNode=="Berlin2")
+            region_name_in="Berlin"
+          else if (d.idNode=="Spain2")
+            region_name_in="Spain"
+          else if (d.idNode=="Karlskrona2")
+            region_name_in="Karlskrona"
+          else if (d.idNode=="Budapest2")
+            region_name_in="Budapest"
+         return self.x(region_name_in); 
+         })
         .attr("width", self.x.rangeBand())
         .attr("y", function(d) { return self.y(d.success); })
         .attr("height", function(d) { return self.height - self.y(d.success); });
@@ -335,11 +359,11 @@ $(document).ready(function() {
                         //  markers["name"]=regionAttributes['name']+": Last Update on "+time2print;
                         //  markers["style"] = {fill: statusColor, r:5};
                         //}
-			//else{ 
+                        //else{ 
                           if(regionAttributes["sanityLive"]=="red") statusColor = 'rgba(255,0,0,1.0)';
-			  else if(regionAttributes["sanityLive"]=="green") statusColor = 'rgba(0,255,0,1.0)';
-			  else if(regionAttributes["sanityLive"]=="yellow") statusColor = 'rgba(255,255,0,1.0)';
-			  else if(regionAttributes["sanityLive"]=="gray") statusColor = 'rgba(0,0,0,0.5)';
+                          else if(regionAttributes["sanityLive"]=="green") statusColor = 'rgba(0,255,0,1.0)';
+                          else if(regionAttributes["sanityLive"]=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+                          else if(regionAttributes["sanityLive"]=="gray") statusColor = 'rgba(0,0,0,0.5)';
                           markers["name"]=regionAttributes['name'];
                           markers["style"] = {fill: statusColor, r:5};
                         //}

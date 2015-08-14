@@ -557,11 +557,11 @@ class RegionController < ApplicationController
     elsif idNode=="Berlin"
        idNode="Berlin2"
     elsif idNode=="Lannion"
-       idNode=="Lannion2"
+       idNode="Lannion2"
     elsif idNode=="Karlskrona"
-      idNode=="Karlskrona2"
+      idNode="Karlskrona2"
     elsif idNode=="Budapest"
-      idNode=="Budapest2"
+      idNode="Budapest2"
     end
 
     begin

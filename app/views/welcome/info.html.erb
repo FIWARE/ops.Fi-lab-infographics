@@ -28,10 +28,30 @@
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel smallPanel">
-				<div id="biggerMen"></div>
-				<div id="bigMen"></div>
-				<div id="mediumMen"></div>
-				<div id="smallMen"></div>
+				<div id="basicMen">
+				    <div class="smallMen"></div>
+				    <div class="mediumMen"></div>
+				    <div class="bigMen"></div>
+				    <div class="biggerMen"></div>
+				    <div class="floatLeft userType">Basic Users</div>
+				    <div class="clear"></div>
+				</div>
+				<div id="trialMen">
+				    <div class="smallMen"></div>
+				    <div class="mediumMen"></div>
+				    <div class="bigMen"></div>
+				    <div class="biggerMen"></div>
+				    <div class="floatLeft userType">Trial Users</div>
+				    <div class="clear"></div>
+				</div>
+				<div id="communityMen">
+				    <div class="smallMen"></div>
+				    <div class="mediumMen"></div>
+				    <div class="bigMen"></div>
+				    <div class="biggerMen"></div>
+				    <div class="floatLeft userType">Community Users</div>
+				    <div class="clear"></div>
+				</div>
 			</div>
 		    </div>
 		    
@@ -617,7 +637,11 @@
 
   // 			      var obj = $.parseJSON(json);
 
-				var nUsers = parseInt(json['tot']['total_nb_users']);
+				var nBasicUsers = parseInt(json['tot']['basicUsers']);
+				var nTrialUsers = parseInt(json['tot']['trialUsers']);
+				var nCommunityUsers = parseInt(json['tot']['communityUsers']);
+				var nUsers = nBasicUsers + nTrialUsers + nCommunityUsers;
+// 				var nUsers = parseInt(json['tot']['total_nb_users']);
                                 if (nUsers == 0)
                                   nUsers = 2026 
 				var nOrganizations = parseInt(json['tot']['totalUserOrganizations']);
@@ -784,6 +808,11 @@
 
 
 				$('#usersNum').html(nUsers);
+				
+				/*$('#basicUsersNum').html(nBasicUsers); 
+				$('#trialUsersNum').html(nTrialUsers);  
+				$('#communityUsersNum').html(nCommunityUsers);*/  
+				
 				$('#orgsNum').html(nOrganizations);
 				$('#regionsNum').html(nRegions);
 				$('#coresNum').html(nCores);
@@ -830,44 +859,88 @@
 				}
 				$('#smallOrg').html(smallOrg); 
 				
-				var maxMill = Math.floor(nUsers/1000);
-				var i = 0;
-				var biggerMen = '';
-				while (i < maxMill) {
-				  biggerMen = biggerMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#biggerMen').html(biggerMen);
 				
-				var maxCent = Math.floor((nUsers - maxMill*1000)/100);
-				var i = 0;
-				var bigMen = '';
-				while (i < maxCent) {
-				  bigMen = bigMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#bigMen').html(bigMen);
-
-				var maxDec = Math.floor((nUsers - maxMill*1000 - maxCent*100)/10);
-				i = 0;
-
-				var mediumMen = '';
-				while (i < maxDec) {
-				  mediumMen = mediumMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#mediumMen').html(mediumMen);
-
-				var maxUni = nUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
-				i = 0;
-
-				var smallMen = '';
-				while (i < maxUni) {
-				  smallMen = smallMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#smallMen').html(smallMen);  
-
+				
+				/*Users diagram*/
+				
+				var maxMill = Math.floor(nBasicUsers/1000);
+				if(maxMill > 0) $('#basicMen .biggerMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxMill+'</div><div class="clear"></div>');
+// 				else $('#basicMen .biggerMen').html("&nbsp;");
+				var maxCent = Math.floor((nBasicUsers - maxMill*1000)/100);
+				if(maxCent > 0) $('#basicMen .bigMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxCent+'</div>');
+// 				else $('#basicMen .bigMen').html("&nbsp;");
+				var maxDec = Math.floor((nBasicUsers - maxMill*1000 - maxCent*100)/10);
+				if(maxDec > 0) $('#basicMen .mediumMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxDec+'</div>');
+// 				else $('#basicMen .mediumMen').html("&nbsp;");
+				var maxUni = nBasicUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+				$('#basicMen .smallMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxUni+'</div>');
+				
+				maxMill = Math.floor(nTrialUsers/1000);
+				if(maxMill > 0) $('#trialMen .biggerMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxMill+'</div><div class="clear"></div>');
+// 				else $('#trialMen .biggerMen').html("&nbsp;");
+				var maxCent = Math.floor((nTrialUsers - maxMill*1000)/100);
+				if(maxCent > 0) $('#trialMen .bigMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxCent+'</div>');
+// 				else $('#trialMen .bigMen').html("&nbsp;");
+				var maxDec = Math.floor((nTrialUsers - maxMill*1000 - maxCent*100)/10);
+				if(maxDec > 0) $('#trialMen .mediumMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxDec+'</div>');
+// 				else $('#trialMen .mediumMen').html("&nbsp;");
+				var maxUni = nTrialUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+				$('#trialMen .smallMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxUni+'</div>');
+				
+				maxMill = Math.floor(nCommunityUsers/1000);
+				if(maxMill > 0) $('#communityMen .biggerMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxMill+'</div><div class="clear"></div>');
+// 				else $('#communityMen .biggerMen').html("&nbsp;");
+				var maxCent = Math.floor((nCommunityUsers - maxMill*1000)/100);
+				if(maxCent > 0) $('#communityMen .bigMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxCent+'</div>');
+// 				else $('#communityMen .bigMen').html("&nbsp;");
+				var maxDec = Math.floor((nCommunityUsers - maxMill*1000 - maxCent*100)/10);
+				if(maxDec > 0) $('#communityMen .mediumMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxDec+'</div>');
+// 				else $('#communityMen .mediumMen').html("&nbsp;");
+				var maxUni = nCommunityUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+				$('#communityMen .smallMen').html('<div class="floatLeft"><img src="/assets/infographic/omino.png" /></div>'+'<div class="numberCircle">'+maxUni+'</div>');
+				
+				
+// 				var maxMill = Math.floor(nUsers/1000);
+// 				var i = 0;
+// 				var biggerMen = '';
+// 				while (i < maxMill) {
+// 				  biggerMen = biggerMen + '<img src="/assets/infographic/omino.png" />';
+// 				  i+= 1;
+// 				}
+// 				$('#biggerMen').html(biggerMen);
+// 				
+// 				var maxCent = Math.floor((nUsers - maxMill*1000)/100);
+// 				var i = 0;
+// 				var bigMen = '';
+// 				while (i < maxCent) {
+// 				  bigMen = bigMen + '<img src="/assets/infographic/omino.png" />';
+// 				  i+= 1;
+// 				}
+// 				$('#bigMen').html(bigMen);
+// 
+// 				var maxDec = Math.floor((nUsers - maxMill*1000 - maxCent*100)/10);
+// 				i = 0;
+// 
+// 				var mediumMen = '';
+// 				while (i < maxDec) {
+// 				  mediumMen = mediumMen + '<img src="/assets/infographic/omino.png" />';
+// 				  i+= 1;
+// 				}
+// 				$('#mediumMen').html(mediumMen);
+// 
+// 				var maxUni = nUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+// 				i = 0;
+// 
+// 				var smallMen = '';
+// 				while (i < maxUni) {
+// 				  smallMen = smallMen + '<img src="/assets/infographic/omino.png" />';
+// 				  i+= 1;
+// 				}
+// 				$('#smallMen').html(smallMen);  
+				/*end Users diagram*/
+				
+				
+				
 				var array_values_cpu = new Array();
 				for (var key in selectedRegionsCpu) {
 				  array_values_cpu.push(parseInt(selectedRegionsCpu[key]));
@@ -955,9 +1028,10 @@
 
 			      },
 			      error: function(xhr, textStatus, errorThrown){
-				  $('#biggerMen').html("&nbsp;");
-				  $('#bigMen').html("&nbsp;");
-				  $('#mediumMen').html("&nbsp;");
+				  $('.biggerMen').html("&nbsp;");
+				  $('.bigMen').html("&nbsp;");
+				  $('.mediumMen').html("&nbsp;");
+				  $('.smallMen').html("&nbsp;");
 				  $('#biggerOrg').html("&nbsp;");
 				  $('#bigOrg').html("&nbsp;");
 				  $('#mediumOrg').html("&nbsp;");

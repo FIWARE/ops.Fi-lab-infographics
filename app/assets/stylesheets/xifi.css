@@ -81,6 +81,10 @@ svg {
 	float: left;
 }
 
+.floatRight {
+	float: right;
+}
+
 footer {
 	margin-top: 30px;
 }
@@ -234,12 +238,31 @@ padding-bottom: 10px;
 	margin-right: 5px;
 }
 
+.userType {
+	padding-top:25px;
+	height:65px;
+	color:#002d67;
+	font-size:20;
+	font-weight:bold;
+}
+
+#basicMen,#trialMen,#communityMen {
+	padding-left: 25px;
+	padding-top: 5px;
+}
+
+.biggerMen,.bigMen,.mediumMen,.smallMen {
+	text-align: left;
+	padding-top: 5px;
+	float:right;
+}
+
 #biggerMen,#bigMen,#mediumMen,#smallMen {
 	text-align: center;
 	padding-top: 5px;
 }
 
-#biggerMen img {
+.biggerMen img {
 	height: 65px;
 	margin-right: 5px;
 }
@@ -249,9 +272,10 @@ padding-bottom: 10px;
 	padding-top: 5px;
 }*/
 
-#bigMen img {
+.bigMen img {
 	height: 55px;
 	margin-right: 5px;
+	margin-top: 5px;
 }
 
 /*#mediumMen {
@@ -259,9 +283,10 @@ padding-bottom: 10px;
 	padding-top: 5px;
 }*/
 
-#mediumMen img {
+.mediumMen img {
 	height: 45px;
 	margin-right: 5px;
+	margin-top: 10px;
 }
 
 /*#smallMen {
@@ -269,9 +294,35 @@ padding-bottom: 10px;
 	padding-top: 5px;
 }*/
 
-#smallMen img {
+.smallMen img {
 	height: 35px;
 	margin-right: 5px;
+	margin-top: 15px;
+}
+
+.smallMen {
+	margin-right: 17px;
+}
+
+.numberCircle {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+
+    width: 18px;
+    height: 18px;
+    padding: 1px;
+
+    background: orange;
+    border: 2px solid orange;
+    color: white;
+    text-align: center;
+
+    font: 14px Arial, sans-serif;
+    
+    margin-left:-13px;
+    z-index:1000;
+    float:left;
+    margin-top:45px;
 }
 
 #world-map {

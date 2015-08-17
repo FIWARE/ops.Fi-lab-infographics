@@ -11,12 +11,12 @@ FI-Lab Infographics is a simple but important service to allow users to:
 
 While the information on infrastructure capacities is more related to marketing, the one of serivces status is extremely important to support Developers and Federation Managers operations. To our best knowledge there is not such service available as opensource for OpenStack related infrastructures, thus this required a new development. 
 
-Real demo here:
-PROD
-http://infographic.lab.fi-ware.org/
-http://status.lab.fi-ware.org/
-DEV
-http://infographic.lab.fi-ware.eu/
+Real demo here:  
+PROD  
+http://infographic.lab.fi-ware.org/  
+http://status.lab.fi-ware.org/  
+DEV  
+http://infographic.lab.fi-ware.eu/  
 http://status.lab.fi-ware.eu/
 
 The component retrieves existing infrastructure services and regions from the Federation Manager. This component provide as well the status information of infrastructure services. The IdM GE provides authentication mechanism to support message posting by the Federation Manager and the Infrastructure Owners. The Federation Monitor component provides data on the capacity and status of FI-Lab infrastructure. 

@@ -239,7 +239,7 @@ class RegionController < ApplicationController
       
       if regionsData["_embedded"] != nil && regionsData["_embedded"]["regions"] != nil
 	regionsData["_embedded"]["regions"].each do |region|
-                  if (region["id"]!='Berlin' and region["id"]!='Karlskrona' and region["id"]!='Budapest' and region["id"]!='Lannion' and region["id"]!='Spain')
+                  if (region["id"]!='Berlin' and region["id"]!='Karlskrona' and region["id"]!='Budapest' and region["id"]!='Lannion' and region["id"]!='Spain'   and region["id"]!='Stockholm' )
 		    idRegions.push(region["id"])
                   end 
 	end
@@ -314,6 +314,8 @@ class RegionController < ApplicationController
          attributesRegion["name"] = 'Karlskrona'
       elsif(regionsData["id"]=='Budapest2')
          attributesRegion["name"] = 'Budapest'
+      elsif(regionsData["id"]=='Stockholm2')
+         attributesRegion["name"] = 'Stockholm'
       else 
         attributesRegion["name"] = regionsData["name"]
       end
@@ -562,6 +564,8 @@ class RegionController < ApplicationController
       idNode="Karlskrona2"
     elsif idNode=="Budapest"
       idNode="Budapest2"
+    elsif idNode=="Stockholm"
+      idNode="Stockholm2"
     end
 
     begin

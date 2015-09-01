@@ -182,6 +182,9 @@ ChartHistogram.prototype.update = function(data) {
       region_name="Karlskrona"
     else if (d.idNode=="Budapest2")
       region_name="Budapest"
+    else if (d.idNode=="Stockholm2")
+      region_name="Stockholm"
+
     return region_name }));
     self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
 
@@ -217,6 +220,8 @@ ChartHistogram.prototype.update = function(data) {
             region_name_in="Karlskrona"
           else if (d.idNode=="Budapest2")
             region_name_in="Budapest"
+          else if (d.idNode=="Stockholm2")
+            region_name_in="Stockholm"
          return self.x(region_name_in); 
          })
         .attr("width", self.x.rangeBand())

@@ -23,10 +23,10 @@ The component retrieves existing infrastructure services and regions from the Fe
 
 ![FI-Lab Infographics Architecture](http://wiki.fi-xifi.eu/wiki/images/b/b8/Infographics-arch1.0.png)
 
-### New features available
+### Release History
 
-- Added historical node data visualization.
-- Info about Basic Users, Trial Users and Community Users inserted inside main dashboard.
+- 23/06/2015 Added historical node data visualization.
+- 14/08/2015 Info about Basic Users, Trial Users and Community Users inserted inside main dashboard.
 
 ## Installation
 

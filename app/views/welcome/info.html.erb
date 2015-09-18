@@ -16,7 +16,8 @@
 
 <div id="infographics" class="layoutContainer">
 	<div class="row-fluid">
-	  <div class="span6" style="margin: 0 auto;float: none;">
+<!-- 	  <div class="span6" style="margin: 0 auto;float: none;"> -->
+	  <div class="span6">
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
@@ -164,6 +165,45 @@
 		    </div>
 
 	  </div>
+	  <div class="span6">
+		<div class="section">
+			<div class="headerSection accordionTitle ">
+				<div class="leftIcon">
+					<img src="/assets/infographic/iconInstitution.png" height="55"/>
+					
+				</div>
+				<div class="partnerType">
+					Institutions
+				</div>
+				<div class="rightDetail">
+					<div id="parternCount"><!--<span class="badge"></span>--></div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="bodySection accordionPanel bigPanel leaveOpen" id="parternList">
+				<div class="parternList">
+					Loading...
+					<!--<img src="/assets/infographic/loghi/acreo.jpg"/>
+					<img src="/assets/infographic/loghi/atos.jpg"/>
+					<img src="/assets/infographic/loghi/cesnet.png"/>
+					<img src="/assets/infographic/loghi/createnet.gif"/>
+					<img src="/assets/infographic/loghi/eng.png"/>
+					<img src="/assets/infographic/loghi/eurescom.jpg"/>
+					<img src="/assets/infographic/loghi/gowex.jpg"/>
+					<img src="/assets/infographic/loghi/orange.jpg"/>
+					<img src="/assets/infographic/loghi/telecom.jpg"/>
+					<img src="/assets/infographic/loghi/telefonica.jpg"/>
+					<img src="/assets/infographic/loghi/thales.gif"/>
+					<img src="/assets/infographic/loghi/tn.png"/>-->
+				</div>
+			</div>
+		
+			<!--<div class="partnerType">
+				<h3>Institutional</h3><span class="badge">14</span>
+			</div>-->
+			
+		</div>
+	</div>
 </div>
         
 
@@ -369,6 +409,7 @@
 //          });
 	  $(document).ready(function() 
 	  {
+		  var selectedMarkers;
 		  $('.status').removeClass('active');
 		  $('.infographic').addClass('active');
 		  
@@ -390,34 +431,37 @@
 		  map: 'world_mill_en',
 			  backgroundColor: 'white',
 
-			  regionStyle: {
-							    initial: {
-							      fill: '#999999',
-							      "fill-opacity": 1,
-							      stroke: 'none',
-							      "stroke-width": 0,
-							      "stroke-opacity": 1
-							    },
-							    hover: {
-							      "fill-opacity": 0.8
-							    },
-							    selected: {
-								  fill: '#0071A4'
-							    },
-							    selectedHover: {
-							    }
-						  },
-			  markerStyle: {
-				initial: {
-				  fill: '#ff9900',
-				  stroke: '#383f47'
-				},
-                                noUp: {
-                                  fill: '#ffffff',
-                                  stroke: '#000000'
-                                }
+		  regionStyle: {
+			initial: {
+			  fill: '#999999',
+			  "fill-opacity": 1,
+			  stroke: 'none',
+			  "stroke-width": 0,
+			  "stroke-opacity": 1
+			},
+			hover: {
+			  "fill-opacity": 0.8
+			},
+			selected: {
+			      fill: '#0071A4'
+			},
+			selectedHover: {
+			}
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			},
+			noUp: {
+			  fill: '#ffffff',
+			  stroke: '#000000'
+			}
 
-			  }
+		  }
 
 		  });
 
@@ -449,6 +493,9 @@
 			  fill: '#ff9900',
 			  stroke: '#383f47'
 			}
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
 		  },
 		  series: {
 			    regions: [{/*values: {"IT":20,"DE":90},*/
@@ -493,6 +540,9 @@
 			  stroke: '#383f47'
 			}
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
 		  series: {
 			    regions: [{
 					    scale: ['#C8EEFF', '#0071A4'],
@@ -530,6 +580,9 @@
 		      fill: '#ff9900',
 		      stroke: '#383f47'
 		    }
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
 		  },
 		  series: {
 			    regions: [{
@@ -570,6 +623,9 @@
                       stroke: '#383f47'
                     }
                   },
+                  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
                   series: {
                             regions: [{
                                             scale: ['#C8EEFF', '#0071A4'],
@@ -609,6 +665,9 @@
 			  fill: '#ff9900',
 			  stroke: '#383f47'
 			}
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
 		  },
 		  series: {
 			    regions: [{
@@ -654,7 +713,7 @@
 				var nRegions = parseInt(json['tot']['total_regions_count']);
                                 var nIp = parseInt(json['tot']['total_ip']);
 				var selectedRegions = [];
-				var selectedMarkers = [];
+				selectedMarkers = [];
 				var selectedRegionsCpu = [];
 				var selectedMarkersCpu = [];
 				var selectedRegionsRam = [];
@@ -666,7 +725,7 @@
 				var selectedRegionsIp = [];
 				var selectedMarkersIp = [];
                                 
-                                var actualTime = Date.now() / 1000
+                                var actualTime = Math.floor(Date.now() / 1000)
                                 var deltaTime = 10800;
 				$.each(json['regions'], function(key, val) {
   // 				nUsers += parseInt(this['nUser']);
@@ -702,18 +761,20 @@
 				  if(this['latitude'] != "" && this['longitude'] != "")
 				  {
 				      var marker = {};
+				      marker["id"] = this['id'];
 				      marker["latLng"] = [];
 				      marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 				      marker["name"] = this['name'];
                                       //console.log(this['timestamp']);
                                       regionTime =( new Date(this['timestamp']).getTime() / 1000)
                                       my_time=new Date(this['timestamp'])
-                                      month=my_time.getMonth()+1;if (month<10)month="0"+month;
                                       
-                                      day=my_time.getDate();if (day<10){if (day==0)day=1;day="0"+day};
-                                      hours=my_time.getHours();if (hours<10)hours="0"+hours;
-                                      mins=my_time.getMinutes();if (mins<10)mins="0"+mins;
-                                      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+                                      month=my_time.getMonth()+1;if (month<10)month="0"+month;
+				      day=my_time.getDate();if (day<10)day="0"+day;
+				      hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+				      mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+				      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+							      
                                       if (this['name']=="Gent"){
                                         console.log(this['timestamp'])
                                         console.log(my_time.getMonth());                                       
@@ -1046,6 +1107,57 @@
 				  } 
 			  }
 		  );
+		  $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/institution",//to get institutions
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var institutionsData = json;
+	  			      
+				    if(institutionsData != null && institutionsData != "undefined" )
+				    {
+				      $(".parternList").html("");
+				      
+				      var parternCount = institutionsData.length;
+				      $("#parternCount").html("<span class=\"badge\">"+parternCount+"</span>");
+// 				      var parternRows = Math.ceil(parternCount/3);
+// 				      var heightPanel = parternRows*130;
+				      
+				      
+				      
+				      $.each(institutionsData, function( index, institution ){
+				      
+					if(institution["link"]!= null && institution["link"] != "undefined")
+					  $(".parternList").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+					else
+					  $(".parternList").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+					
+					$('#parternList').css('height',$(".parternList").height()+10);
+					});  
+					
+					if(parternCount==0) $(".parternList").html("No institutions found");
+				      
+				    }
+// 				    $("#imgHistoryMessages").hide();  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $(".parternList").html(errore);
+	  //     				alert('request failed->'+textStatus);
+      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 				    $("#imgHistoryMessages").hide();
+				  } 
+			}
+		      );
+		  
 		  }
 
 

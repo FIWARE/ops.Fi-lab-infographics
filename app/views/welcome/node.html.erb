@@ -1,0 +1,844 @@
+<% if @idNode == nil %>
+<div class="title">No such node</div>
+<% else %>
+<% content_for :headers do %>
+<script type='text/javascript' src="https://www.google.com/jsapi"></script>
+<script>
+  google.load('visualization', '1', {packages:['gauge','corechart']});
+</script>
+<%end %>
+<%= render :partial => "welcome/node/nodeToolbar" %>
+<div id="home">
+  <div id="errorMessageMap" class="errorMessage"></div>
+  <div class="home" id="homeWidgets">     
+    <div class="applications">
+      <header>
+	Map <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgMap" style="display:none">
+      </header>
+
+      <section class="site_clients_list" id="world-map-nodes" style="padding:0px;">
+	<!--<ul>
+	  <li>Name: here will go the map of <%= @idNode %></li>
+	</ul>-->
+      </section>
+    </div>
+    
+    <div class="organizations" id="regionGauges">
+      <header>
+	General Info <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgGenInfo" style="display:none">
+      </header>
+
+      <!--<section class="organizations-list" id="generalInfo">
+	<ul>
+	  <li>Id: <span><%= @idNode %></span></li>
+	  <li>Name: <span><%= @nameNode %></span></li>
+	  <li>Country: <span id="country"></span></li>
+	  <li>Users Number: <span id="users"></span></li>
+	  <li>Cores number: <span id="core"></span></li>
+	  <li>Cores Enabled number: <span id="coreen"></span></li>
+	  <li>Ram (GB): <span id="ram"></span></li>
+	  <li>Disk (TB): <span id="disk"></span></li>
+	  <li>VMs number: <span id="vm"></span></li>
+	  <li>Power consumption: <span id="power"></span></li>
+	  <li>Perc. CPU Load: <span id="perccpu"></span></li>
+	  <li>Perc. Ram Load: <span id="percram"></span></li>
+	  <li>Perc. Disk Load: <span id="percdisk"></span></li>
+	</ul>
+      </section>-->
+      
+      <div class="section">
+	  <div class="headerSection accordionTitle">
+		  <div class="leftIcon">
+			  <img src="/assets/infographic/iconCpu.png" height="35"/>
+		  </div>
+		  <div class="leftDetail">
+			  <span id="core"></span> cores
+		  </div>
+		  <div class="rightDetail" id="coreGauge" style="margin-top:3px;">
+		  </div>
+		  <div class="clear"></div>
+	  </div>
+      </div>
+
+      <div class="section">
+	  <div class="headerSection accordionTitle">
+		  <div class="leftIcon">
+			  <img src="/assets/infographic/iconRam.png" height="35"/>			  
+		  </div>
+		  <div class="leftDetail">
+			<span id="ram"></span> GB  
+		  </div>
+		  <div class="rightDetail" id="ramGauge" style="margin-top:3px;">
+			 
+		  </div>
+		  <div class="clear"></div>
+	  </div>
+      </div>
+
+      <div class="section">
+	  <div class="headerSection accordionTitle">
+		  <div class="leftIcon">
+			  <img src="/assets/infographic/iconDisk.png" height="35"/>
+		  </div>
+		  <div class="leftDetail">
+			  <span id="disk"></span> TB
+		  </div>
+		  <div class="rightDetail" id="diskGauge" style="margin-top:3px;">
+		  </div>
+		  <div class="clear"></div>
+	  </div>
+      </div>
+      
+      <div class="section">
+	  <div class="headerSection accordionTitle">
+		  <div class="leftIcon">
+			  <img src="/assets/infographic/iconBattery.png" height="35"/>
+		  </div>
+		  <div class="rightDetail">
+			  <span id="power"></span>
+		  </div>
+		  <div class="clear"></div>
+	  </div>
+      </div>
+    </div>
+    
+    <div id="errorMessageServices" class="errorMessage"></div>
+    
+    <div class="services">
+      <header>
+	Services <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgServices" style="display:none">
+      </header>
+
+      <section class="services-list">
+	<DIV ID="status">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
+		<DIV CLASS='field field-header field-header-node'>Node</DIV>
+		<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
+		<DIV CLASS='field field-header field-header-service'>Nova</DIV>
+		<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
+		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
+		<DIV CLASS='field field-header field-header-service'>Glance</DIV>
+		<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
+		<DIV CLASS='field field-header field-header-service'>Sanity</DIV>
+<!-- 		<DIV CLASS='field field-header field-header-support'>Support</DIV> -->
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContent">
+	      <DIV CLASS='status-row row-status-service row-status-closed' id='<%= @idNode %>'>
+		  <DIV CLASS='field field-group field-group-expand'>
+			  <IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>
+		  </DIV>
+		  <DIV CLASS='field field-service field-service-node <%= @idNode %>'><%= @nameNode %></DIV>	
+	      </DIV>
+	  </DIV>
+	</DIV>
+      </section>
+    </div>
+    
+    <div id="errorMessageHosts" class="errorMessage"></div>
+    <div class="clear"></div>
+    <div id="errorMessageSupported" class="errorMessage"></div>
+    
+    <!--<div class="services">
+      <header>
+	Computing Hosts <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHosts" style="display:none">
+      </header>
+
+      <section class="services-list">
+	<DIV ID="statusHost">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
+		<DIV CLASS='field field-header field-header-node'>Host ID</DIV>
+ 		<DIV CLASS='field field-header field-header-support'>ip</DIV> 
+		<DIV CLASS='field field-header field-header-support'>% CPU load</DIV>
+		<DIV CLASS='field field-header field-header-support'>% RAM used</DIV>
+		<DIV CLASS='field field-header field-header-support'>% Disk used</DIV>
+ 		<DIV CLASS='field field-header field-header-support'>Sys. up time</DIV> 
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContentHost">
+	      
+	  </DIV>
+	</DIV>
+      </section>
+    </div>-->
+  
+    <div class="clear"></div>
+  </div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+	  var STATUS_OK  = 'green';
+	  var STATUS_NOK = 'red';
+	  var STATUS_POK = 'yellow';
+	  var STATUS_NA  = 'gray';
+
+	  var GREEN  = STATUS_OK ;
+	  var RED    = STATUS_NOK;
+	  var YELLOW = STATUS_POK;
+	  var GRAY   = STATUS_NA;
+	  
+	  $(document).ready(function() 
+	  {
+// 	      $('.infographic').removeClass('active');
+// 	      $('.status').removeClass('active');
+
+	      var selectedMarkers = [];
+	      var selectedRegions = [];
+		  
+	      $('#world-map-nodes').css('width','100%');
+	      $('#world-map-nodes').css('height',392);
+	      
+	      var map = new jvm.WorldMap({
+	      container: $('#world-map-nodes'),
+	      backgroundColor: 'white',
+	      map: 'world_mill_en',
+	      regionStyle: {
+			initial: {
+			  fill: '#999999',
+			  "fill-opacity": 1,
+			  stroke: 'none',
+			  "stroke-width": 0,
+			  "stroke-opacity": 1
+			},
+			hover: {
+			  "fill-opacity": 0.8
+			},
+			selected: {
+			      fill: '#0071A4'
+			},
+			selectedHover: {
+			}
+	      },
+	      markerStyle: {
+		    initial: {
+		      fill: '#ff9900',
+		      stroke: '#383f47'
+		    }
+	      },
+	      onMarkerClick: function(events, index) {
+// 		    alert(selectedMarkers[index].name);
+		  /*var aTag = $("a[name='"+selectedMarkers[index].name+"']");
+		  $('html,body').animate({scrollTop: aTag.offset().top},'slow');
+		  $('.field-service').css('text-weight','normal');
+		  $('.field-service').css('color','#8C8C8C');
+		  $('.'+selectedMarkers[index].name).css('text-weight','bold');
+		  $('.'+selectedMarkers[index].name).css('color','black');*/	    
+	      }//,
+	      /*series: {
+			regions: [{values: {"IT":20,"DE":90},
+		      // attribute:'fill',
+//				      scale: ['#C8EEFF', '#0071A4'],
+// 					      scale: {
+// 							  84: '#4169E1',
+// 							  64: '#FF69B4'
+// 							},
+//				      normalizeFunction: 'linear'
+			}]
+	      }	*/		     
+
+	      });
+	      
+// 	      $('#world-map-nodes').vectorMap('set', 'focus', 5, 0.5, 0.3);
+	      map.setFocusLatLng = function(scale, lat, lng){
+		  var point,
+		      proj = jvm.WorldMap.maps[this.params.map].projection,
+		      centralMeridian = proj.centralMeridian,
+		      width = this.width - this.baseTransX * 2 * this.baseScale,
+		      height = this.height - this.baseTransY * 2 * this.baseScale,
+		      inset,
+		      bbox,
+		      scaleFactor = this.scale / this.baseScale,
+		      centerX,
+		      centerY;
+
+		  if (lng < (-180 + centralMeridian)) {
+		      lng += 360;
+		  }
+
+		  point = jvm.Proj[proj.type](lat, lng, centralMeridian);
+
+		  inset = this.getInsetForPoint(point.x, point.y);
+		  if (inset) {
+		      bbox = inset.bbox;
+
+		      centerX = (point.x - bbox[0].x) / (bbox[1].x - bbox[0].x);
+		      centerY = (point.y - bbox[0].y) / (bbox[1].y - bbox[0].y);
+
+		      this.setFocus(scale, centerX, centerY);
+		  }
+	      }	      
+
+	      $("#imgMap").show();
+	      $("#imgGenInfo").show();
+	      $("#imgServices").show();
+	      $.ajax (
+		      {
+			    type: "GET",
+			    url: "../../api/v1/region/"+"<%= @idNode %>",//to know name, lat and long of a region
+			    contentType: "application/json; charset=utf-8",
+			    data: {},
+			    dataType: "json",
+			    cache: false,
+			    success: function(json){
+			    
+			      selectedMarkers = [];
+			      
+			      var dataRegion = json;
+				
+			      if(dataRegion == null || dataRegion == "undefined") 
+			      {
+				$('#errorMessageMap').html("Empty response");
+				$("#imgMap").hide();
+				$("#imgGenInfo").hide();
+				return;
+			      }
+			      $('#errorMessageMap').html("");
+			      
+			      map.setFocusLatLng(10, parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude']));
+			      
+			      var markersData = {};
+			      markersData["latLng"] =  [parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude'])];
+			      markersData["name"] = dataRegion["name"];
+// 			      markersData["style"] = 'rgba(0,0,0,0.5)';
+
+			      selectedRegions.push(dataRegion['country']);
+			      
+			      map.clearSelectedRegions();
+			      map.setSelectedRegions(selectedRegions);
+			      
+			      selectedMarkers.push(markersData);
+			      
+			      map.removeAllMarkers();
+			      map.addMarkers(selectedMarkers);
+			      
+// 			      $('#country').html(dataRegion['country']);
+// 			      $('#users').html(dataRegion['nb_users']);
+			      $('#core').html(parseInt(dataRegion['nb_cores']));
+// 			      $('#coreen').html(parseInt(dataRegion['nb_cores_enabled']));
+			      $('#ram').html((parseInt(dataRegion['nb_ram'])/1024).toFixed(1));
+			      $('#disk').html((parseInt(dataRegion['nb_disk'])/1024).toFixed(1));
+// 			      $('#vm').html(parseInt(dataRegion['nb_vm']));
+			      var power_consumption = 0;
+			      if (dataRegion['power_consumption']) power_consumption = parseFloat(dataRegion['power_consumption']).toFixed(2);
+			      $('#power').html(power_consumption);
+// 			      $('#perccpu').html(parseInt(dataRegion['percCPULoad']));
+// 			      $('#percram').html(parseInt(dataRegion['percRAMUsed']));
+// 			      $('#percdisk').html(parseInt(dataRegion['percDiskUsed']));
+			      
+			      function drawChart() 
+			      {
+				var options = {
+				  width: 90, height: 110,
+				  redFrom: 90, redTo: 100,
+				  yellowFrom:75, yellowTo: 90,
+				  minorTicks: 5
+				};
+				
+// 				var percCPULoad = 0;
+// 				if (dataRegion['percCPULoad']) percCPULoad = parseFloat(dataRegion['percCPULoad']).toFixed(2);
+// 				var dataCpu = google.visualization.arrayToDataTable([
+// 				  ['Label', 'Value'],
+// 				  ['%CPU', parseInt(percCPULoad*100)]
+// 				]);
+				
+				var percRAMUsed = 0;
+				if (dataRegion['percRAMUsed']) percRAMUsed = parseFloat(dataRegion['percRAMUsed']).toFixed(2);
+				var dataRam = google.visualization.arrayToDataTable([
+				  ['Label', 'Value'],
+				  ['%RAM', parseInt(percRAMUsed*100)]
+  					    ]);
+				
+				var percDiskUsed = 0;
+				if (dataRegion['percDiskUsed']) percDiskUsed = parseFloat(dataRegion['percDiskUsed']).toFixed(2);
+				var dataDisk = google.visualization.arrayToDataTable([
+				  ['Label', 'Value'],
+				  ['%Disk', parseInt(percDiskUsed*100)]
+  					    ]);
+				
+// 				var chartCpu = new google.visualization.Gauge(document.getElementById('coreGauge'));
+// 				chartCpu.draw(dataCpu, options);
+				
+				var chartRam = new google.visualization.Gauge(document.getElementById('ramGauge'));
+				chartRam.draw(dataRam, options);
+				
+				var chartDisk = new google.visualization.Gauge(document.getElementById('diskGauge'));
+				chartDisk.draw(dataDisk, options); 
+			      };
+			      drawChart();
+			      
+			      $("#imgMap").hide();
+			      $("#imgGenInfo").hide();
+			      
+			      $.ajax (
+			      {
+				    type: "GET",
+				    url: "../../api/v1/region/services/"+"<%= @idNode %>",//to know status services of the region
+				    contentType: "application/json; charset=utf-8",
+				    data: {},
+				    dataType: "json",
+				    cache: false,
+				    success: function(json){
+					
+				      var services = json;
+				      if(services == null || services == "undefined") 
+				      {
+					$('#errorMessageServices').html("Empty response");
+					$("#imgServices").hide();
+					return;
+				      }
+				      $('#errorMessageServices').html("");
+				      
+				      var servicesNames = Object.keys(services);
+				      
+
+				      //complete table with jira and services status
+					
+				      
+				      
+				      var actualTime = Date.now() / 1000;
+				      var deltaTime = 10800;
+	                              var measureTime =( new Date(dataRegion['timestamp']).getTime() / 1000)
+	                              
+	                              my_time=new Date(dataRegion['timestamp'])
+				      month=my_time.getMonth();if (month<10)month="0"+month;
+				      day=my_time.getDay();if (day<10){if (day==0)day=1;day="0"+day};
+				      hours=my_time.getHours();if (hours<10)hours="0"+hours;
+				      mins=my_time.getMinutes();if (mins<10)mins="0"+mins;
+				      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+				      
+				      if (actualTime>(measureTime+deltaTime))
+					markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
+				      else markersData["name"]=dataRegion['name'];
+							  
+	                              var statusColor;
+				      if (actualTime>(measureTime+deltaTime))
+				      {
+					statusColor = 'rgba(0,0,0,0.5)';
+				      }
+				      else
+				      {
+					switch (services['overallStatus']['value']) 
+					{
+					      case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
+					      case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
+					      case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
+					      default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+					}
+				      }
+				      markersData["style"] = {fill: statusColor, r:5};
+				      selectedMarkers = [];
+				      selectedMarkers.push(markersData);
+			      
+				      map.removeAllMarkers();
+				      map.addMarkers(selectedMarkers);
+				      
+				      var colorValueOverall = services["overallStatus"]['value'];
+				      var colorPng = colorValueOverall + "light.png";
+				      if (actualTime>(measureTime+deltaTime) || colorValueOverall == "undefined")colorPng="graylight.png";
+				      allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+                                                          
+				      $.each(servicesNames, function( index, value ) {
+					if(value != "overallStatus" && value != "FiHealthStatus")
+					{
+						colorPng = services[value]["value"]+"light.png";
+						
+						if (actualTime>(measureTime+deltaTime) || services[value]["value"] == "undefined") colorPng="graylight.png";
+						allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+					}
+					else if(value == "FiHealthStatus")
+					{
+						valuePng = services[value]["value"];
+						if(valuePng == 1)
+						  colorPng = GREEN+"light.png";
+						else if (valuePng == 0.0)
+						  colorPng = RED+"light.png";
+						else if (valuePng == 0.75)
+						  colorPng = YELLOW+"light.png";
+						if (actualTime>(measureTime+deltaTime))colorPng="graylight.png";
+						allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+					}
+				      });
+				      
+				      var jira_url = services["overallStatus"]["jira_project_url"]
+				      if( !jira_url) jira_url = "#";
+				      
+				      $("#"+"<%= @idNode %>").append(allSubRows/*+"<DIV CLASS='field field-service field-service-status-support'>"+
+						      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+						      "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+					      "</DIV>"*/);
+				      $("#tableContent").append("<DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 559px; height: 59px;'>"+services["overallStatus"]['description']+"</div></DIV>");
+					      
+				      $(".row-message").hide();				  
+				      $('.field-group-expand').click( function()
+				      {
+					      var $image = $(this).children();
+					      if( $image.hasClass('collapse' ) )
+					      {
+						      $image.removeClass('collapse' );
+						      $image.addClass('expand' );
+					      }
+					      else
+					      {
+						      $image.removeClass('expand' );
+						      $image.addClass('collapse' );
+					      }
+					      var $parent = $(this).parent();
+					      
+					      var $message = $parent.next(".row-message");
+					      $message.slideToggle(function()
+					      {
+						      if( $parent.hasClass('row-status-closed' ) )
+						      {
+							      $parent.removeClass('row-status-closed' );
+							      $parent.addClass('row-status-opened' );
+						      }
+						      else
+						      {
+							      $parent.removeClass('row-status-opened' );
+							      $parent.addClass('row-status-closed' );
+						      }
+					      });
+				      });
+				      
+				      $("#imgServices").hide();
+					
+				    },
+				    error: function(xhr, textStatus, errorThrown){
+				    
+				    $("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
+						      "<!--<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>-->"+
+						      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
+					      "</DIV>");
+				    
+				    
+				      
+				    //put a symbol in the raw to show that it has failed
+					var errore = "<%= FiLabInfographics.nodata %>";
+					if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+						errore = xhr.responseText;
+	// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+					$('#errorMessageServices').html(errore);
+					$("#imgServices").hide();
+	//     				alert('request failed->'+textStatus);
+	//     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				    } 
+			      }
+			    );
+			    
+			    },
+			    error: function(xhr, textStatus, errorThrown){
+// 			    map.setFocusLatLng(10, parseFloat("52.25"),parseFloat("21"));
+			    //put a symbol in the raw to show that it has failed
+				var errore = "<%= FiLabInfographics.nodata %>";
+				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					errore = xhr.responseText;
+// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				$('#errorMessageMap').html(errore);
+				$("#imgMap").hide();
+				$("#imgGenInfo").hide();
+//     				alert('request failed->'+textStatus);
+//     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+
+				$("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
+				"<!--<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>-->"+
+				"<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
+								      "</DIV>");
+				$('#errorMessageServices').html(errore);
+				$("#imgServices").hide();
+			    } 
+		      }
+	      );  
+	      
+	      
+		    
+// 		    $.ajax (
+// 		      {
+// 			    type: "GET",
+// 			    url: "../../api/v1/region/"+"<%= @idNode %>"+"/vms",//to know list of vms of the region
+// 			    contentType: "application/json; charset=utf-8",
+// 			    data: {},
+// 			    dataType: "json",
+// 			    cache: false,
+// 			    success: function(json){
+// 				
+// 			      var totData = json;
+// 			      if(totData == null || totData == "undefined") return;
+// 			      
+// 			      var idVms = totData["total_vms_ids"];
+// 			      var idVmsCount = totData["total_vms_count"];
+// 			      //draw table with # empty raws
+// 			      var allRows = "";
+// 			      for (var i=0;i<idVmsCount;i++)
+// 			      {
+// 				  var theVmId = totData["total_vms_ids"][i];
+// 				  allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed' id='"+theVmId+"'>"+
+// 							    "<DIV CLASS='field field-group field-group-expand'>"+
+// 								    "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+// 							    "</DIV>"+"<a name=\""+theVmId+"\"></a>"+
+// 							    "<DIV CLASS='field field-service field-service-node "+theVmId+"'></DIV>"+			
+// 						    "</DIV>"
+// 			      }
+// 			      $('#tableContentVm').html(allRows);
+// 			      
+// 			      
+// 			    },
+// 			    error: function(xhr, textStatus, errorThrown){
+// 			      //put a symbol in the raw to show that it has failed
+// 				var errore = "<%= FiLabInfographics.nodata %>";
+// 				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+// 					errore = xhr.responseText;
+// // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+// 				$('#errorMessage').html(errore);
+// //     				alert('request failed->'+textStatus);
+// //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 			    } 
+// 		      }
+// 		    );
+
+		    $.ajax (
+		      {
+			    type: "GET",
+			    url: "../../api/v1/region/"+"<%= @idNode %>"+"/hosts",//to know list of host of the region
+			    contentType: "application/json; charset=utf-8",
+			    data: {},
+			    dataType: "json",
+			    cache: false,
+			    success: function(json){
+				
+			      var totData = json;
+			      if(totData == null || totData == "undefined") 
+			      {
+				$('#errorMessageHosts').html("Empty response");
+				return;
+			      }
+			      $('#errorMessageHosts').html("");
+			      
+			      var idHosts = totData["total_hosts_ids"];
+			      var idHostsCount = totData["total_hosts_count"];
+			      //draw table with # empty raws
+// 			      $('#tableContentHost').html("");
+			      if(idHostsCount > 0) 
+			      {
+			      $( "#errorMessageHosts" ).after( "<div class=\"services\">"+
+				    "<header>"+
+				      "Computing Hosts"+
+				    "</header>"+
+
+				    "<section class=\"services-list\">"+
+				      "<DIV ID=\"statusHost\">"+
+					"<DIV id=\"tableHeaderContent\" CLASS='status-row status-row-header'>"+
+					      "<DIV CLASS='field field-header field-header-node'>Host ID</DIV>"+
+					      "<DIV CLASS='field field-header field-header-field' style=\"width: 107px;margin:0\">% CPU load</DIV>"+
+					      "<DIV CLASS='field field-header field-header-field'style=\"width: 107px;margin:0\">% RAM used</DIV>"+
+					      "<DIV CLASS='field field-header field-header-field'style=\"width: 107px;margin:0\">% Disk used</DIV>"+
+					      "<div class=\"clear\"></div>"+
+					"</DIV>"+
+					"<DIV id=\"tableContentHost\">"+
+					    
+					"</DIV>"+
+				      "</DIV>"+
+				    "</section>"+
+				  "</div>" );
+			      }
+			      
+			      for (var i=0;i<idHostsCount;i++)
+			      {
+				  var theHostId = totData["total_hosts_ids"][i];
+				  var allRows ="<DIV CLASS='status-row row-status-service row-status-closed' id='"+theHostId+"' style='height:95px;'>"+
+						    "<DIV CLASS=\"field field-group field-group-expand\"></DIV>"+
+						    "<a name=\""+theHostId+"\"></a>"+
+						    "<DIV CLASS=\"field field-service field-service-node "+theHostId+"\" style='line-height:95px;'>"+theHostId+"</DIV>"+			
+						"</DIV>";
+						console.log(allRows);
+				  $('#tableContentHost').append(allRows);
+				  console.log(totData["total_hosts_ids"]);
+				  console.log(i);
+				  console.log(theHostId);
+				  $.ajax (
+					    {
+						  type: "GET",
+						  url: "../../api/v1/region/"+"<%= @idNode %>"+"/hosts/"+theHostId,//to know data of host of the region
+						  contentType: "application/json; charset=utf-8",
+						  data: {},
+						  dataType: "json",
+						  cache: false,
+						  success: function(json){
+						      
+						    var totData = json;
+						    if(totData == null || totData == "undefined") return;
+						    
+// 						    var ipList = "";
+// 						    
+// 						    if(totData["ipList"] != null && totData["ipList"] != "undefined")
+// 						    {
+// 						      $.each(totData["ipList"], function( index, value ) {
+// 							if(ipList == "") ipList = "["
+// 							ipList = ipList+value;
+// 							if(index == totData["ipList"].length-1) ipList = ipList+"]"
+// 							else ipList = ipList+"; "
+// 						      });
+// 						    }
+						    console.log(totData["id"]);
+// 						    $("#"+totData["id"]+"").append("<!--<DIV CLASS='field field-service field-service-status-support' style='font-size:11px;'></DIV>--><DIV CLASS='field field-service field-service-status-support'>"+totData["percCPULoad"]+"</DIV><DIV CLASS='field field-service field-service-status-support'>"+totData["percRAMUsed"]+"</DIV><DIV CLASS='field field-service field-service-status-support'>"+totData["percDiskUsed"]+"</DIV><!--<DIV CLASS='field field-service field-service-status-support'>"+/*totData["sysUptime"]+*/"</DIV>-->");
+						    
+						    $("#"+totData["id"]+"").append("<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_cpu_"+totData["id"]+"\" style=\"padding-left: 6px\"></div></DIV>"+
+					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_ram_"+totData["id"]+"\" style=\"padding-left: 6px\"></div></DIV>"+
+					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_disk_"+totData["id"]+"\" style=\"padding-left: 6px\"></div></DIV>"+
+				  
+				    "<script type='text/javascript'>"+
+				    
+// 					  "google.load('visualization', '1', {packages:['gauge','corechart']});"+
+// 					  "google.setOnLoadCallback(function() {"+
+					  "function drawChart_"+String(totData["id"]).replace(/\W/g, '')+"() {"+
+					    "var options = {"+
+					      "width: 100, height: 120,"+
+					      "redFrom: 90, redTo: 100,"+
+					      "yellowFrom:75, yellowTo: 90,"+
+					      "minorTicks: 5"+
+					    "};"+
+					    
+					    "var percCPULoad = 0;"+
+					    "if ("+totData["percCPULoad"]+") percCPULoad = parseFloat("+totData["percCPULoad"]+").toFixed(2);"+
+					    "var dataCpu = google.visualization.arrayToDataTable(["+
+					      "['Label', 'Value'],"+
+					      "['CPU', parseFloat(percCPULoad)]"+
+					    "]);"+
+					    
+					    "var percRAMUsed = 0;"+
+					    "if ("+totData["percRAMUsed"]+") percRAMUsed = parseFloat("+totData["percRAMUsed"]+").toFixed(2);"+
+					    "var dataRam = google.visualization.arrayToDataTable(["+
+					      "['Label', 'Value'],"+
+					      "['RAM',parseFloat(percRAMUsed)]"
++					    "]);"+
+					    
+					    "var percDiskUsed = 0;"+
+					    "if ("+totData["percDiskUsed"]+") percDiskUsed = parseFloat("+totData["percDiskUsed"]+").toFixed(2);"+
+					    "var dataDisk = google.visualization.arrayToDataTable(["+
+					      "['Label', 'Value'],"+
+					      "['Disk',parseFloat(percDiskUsed)]"
++					    "]);"+
+					    
+					    "var chartCpu = new google.visualization.Gauge(document.getElementById('chart_div_cpu_"+totData["id"]+"'));"+
+					    "chartCpu.draw(dataCpu, options);"+
+					    
+					    "var chartRam = new google.visualization.Gauge(document.getElementById('chart_div_ram_"+totData["id"]+"'));"+
+					    "chartRam.draw(dataRam, options);"+
+					    
+					    "var chartDisk = new google.visualization.Gauge(document.getElementById('chart_div_disk_"+totData["id"]+"'));"+
+					    "chartDisk.draw(dataDisk, options);"+ 
+					  "};"+
+					  "drawChart_"+String(totData["id"]).replace(/\W/g, '')+"();"
+					  
+					  
+					  
+					  
+					  
+					  +"<\/script>");  
+						    
+						    
+						  },
+						  error: function(xhr, textStatus, errorThrown){
+						    //put a symbol in the raw to show that it has failed
+						      var errore = "<%= FiLabInfographics.nodata %>";
+						      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+							      errore = xhr.responseText;
+		      // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+						      $('#errorMessageHosts').html(errore);
+		      //     				alert('request failed->'+textStatus);
+		      //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+						  } 
+					    }
+					  );
+			      }
+			      
+			      
+			    },
+			    error: function(xhr, textStatus, errorThrown){
+			      //put a symbol in the raw to show that it has failed
+				var errore = "<%= FiLabInfographics.nodata %>";
+				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					errore = xhr.responseText;
+// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				$('#errorMessageHosts').html(errore);
+				$("#imgHosts").hide();
+//     				alert('request failed->'+textStatus);
+//     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+			    } 
+		      }
+		    );
+		    
+		    jsonToSend = {
+			    'idNode' : "<%= @idNode %>"
+			};
+		    $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/institution",//to get institutions
+				  contentType: "application/json; charset=utf-8",
+				  data: JSON.stringify(jsonToSend),
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var institutionsData = json;
+				    if(institutionsData == null || institutionsData == "undefined") 
+				    {
+				      $('#errorMessageSupported').html("Empty response");
+				      return;
+				    }
+				    $('#errorMessageSupported').html("");
+	  			      
+				    
+				    var parternCount = institutionsData.length;
+				    //draw container 
+				    if(parternCount > 0) 
+				    {
+				    
+				    
+				      $( "#errorMessageSupported" ).after( "<div class=\"services\">"+
+					"<header>"+
+					  "Supported By"+
+					"</header>"+
+
+					"<section class=\"services-list\">"+
+					  "<DIV ID=\"supported\" class='parternList'>"+
+					    
+					    
+					  "</DIV>"+
+					"</section>"+
+				      "</div>" );
+				      
+				      
+				      
+				      $.each(institutionsData, function( index, institution ){
+				      
+					if(institution["link"]!= null && institution["link"] != "undefined")
+					  $("#supported").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+					else
+					  $("#supported").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+					});  
+					
+				     }
+				       
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $("#errorMessageSupported").html(errore);
+	  //     				alert('request failed->'+textStatus);
+      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 				    $("#imgHistoryMessages").hide();
+				  } 
+			}
+		      );
+	  });
+	  
+</script>
+
+<%end %>
+<%end %>

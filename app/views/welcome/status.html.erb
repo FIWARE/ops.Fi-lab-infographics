@@ -1,3 +1,4 @@
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <!--
 <div class="title">Federation Services <span class="status"><img src="/assets/infographic/graylight.png" height="22"/></span></div>
 
@@ -47,27 +48,49 @@
 
 <div class="layoutContainer">
 <div class="row-fluid">
-<div id="world-map-nodes"></div>
-<div id="errorMessage"></div>
-<DIV ID="status">
-		  
-	<DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
-		<DIV CLASS='field field-header field-header-node'>Node</DIV>
-		<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
-		<DIV CLASS='field field-header field-header-service'>Nova</DIV>
-		<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
-		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
-		<DIV CLASS='field field-header field-header-service'>Glance</DIV>
-		<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
-		<!-- <DIV CLASS='field field-header field-header-support'>Support</DIV>-->
-	</DIV>
-
-	
-	<DIV id="tableContent">
-		
-	</DIV>
+    <div class="span6">
+	<div id="world-map-nodes"></div>
+	<div id="errorMessage"></div>
+	<DIV ID="status">
 			  
-</DIV>
+		<DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
+			<DIV CLASS='field field-header field-header-node'>Node</DIV>
+			<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
+			<DIV CLASS='field field-header field-header-service'>Nova</DIV>
+			<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
+			<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
+			<DIV CLASS='field field-header field-header-service'>Glance</DIV>
+			<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
+			<DIV CLASS='field field-header field-header-service'>Sanity</DIV>
+			<!-- <DIV CLASS='field field-header field-header-support'>Support</DIV>-->
+		</DIV>
+
+		
+		<DIV id="tableContent">
+			
+		</DIV>
+		<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:right;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');">
+		  Show All
+		</DIV>		  
+	</DIV>
+    </div>
+    <div class="span6">
+	<div id="historical">
+	    <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
+	    <!--<div id="chart-options" class="chartOptions">
+		Chart type <%= select_tag(:chart_id,
+			options_for_select([
+			    [ "Histogram",          "chart-histogram" ],
+			    [ "Calendar per node",  "chart-calendar"  ]
+			], "chart-histogram"),
+			:onchange => "onChartChange(this.value)") %>
+	    </div>-->
+	    <div id="chart-content">
+		<div id="chart-calendar" class="chartHidden"></div>
+		<div id="chart-histogram" class="chartVisible"></div>
+	    </div>
+	</div>
+    </div>
 </div>
 </div>
 
@@ -75,15 +98,281 @@
 <% content_for :jsfooter do %>
   <script type="text/javascript">
 
-        var STATUS_OK  = 'green';
-        var STATUS_NOK = 'red';
-        var STATUS_POK = 'yellow';
-        var STATUS_NA  = 'gray';
-
-        var GREEN  = STATUS_OK ;
+	var STATUS_OK  = "<%= STATUS_OK %>",
+	    STATUS_NOK = "<%= STATUS_NOK %>",
+	    STATUS_POK = "<%= STATUS_POK %>",
+	    STATUS_NA = "<%= STATUS_NA %>";
+	    
+	var GREEN  = STATUS_OK ;
         var RED    = STATUS_NOK;
 	var YELLOW = STATUS_POK;
-	var GRAY   = STATUS_NA;
+	var GRAY   = 'gray';
+
+	var selected_chart_id = "chart-histogram";
+
+	var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
+	    chart_content_height = null,
+	    chart_content_maxwidth = 585,/*960,*/
+	    map_nodes_width = 585;
+
+	var color = d3.scale.quantize()
+	    .domain([-1, 1])
+	    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+
+	function ChartCalendar() {
+	    var year_ini = new Date().getFullYear() - 1,
+		year_end = year_ini + 1,
+		cellSize = 10,/*17,*/
+		height = 136,
+		width = chart_content_maxwidth;
+
+	    var day = d3.time.format("%w"),
+		week = d3.time.format("%U"),
+		format = d3.time.format("%Y-%m-%d"),
+		monthPath = function(t0) {
+		    var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+			d0 = +day(t0), w0 = +week(t0),
+			d1 = +day(t1), w1 = +week(t1);
+		    return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+			+ "H" + w0 * cellSize + "V" + 7 * cellSize
+			+ "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+			+ "H" + (w1 + 1) * cellSize + "V" + 0
+			+ "H" + (w0 + 1) * cellSize + "Z";
+		};
+
+	    var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
+		.data(d3.range(year_ini, year_end + 1))
+		.enter().append("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.attr("class", "RdYlGn")
+		.append("g")
+		.attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+	    svg.append("text")
+		.attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+		.style("text-anchor", "middle")
+		.text(function(d) { return d; });
+
+	    this.rect = svg.selectAll(".day")
+		.data(function (d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		.enter().append("rect")
+		.attr("class", "day")
+		.attr("width", cellSize)
+		.attr("height", cellSize)
+		.attr("x", function(d) { return week(d) * cellSize; })
+		.attr("y", function(d) { return day(d) * cellSize; })
+		.datum(format);
+
+	    this.rect.append("title")
+		.text(function(d) { return d; });
+
+	    svg.selectAll(".month")
+		.data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		.enter().append("path")
+		.attr("class", "month")
+		.attr("d", monthPath);
+
+	    chart_content_height = (year_end - year_ini + 1) * height;
+	    d3.select($("#chart-content")[0]).style("height", chart_content_height + "px");
+	}
+
+	ChartCalendar.prototype.numvalue = function(status) {
+	    switch (status) {
+
+
+		case STATUS_OK:  return +1;
+		case STATUS_NOK: return -0.8;
+		case STATUS_POK:  return 0.0;
+		default:         return -1;
+	    }
+	};
+
+	ChartCalendar.prototype.caption = function(d) {
+	    switch (this.historical_data[d]) {
+		case +1: return d + ": Sanity status OK";
+		case  0: return d + ": Sanity status Partially OK";
+		case -0.8: return d + ": Sanity status not OK";
+		default: return d + ": Sanity status Undefined";
+	    }
+	};
+
+	ChartCalendar.prototype.update = function(idNode, data) {
+	    var self = this;
+	    var dataset = data.map(function(obj) {
+		return { 'Date': obj.timestamp.substr(0, 10), 'Value': self.numvalue(obj.FiHealthStatus.value) };
+	    });
+	    self.idNode = idNode;
+	    self.historical_data = d3.nest()
+		.key(function(d) { return d.Date; })
+		.rollup(function(d) { return d[0].Value; })
+		.map(dataset);
+	    self.rect.filter(function(d) { return d in self.historical_data; })
+		.attr("class", function(d) { return "day " + color(self.historical_data[d]); })
+		.select("title")
+		.text(function(d) { return self.caption(d); });
+	};
+
+	function ChartHistogram() {
+	    var margin = { top: 30, right: 20, bottom: 80, left: 40 };
+
+	    this.width = map_nodes_width - margin.left - margin.right;
+	    this.height = chart_content_height - margin.top - margin.bottom;
+
+	    this.x = d3.scale.ordinal()
+		.rangeRoundBands([0, this.width], .1);
+
+	    this.y = d3.scale.linear()
+		.range([this.height, 0]);
+
+	    this.xAxis = d3.svg.axis()
+		.scale(this.x)
+		.orient("bottom");
+
+	    this.yAxis = d3.svg.axis()
+		.scale(this.y)
+		.orient("left")
+		.ticks(10, "%");
+
+	    d3.select($("#chart-histogram")[0]).append("svg")
+		.attr("width", this.width + margin.left + margin.right)
+		.attr("height", this.height + margin.top + margin.bottom)
+		.attr("class", "RdYlGn")
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+		.append("text")
+		.attr("y", -10)
+		.attr("dy", ".30em")
+		.style("text-anchor", "end")
+		.style("font-size", "x-small");
+		//.text("Success");
+	}
+
+	ChartHistogram.prototype.update = function(data) {
+// 	clean chart
+	    var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
+	    svg.selectAll(".bar").remove();
+	    svg.selectAll("text").remove();
+	    svg.selectAll("line").remove();
+	    
+	    var self = this;
+	    self.x.domain(data.map(function(d) { 
+	    var region_name=d.idNode;
+	    if (d.idNode=="Lannion2")
+	      region_name="Lannion"
+	    else if (d.idNode=="Berlin2")
+	      region_name="Berlin"
+	    else if (d.idNode=="Spain2")
+	      region_name="Spain"
+	    else if (d.idNode=="Karlskrona2")
+	      region_name="Karlskrona"
+	    else if (d.idNode=="Budapest2")
+	      region_name="Budapest"
+	    else if (d.idNode=="Stockholm2")
+	      region_name="Stockholm"
+
+	    return region_name }));
+	    self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
+
+	    var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
+
+	    svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + self.height + ")")
+		.call(self.xAxis)
+		.selectAll("text")
+		.style("text-anchor", "end")
+		.attr("dx", "-.8em")
+		.attr("dy", ".15em")
+		.attr("transform", "rotate(-60)");
+
+	    svg.append("g")
+		.attr("class", "y axis")
+		.call(self.yAxis);
+
+	    svg.selectAll(".bar")
+		.data(data)
+		.enter().append("rect")
+		.attr("class", function(d) { return "bar " + color(-1 + d.success * 2.0); })
+		.attr("x", function(d) { 
+		  var region_name_in=d.idNode
+		  if (d.idNode=="Lannion2")
+		    region_name_in="Lannion"
+		  else if (d.idNode=="Berlin2")
+		    region_name_in="Berlin"
+		  else if (d.idNode=="Spain2")
+		    region_name_in="Spain"
+		  else if (d.idNode=="Karlskrona2")
+		    region_name_in="Karlskrona"
+		  else if (d.idNode=="Budapest2")
+		    region_name_in="Budapest"
+		  else if (d.idNode=="Stockholm2")
+		    region_name_in="Stockholm"
+		return self.x(region_name_in); 
+		})
+		.attr("width", self.x.rangeBand())
+		.attr("y", function(d) { return self.y(d.success); })
+		.attr("height", function(d) { return self.height - self.y(d.success); });
+	};
+
+	var calendar  = new ChartCalendar(),
+	    histogram = new ChartHistogram();
+
+	function onChartChange(id) {
+	    var titleSuffix = '',
+		makeVisible = false;
+
+	    chart_content.filter('#' + selected_chart_id).attr("class", "chartHidden");
+	    switch (selected_chart_id = id) {
+		case 'chart-calendar':
+		    if (calendar.idNode) {
+			var region = calendar.idNode;
+			if (region=="Lannion2")
+			  region="Lannion"
+			else if (region=="Berlin2")
+			  region="Berlin"
+			else if (region=="Spain2")
+			  region="Spain"
+			else if (region=="Karlskrona2")
+			  region="Karlskrona"
+			else if (region=="Budapest2")
+			  region="Budapest"
+			else if (region=="Stockholm2")
+			  region="Stockholm"
+		    
+			titleSuffix = ' for ' + region;
+			makeVisible = true;
+		    }
+		    break;
+		case 'chart-histogram':
+		    makeVisible = true;
+		    break;
+	    }
+	    if (makeVisible) chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
+	    $('#chart-title').html('FiHealth sanity check status' + titleSuffix);
+	}
+
+	function updateCalendar(idNode) {
+	    $.ajax ({
+		type: "GET",
+		url: "../api/v1/region/historical/" + idNode,
+		contentType: "application/json; charset=utf-8",
+		data: {},
+		dataType: "json",
+		cache: false,
+		success: function(json) {
+		    calendar.update(idNode, json['measures']);
+		    onChartChange('chart-calendar');
+		},
+		error: function(xhr, textStatus, errorThrown) {
+		    var errors = "<%= FiLabInfographics.nodata %>";
+		    if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+			errors = xhr.responseText;
+		    }
+		    $('#errorMessage').html(errors);
+		}
+	    });
+	}
 
 	  $(document).ready(function() 
 	  {
@@ -94,6 +383,7 @@
 		  
 
 		  var selectedMarkers = [];
+		  var sanitySuccess = [];
 		  
 		  var mapNodes = new jvm.WorldMap({
 		  container: $('#world-map-nodes'),
@@ -122,13 +412,25 @@
 			}
 		  },
 		  onMarkerClick: function(events, index) {
-  // 		    alert(selectedMarkers[index].name);
-		      var aTag = $("a[name='"+selectedMarkers[index].name+"']");
-		      $('html,body').animate({scrollTop: aTag.offset().top},'slow');
-		      $('.field-service').css('text-weight','normal');
-		      $('.field-service').css('color','#8C8C8C');
-		      $('.'+selectedMarkers[index].name).css('text-weight','bold');
-		      $('.'+selectedMarkers[index].name).css('color','black');	    
+ /* // 		    alert(selectedMarkers[index].name);
+		      var aTag = $("a[name='"+selectedMarkers[index].id+"']");
+		      var position = aTag.offset().top-41;
+// 		      console.log(aTag.offset().top+"--"+position);
+		      $('html,body').animate({scrollTop:  position+ 'px'},'slow');
+		      $('.field-service a').css('text-weight','normal');
+		      $('.field-service a').css('color','#8C8C8C');
+		      $('.'+selectedMarkers[index].id).css('text-weight','bold');
+		      $('.'+selectedMarkers[index].id).css('color','black');*/	
+		     
+		      $('.row-status-service').addClass('collapsed');
+		      $('#'+selectedMarkers[index].id).removeClass('collapsed');
+		      updateCalendar(selectedMarkers[index].id);
+		      onChartChange('chart-calendar');
+		      $('#buttonShowAll').removeClass('collapsed');
+		      
+// 		      d3.select('#chart_id')[0][0].value = 'chart-calendar';
+		      
+		      
 		  }//,
 		  /*series: {
 			    regions: [{values: {"IT":20,"DE":90},
@@ -146,7 +448,286 @@
 		  
 		  $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		  
+		  //check and shift two map points too close 
+		  function checkLatLong (points)
+		  {
+		      if(points.count <= 1) return points;
+		      $.each(points, function( regionToCheckKey, regionToCheck )
+		      {
+			  $.each(points, function( regionKey, region )
+			  {
+			      if (regionToCheck["name"] != region["name"])
+			      {
+				if (Math.abs((regionToCheck["latLng"])[0] - (region["latLng"])[0]) < 0.2)
+				  (regionToCheck["latLng"])[0] = (regionToCheck["latLng"])[0]+0.5
+				
+				if (Math.abs((regionToCheck["latLng"])[1] - (region["latLng"])[1]) < 0.2)
+				  (regionToCheck["latLng"])[1] = (regionToCheck["latLng"])[1]+0.5
+				
+			      }
+			  });
+		      });
+		    
+		    return points
+		  }
 
+		  function ajaxFunInit() { 
+		  $.ajax (
+			    {
+				  type: "GET",
+				  url: "../api/v1/region/totData",//to know how many regions
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				  
+				    var totData = json;
+				    if(totData == null || totData == "undefined") return;
+				    
+				    selectedMarkers = [];
+				    var markers = {};
+				    
+				    var idRegions = totData["total_regions_ids"];
+				    var idRegionsCount = totData["total_regions_count"];
+				    //draw table with # empty raws
+				    var allRows = "";
+				    for (var i=0;i<idRegionsCount;i++)
+				    {
+					var theRegionId = totData["total_regions_ids"][i];
+					allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed' id='"+theRegionId+"'>"+
+								  "<DIV CLASS='field field-group field-group-expand'>"+
+									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
+								  "</DIV>"+"<a name=\""+theRegionId+"\"></a>"+
+								  "<DIV CLASS='field field-service field-service-node "+theRegionId+"'></DIV>"+			
+							  "</DIV><DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 559px; height: 59px;' id='message-"+theRegionId+"'>Loading...</div></DIV>";
+				    }
+				    
+				    $('#tableContent').html(allRows);
+				    
+				    
+				    var height = $('#world-map-nodes').height()+$('#status').height()+80;
+				    $('.wrapper').css("cssText", "height: "+height+"px !important;");
+				    
+				    $(".row-message").hide();				  
+				    $('.field-group-expand').click( function()
+				    {
+					    var $image = $(this).children();
+					    if( $image.hasClass('collapse' ) )
+					    {
+						    $image.removeClass('collapse' );
+						    $image.addClass('expand' );
+					    }
+					    else
+					    {
+						    $image.removeClass('expand' );
+						    $image.addClass('collapse' );
+					    }
+					    var $parent = $(this).parent();
+					    
+					    var $message = $parent.next(".row-message");
+					    $message.slideToggle(function()
+					    {
+						    if( $parent.hasClass('row-status-closed' ) )
+						    {
+							    $parent.removeClass('row-status-closed' );
+							    $parent.addClass('row-status-opened' );
+						    }
+						    else
+						    {
+							    $parent.removeClass('row-status-opened' );
+							    $parent.addClass('row-status-closed' );
+						    }
+					    });
+				    });
+				    
+				    //for each region do:
+				    $.each(idRegions, function( index, regionId ) {
+				      $.ajax (
+						    {
+							  type: "GET",
+							  url: "../api/v1/region/"+regionId,//to know name, lat and long of a region
+							  contentType: "application/json; charset=utf-8",
+							  data: {},
+							  dataType: "json",
+							  cache: false,
+							  success: function(json){
+							  
+							      var dataRegion = json;
+// 							      
+							      //for histogram chart
+							      sanitySuccess.push({idNode: regionId, success: dataRegion['percSanitySuccess']});
+// 							      var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
+// 							      svg.selectAll(".bar").remove();
+// 							      svg.selectAll("text").remove();
+// 							      svg.selectAll("line").remove();
+							      histogram.update(sanitySuccess);
+							      
+							      //write regionName in each raw and put region data into array hash
+							      $('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+dataRegion["name"]+"</a>");	
+// 							      console.log(dataRegion[name]);
+							      var markersData = {};
+							      markersData["id"] =  regionId;
+							      markersData["latLng"] =  [parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude'])];
+							      
+							      var actualTime = Math.floor(Date.now() / 1000)
+							      var deltaTime = 10800;
+							      
+							      var regionTime =( new Date(dataRegion['timestamp']).getTime() / 1000)
+// 							      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
+							      my_time=new Date(dataRegion['timestamp'])
+							      month=my_time.getMonth()+1;if (month<10)month="0"+month;
+							      day=my_time.getDate();if (day<10)day="0"+day;
+							      hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+							      mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+							      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;					      
+							      
+							      if (actualTime>(regionTime+deltaTime))
+								markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
+							      else markersData["name"] = dataRegion['name'];
+							      
+							      markersData["style"] = 'rgba(0,0,0,0.5)';							      
+							      
+							      
+							      markers[regionId] = markersData; 
+							      
+							      $.ajax (
+							      {
+								    type: "GET",
+								    url: "../api/v1/region/services/"+regionId,//to know status services of the region
+								    contentType: "application/json; charset=utf-8",
+								    data: {},
+								    dataType: "json",
+								    cache: false,
+								    success: function(json){
+									
+								      var services = json;
+								      
+								      var servicesNames = Object.keys(services);								      
+								        
+								      var statusColor;
+								      if (actualTime>(regionTime+deltaTime)){
+									statusColor = 'rgba(0,0,0,0.5)';
+								      }
+								      else{
+									switch (services['overallStatus']['value']) {
+									      case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
+									      case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
+									      case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
+									      default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+									}
+								      }
+								      markers[regionId]["style"] = {fill: statusColor, r:5};
+								      
+	    // 							  selectedMarkers = $.map(markers, function(val, key) { return val; });
+								      selectedMarkers.push(markers[regionId]);
+								      selectedMarkers = checkLatLong(selectedMarkers);
+	    // 							  console.log(selectedMarkers);
+								      mapNodes.removeAllMarkers();
+								      mapNodes.addMarkers(selectedMarkers);
+								      
+								      
+								      //complete table with jira and services status
+									
+								      var colorValueOverall = services["overallStatus"]['value'];
+								      var colorPng = colorValueOverall + "light.png";
+								      
+								      if (actualTime>(regionTime+deltaTime) || colorValueOverall == "undefined")colorPng="graylight.png";
+
+								      allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+							  
+								      $.each(servicesNames, function( index, value ) {
+									      if(value != "overallStatus" && value != "FiHealthStatus")
+									      {
+										      colorPng = services[value]["value"]+"light.png";
+// 										      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
+										      if (actualTime>(regionTime+deltaTime) || services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
+										      allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+									      }
+									      else if(value == "FiHealthStatus")
+									      {
+										      valuePng = services[value]["value"];
+										      if(valuePng == 1)
+											colorPng = GREEN+"light.png";
+										      else if (valuePng == 0.0)
+											colorPng = RED+"light.png";
+										      else if (valuePng == 0.75)
+											colorPng = YELLOW+"light.png";
+										      if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
+										      allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+									      }
+								      });
+							  
+								      var jira_url = services["overallStatus"]["jira_project_url"]
+								      if( !jira_url) jira_url = "#";
+								      
+								      $("#"+regionId).append(allSubRows/*+"<DIV CLASS='field field-service field-service-status-support'>"+
+										      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+										      "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+									      "</DIV>"*/);
+								     $("#message-"+regionId).html(services["overallStatus"]['description']);			      
+								      
+									
+								    },
+								    error: function(xhr, textStatus, errorThrown){
+								    
+								    $("#"+regionId).append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><!--<DIV CLASS='field field-service field-service-status-support'>"+
+										      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+										      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
+									      "</DIV>-->");
+								    
+								    var statusColor = 'rgba(0,0,0,0.5)';							  
+								    markers[regionId]["style"] = {fill: statusColor, r:5};
+								    
+	    // 							selectedMarkers = $.map(markers, function(val, key) { return val; });
+								    selectedMarkers.push(markers[regionId]);
+								    selectedMarkers = checkLatLong(selectedMarkers);
+	    // 							console.log(selectedMarkers);
+								    mapNodes.removeAllMarkers();
+								    mapNodes.addMarkers(selectedMarkers);
+								      
+								    //put a symbol in the raw to show that it has failed
+									var errore = "<%= FiLabInfographics.nodata %>";
+									if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+										errore = xhr.responseText;
+				  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+									$('#errorMessage').html(errore);
+				    //     				alert('request failed->'+textStatus);
+				    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+								    } 
+							      }
+							    )
+							  
+							  },
+							  error: function(xhr, textStatus, errorThrown){
+							  //put a symbol in the raw to show that it has failed
+							      var errore = "<%= FiLabInfographics.nodata %>";
+							      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+								      errore = xhr.responseText;
+			// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+							      $('#errorMessage').html(errore);
+			  //     				alert('request failed->'+textStatus);
+			  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+							  } 
+						    }
+					    )
+				    });				    
+				   
+				  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				      var errore = "<%= FiLabInfographics.nodata %>";
+				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					      errore = xhr.responseText;
+// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				      $('#errorMessage').html(errore);
+  //     				alert('request failed->'+textStatus);
+  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+			    }
+			  )
+		  };
+		  
 		  function ajaxFun() { $.ajax (
 			    {
 				  type: "GET",
@@ -161,23 +742,26 @@
 					  var allRows = "";
 					  var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
 					  selectedMarkers = [];
+					  sanitySuccess = [];
 				          var actualTime = Date.now() / 1000
                                           var deltaTime = 10800;	  
 					  $.each(json, function(idRegion, regionAttributes) {
 						  if(idRegion != null && regionAttributes != null)
 						  {
-                                                          //var my_time=new Date(regionAttributes['timestamp'])
+							  //for histogram chart
+							  sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
+                                                          //var my_time=new Date(regionAttributes['timestamp'])                                                         
 							  var markers = {};
+							  markers["id"] =  idRegion;
 							  markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
-							  regionTime =( new Date(this['timestamp']).getTime() / 1000)
+							  regionTime =( new Date(regionAttributes['timestamp']).getTime() / 1000)
 
-                                                          //markers["name"] = idRegion;
-
-                                                          my_time=new Date(regionAttributes['timestamp'])
-                                                          month=my_time.getMonth();if (month<10)month="0"+month;
-                                                          day=my_time.getDay();if (day<10){if (day==0)day=1;day="0"+day};
-                                                          hours=my_time.getHours();if (hours<10)hours="0"+hours;
-                                                          mins=my_time.getMinutes();if (mins<10)mins="0"+mins;
+                                                          //markers["name"] = idRegion;							  
+                                                          my_time=new Date(regionAttributes['timestamp']);                                                          
+                                                          month=my_time.getMonth()+1;if (month<10)month="0"+month;
+                                                          day=my_time.getDate();if (day<10)day="0"+day;
+                                                          hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+                                                          mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
                                                           the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
                                                           //markers["name"]=regionAttributes['name'];
                                                           if (actualTime>(regionTime+deltaTime))
@@ -203,14 +787,27 @@
 							  
 							  var colorValueOverall = regionAttributes["services"]["overallStatus"]['value'];
 							  var colorPng = colorValueOverall + "light.png";
-                                                          if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
+                                                          if (actualTime>(regionTime+deltaTime) || colorValueOverall == "undefined")colorPng="graylight.png";
 
 							  allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
 							  
 							  $.each(servicesNames, function( index, value ) {
-								  if(value != "overallStatus")
+								  if(value != "overallStatus" && value != "FiHealthStatus")
 								  {
 									  colorPng = regionAttributes["services"][value]["value"]+"light.png";
+                                                                          if (actualTime>(regionTime+deltaTime) || regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
+									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+								  }
+								  else if(value == "FiHealthStatus")
+								  {
+									  valuePng = regionAttributes["services"][value]["value"];
+									  
+									  if(valuePng == 1)
+									    colorPng = GREEN+"light.png";
+									  else if (valuePng == 0.0)
+									    colorPng = RED+"light.png";
+									  else if (valuePng == 0.75)
+									    colorPng = YELLOW+"light.png";
                                                                           if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
 									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 								  }
@@ -219,11 +816,11 @@
 							  var jira_url = regionAttributes["services"]["overallStatus"]["jira_project_url"]
 							  if( !jira_url) jira_url = "#";
 							  
-							  allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
+							  allRows = allRows + "<DIV id='"+idRegion+"' CLASS='status-row row-status-service row-status-closed'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+
-									  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
 								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
-								  "<DIV CLASS='field field-service field-service-node "+idRegion+"'>"+regionAttributes['name']+"</DIV>"+
+								  "<DIV CLASS='field field-service field-service-node'><a href='../node/"+idRegion+"' CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+regionAttributes['name']+"</a></DIV>"+
 								  
 								  allSubRows+/*encodeURIComponent(JSON.stringify(regionAttributes["allNodes"]))*/
 								  
@@ -232,9 +829,9 @@
 //									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 //								  "</DIV>"+			
 							  "</DIV>"+
-							  "<!--<DIV CLASS='row-message'>"+
+							  "<DIV CLASS='row-message'>"+
 								  regionAttributes["services"]["overallStatus"]['description']+
-							  "</DIV>-->";
+							  "</DIV>";
 						  }
 						  
 						  /*var allSubHeaders = "";
@@ -254,15 +851,21 @@
 // 						  
 // 						  $('#tableHeaderContent').html(allHeaders);
 						  $('#tableContent').html(allRows);
+// 						  $('#buttonShowAll').addClass('collapsed');
+						  $('.row-status-service').addClass('collapsed');
+						  $('#'+calendar.idNode).removeClass('collapsed');
+// 						  onChartChange('chart-histogram');
 						  $('#errorMessage').html("");
 						  
 						  var height = $('#world-map-nodes').height()+$('#status').height()+80;
 						  $('.wrapper').css("cssText", "height: "+height+"px !important;");
 						  
+						  
 					  });
 					  
 					  mapNodes.removeAllMarkers();
-					  mapNodes.addMarkers(selectedMarkers);
+					  mapNodes.addMarkers(selectedMarkers);					  
+					  histogram.update(sanitySuccess);
 					  
 					  $(".row-message").hide();
 					  $('.field-group-federation').click( function()
@@ -338,9 +941,10 @@
 			      
 		  )};
 
+		
 		//Chiamo il mio ajax la prima volta
-		ajaxFun();
-		//e poi lo richiamo dopo 30 secondi
+		ajaxFunInit();
+		//e poi lo richiamo dopo 60 secondi
 		setInterval(function(){ajaxFun()}, 60000);
 	  });
 			    		  

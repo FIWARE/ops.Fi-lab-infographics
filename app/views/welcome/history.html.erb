@@ -1,0 +1,757 @@
+<% if @idNode == nil %>
+<div class="title">No such node</div>
+<% else %>
+<% content_for :headers do %>
+<script src="/assets/infographic/Chart.js/Chart.js" type="text/javascript"></script>
+<%end %>
+<%= render :partial => "welcome/node/nodeToolbar" %>
+<div id="home">
+  <div class="home" id="homeWidgets"> 
+    <div id="errorMessageBar" class="errorMessage"></div>
+    <div class="services">
+      <header>
+	Services Status History  <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistoryServices" style="display:none">
+	<select id="periodServices" name="periodServices" onChange="ajaxFunServices(this.value);">
+	  <option value="days">last 2 days</option>
+	  <option value="week" selected="selected">last week</option>
+	  <option value="month">last month</option>
+	  <option value="year">last year</option>
+	</select>
+      </header>
+
+      <section class="services-list">
+	<DIV ID="status" style="width:690px;">
+	  <!--<DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
+		<DIV CLASS='field field-header field-header-node' style="width:150px;">Date</DIV>
+		<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
+		<DIV CLASS='field field-header field-header-service'>Nova</DIV>
+		<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
+		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
+		<DIV CLASS='field field-header field-header-service'>Glance</DIV>
+		<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
+		<div class="clear"></div>
+	  </DIV>-->
+	  <!--<DIV id="tableContent">
+
+	  </DIV>-->
+	  <canvas id="myBarChart" width="690" height="400"></canvas>
+	</DIV>
+      </section>
+      
+      
+    </div>
+    
+    <div id="errorMessageLine" class="errorMessage"></div>
+    
+    <div class="services">
+      <header>
+	General Info History <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistoryInfo" style="display:none">
+	<select id="periodinfo" name="periodinfo" onChange="ajaxFunGenInfo(this.value)">
+	  <option value="days">last 2 days</option>
+	  <option value="week" selected="selected">last week</option>
+	  <option value="month">last month</option>
+	  <option value="year">last year</option>
+	</select>
+      </header>
+
+      <section class="services-list">
+	<DIV ID="statusInfo" style="width:690px;">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header' style="width:690px;">
+		<DIV CLASS='field field-header field-header-node'>Legend</DIV>
+		<!--<DIV CLASS='field field-header field-header-overall'># Users</DIV>-->
+		<DIV CLASS='field field-header field-header-overall'><div style="width:6px;height:6px;background-color:rgba(70,130,180,1);float:left;margin-top:12px;"></div>Cores</DIV>
+		<DIV CLASS='field field-header field-header-overall'><div style="width:6px;height:6px;background-color:rgba(151,187,205,1);float:left;margin-top:12px;"></div>Cores En.</DIV>
+		<DIV CLASS='field field-header field-header-service'><div style="width:6px;height:6px;background-color:rgba(179, 138, 181,1);float:left;margin-top:12px;"></div>Ram</DIV>
+		<DIV CLASS='field field-header field-header-service'><div style="width:6px;height:6px;background-color:rgba(199, 70, 69,1);float:left;margin-top:12px;"></div>Disk</DIV>
+		<DIV CLASS='field field-header field-header-service'><div style="width:6px;height:6px;background-color:rgba(78, 141, 90,1);float:left;margin-top:12px;"></div>VMs</DIV>
+		<!--<DIV CLASS='field field-header field-header-support'><div style="width:6px;height:6px;background-color:rgba(244,164,96,1);float:left;margin-top:12px;"></div>Power cons.</DIV>-->
+		<DIV CLASS='field field-header field-header-support'><div style="width:6px;height:6px;background-color:rgba(255,105,180,1);float:left;margin-top:12px;"></div>% RAM used</DIV>
+		
+		
+		
+	  <!--<li>Perc. CPU Load: <span id="#percCpu"></span></li>
+	  <li>Perc. Ram Load: <span id="#percRam"></span></li>
+	  <li>Perc. Disk Load: <span id="#percDisk"></span></li>-->
+		<div class="clear"></div>
+	  </DIV>
+	  <!--<DIV id="tableContentInfo" style="width:690px;">
+	     
+	  </DIV>-->
+	   <!--<DIV id="legendInfo" style="width:690px;">
+	     
+	  </DIV>-->
+	  <canvas id="myChart" width="690" height="400"></canvas>
+	</DIV>
+      </section>
+      
+    </div>
+    
+    <div id="errorMessageMsgs" class="errorMessage"></div>
+    <div class="services">
+      <header>
+	Messages History  <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistoryMessages" style="display:none">
+	<select id="periodmessages" name="periodmessages" onChange="ajaxFunMessages(this.value)">
+	  <option value="days">last 2 days</option>
+	  <option value="week" selected="selected">last week</option>
+	  <option value="month">last month</option>
+	  <option value="year">last year</option>
+	</select>
+      </header>
+
+      <section class="services-list">
+	<DIV ID="statusMessages" style="width:690px;">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header' style="width:690px;">
+		<DIV CLASS='field field-header field-header-node' style="width:150px;">Date</DIV>
+		<DIV CLASS='field field-header field-header-overall'>Author</DIV>
+		<DIV CLASS='field field-header field-header-service' style="width:480px;">Message</DIV>
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContentMessages" style="width:690px;">
+
+	  </DIV>
+	</DIV>
+      </section>
+      
+    </div>
+  
+    <div class="clear"></div>
+  </div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+	  var ajaxFunServices,ajaxFunGenInfo,ajaxFunMessages,computeDateOfLast;
+	  $(document).ready(function() 
+	  {
+// 	      $('.infographic').removeClass('active');
+// 	      $('.status').removeClass('active');
+	      	      
+	      
+	      $('select#periodServices').val("month");
+	      $('select#periodinfo').val("month");
+	      $('select#periodmessages').val("month");
+	      
+	      function getLastDays(days){
+		  var today = new Date();
+		  var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - days);
+		  return lastWeek ;
+	      }
+	      
+	      function getLastWeek(){
+		  var today = new Date();
+		  var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+		  return lastWeek ;
+	      }
+	      
+	      function getLastMonth(){
+		  var today = new Date();
+		  var lastMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30);
+		  return lastMonth ;
+	      }
+	      
+	      function getLastYear(){
+		  var today = new Date();
+		  var lastYear = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 365);
+		  return lastYear ;
+	      }
+
+	      computeDateOfLast = function (period)
+	      {
+// 		var now = new Date;
+// 		var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() , 
+// 		      now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+		if(period == "days")
+		{
+		  var lastWeekDisplay = $.datepicker.formatDate('yy-mm-ddT00:00', getLastDays(2));
+		  return lastWeekDisplay;
+		}
+		else if(period == "week")
+		{
+		  var lastWeekDisplay = $.datepicker.formatDate('yy-mm-ddT00:00', getLastWeek());
+		  return lastWeekDisplay;
+		}
+		else if(period == "month")
+		{
+		  var lastMonthDisplay = $.datepicker.formatDate('yy-mm-ddT00:00', getLastMonth());
+		  return lastMonthDisplay;
+		}
+		else if(period == "year")
+		{
+		  var lastYearDisplay = $.datepicker.formatDate('yy-mm-ddT00:00', getLastYear());
+		  return lastYearDisplay;
+		}
+		else return $.datepicker.formatDate('yy-mm-ddThh:MM', new Date());
+	      }
+	      
+	      ajaxFunServices = function (since) { 
+	      
+	      since = computeDateOfLast(since);
+// 	      alert(since);
+	      $("#imgHistoryServices").show();
+	      $('#errorMessageBar').html("");
+	      $.ajax (
+		      {
+			    type: "GET",
+			    url: "../../api/v1/region/services/"+"<%= @idNode %>"+"/since/"+since,//to know status services of the region since...
+			    contentType: "application/json; charset=utf-8",
+			    data: {},
+			    dataType: "json",
+			    cache: false,
+			    success: function(json){
+				
+			      var services = json;
+			      
+			      $('#myBarChart').replaceWith('<canvas id="myBarChart" width="690" height="400"></canvas>');
+			      var ctx = document.getElementById("myBarChart").getContext("2d");
+			      
+			      if(services != null && services != "undefined" )
+			      {
+// 				$("#tableContent").html("");
+				
+				var greens = [0,0,0,0,0,0];				
+				var yellows = [0,0,0,0,0,0];
+				var reds = [0,0,0,0,0,0];				
+				var grays = [0,0,0,0,0,0];
+				
+				$.each(services, function( timestamp, measures ){
+				
+				  if(measures["overallStatus"]['value'] == "green") greens[0]+=1;
+				  else if(measures["overallStatus"]['value'] == "yellow") yellows[0]+=1;
+				  else if(measures["overallStatus"]['value'] == "red") reds[0]+=1;
+				  else if(measures["overallStatus"]['value'] == "gray") grays[0]+=1;
+				  
+				  if(measures["Nova"]['value'] == "green") greens[1]+=1;
+				  else if(measures["Nova"]['value'] == "yellow") yellows[1]+=1;
+				  else if(measures["Nova"]['value'] == "red") reds[1]+=1;
+				  else if(measures["Nova"]['value'] == "gray") grays[1]+=1;
+				  
+				  if(measures["Neutron"]['value'] == "green") greens[2]+=1;
+				  else if(measures["Neutron"]['value'] == "yellow") yellows[2]+=1;
+				  else if(measures["Neutron"]['value'] == "red") reds[2]+=1;
+				  else if(measures["Neutron"]['value'] == "gray") grays[2]+=1;
+				  
+				  if(measures["Cinder"]['value'] == "green") greens[3]+=1;
+				  else if(measures["Cinder"]['value'] == "yellow") yellows[3]+=1;
+				  else if(measures["Cinder"]['value'] == "red") reds[3]+=1;
+				  else if(measures["Cinder"]['value'] == "gray") grays[3]+=1;
+				  
+				  if(measures["Glance"]['value'] == "green") greens[4]+=1;
+				  else if(measures["Glance"]['value'] == "yellow") yellows[4]+=1;
+				  else if(measures["Glance"]['value'] == "red") reds[4]+=1;
+				  else if(measures["Glance"]['value'] == "gray") grays[4]+=1;
+				  
+				  if(measures["Keystone P."]['value'] == "green") greens[5]+=1;
+				  else if(measures["Keystone P."]['value'] == "yellow") yellows[5]+=1;
+				  else if(measures["Keystone P."]['value'] == "red") reds[5]+=1;
+				  else if(measures["Keystone P."]['value'] == "gray") grays[5]+=1;  
+				});
+				
+				novaTot = greens[0]+yellows[0]+reds[0]+grays[0];
+				if(novaTot > 0)
+				{
+				  greens[0] = (greens[0]*100/novaTot).toFixed(1);
+				  greens[1] = (greens[1]*100/novaTot).toFixed(1);
+				  greens[2] = (greens[2]*100/novaTot).toFixed(1);
+				  greens[3] = (greens[3]*100/novaTot).toFixed(1);
+				  greens[4] = (greens[4]*100/novaTot).toFixed(1);
+				  greens[5] = (greens[5]*100/novaTot).toFixed(1);
+				  yellows[0] = (yellows[0]*100/novaTot).toFixed(1);
+				  yellows[1] = (yellows[1]*100/novaTot).toFixed(1);
+				  yellows[2] = (yellows[2]*100/novaTot).toFixed(1);
+				  yellows[3] = (yellows[3]*100/novaTot).toFixed(1);
+				  yellows[4] = (yellows[4]*100/novaTot).toFixed(1);
+				  yellows[5] = (yellows[5]*100/novaTot).toFixed(1);
+				  reds[0] = (reds[0]*100/novaTot).toFixed(1);
+				  reds[1] = (reds[1]*100/novaTot).toFixed(1);
+				  reds[2] = (reds[2]*100/novaTot).toFixed(1);
+				  reds[3] = (reds[3]*100/novaTot).toFixed(1);
+				  reds[4] = (reds[4]*100/novaTot).toFixed(1);
+				  reds[5] = (reds[5]*100/novaTot).toFixed(1);
+				  grays[0] = (grays[0]*100/novaTot).toFixed(1);
+				  grays[1] = (grays[1]*100/novaTot).toFixed(1);
+				  grays[2] = (grays[2]*100/novaTot).toFixed(1);
+				  grays[3] = (grays[3]*100/novaTot).toFixed(1);
+				  grays[4] = (grays[4]*100/novaTot).toFixed(1);
+				  grays[5] = (grays[5]*100/novaTot).toFixed(1);
+				}
+				
+// 				      console.log(finalTimestamps);
+				var data = {
+						labels: ["Overall","Nova","Neutron","Cinder","Glance","Keystone P."],
+						datasets: [
+						    {
+							label: "Green",
+							fillColor: "rgba(78, 141, 90,1)",//green
+							strokeColor: "rgba(78, 141, 90,1)",
+							highlightFill: "rgba(78, 141, 90,0.5)",
+							highlightStroke: "rgba(78, 141, 90,1)",
+							data: greens
+						    },
+						    {
+							label: "Yellow",
+							fillColor: "rgba(255,215,0,1)",//gold
+							strokeColor: "rgba(255,215,0,1)",
+							highlightFill: "rgba(255,215,0,0.5)",
+							highlightStroke: "rgba(255,215,0,1)",
+							data: yellows
+						    },
+						    {
+							label: "Red",
+							fillColor: "rgba(199, 70, 69,1)",//red
+							strokeColor: "rgba(199, 70, 69,1)",
+							highlightFill: "rgba(199, 70, 69,0.5)",
+							highlightStroke: "rgba(199, 70, 69,1)",
+							data: reds
+						    },
+						    {
+							label: "Gray",
+							fillColor: "rgba(205,201,201,1)",//gray
+							strokeColor: "rgba(205,201,201,1)",
+							highlightFill: "rgba(205,201,201,0.5)",
+							highlightStroke: "rgba(205,201,201,1)",
+							data: grays
+						    }
+						]
+					    };
+				var options = {
+						    //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+						    scaleBeginAtZero : true,
+
+						    //Boolean - Whether grid lines are shown across the chart
+						    scaleShowGridLines : true,
+
+						    //String - Colour of the grid lines
+						    scaleGridLineColor : "rgba(0,0,0,.05)",
+
+						    //Number - Width of the grid lines
+						    scaleGridLineWidth : 1,
+
+						    //Boolean - Whether to show horizontal lines (except X axis)
+						    scaleShowHorizontalLines: true,
+
+						    //Boolean - Whether to show vertical lines (except Y axis)
+						    scaleShowVerticalLines: true,
+
+						    //Boolean - If there is a stroke on each bar
+						    barShowStroke : true,
+
+						    //Number - Pixel width of the bar stroke
+						    barStrokeWidth : 2,
+
+						    //Number - Spacing between each of the X value sets
+						    barValueSpacing : 5,
+
+						    //Number - Spacing between data sets within X values
+						    barDatasetSpacing : 1
+						    
+
+
+				};
+				
+				var myLineChart = new Chart(ctx).Bar(data, options);
+				
+// 				$.each(services, function( timestamp, measures ){
+// // 				  $('#date').html();
+// 				  var servicesNames = Object.keys(measures);
+// 				  
+// 
+// 				  //complete table with services status
+// 				    
+// 				  var colorValueOverall = measures["overallStatus"]['value'];
+// 				  var colorPng = colorValueOverall + "light.png";
+// 				  allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+// 						  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+// 					      "</DIV>"+
+// 					      "<DIV CLASS='field field-service field-service-node' style='width:126px;'>"+timestamp.replace(/T/g , ' ').replace(/:00.000Z/g , '')+"</DIV>"+
+// 					      "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+// 				  
+// 				  $.each(servicesNames, function( index, value ) {
+// 				    if(value != "overallStatus")
+// 				    {
+// 					    colorPng = measures[value]["value"]+"light.png";
+// 					    allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+// 				    }
+// 				  });
+// 				  
+// 				  
+// 				  $("#tableContent").append("<DIV CLASS='status-row row-status-service row-status-closed' id='"+timestamp+"'>"+allSubRows+"</DIV>");
+// 				  $("#tableContent").append("<DIV CLASS='row-message'>"+measures["overallStatus"]['description']+"</DIV>");
+					  
+// 				  $(".row-message").hide();				  
+// 				  $('.field-group-expand').click( function()
+// 				  {
+// 					  var $image = $(this).children();
+// 					  if( $image.hasClass('collapse' ) )
+// 					  {
+// 						  $image.removeClass('collapse' );
+// 						  $image.addClass('expand' );
+// 					  }
+// 					  else
+// 					  {
+// 						  $image.removeClass('expand' );
+// 						  $image.addClass('collapse' );
+// 					  }
+// 					  var $parent = $(this).parent();
+// 					  
+// 					  var $message = $parent.next(".row-message");
+// 					  $message.slideToggle(function()
+// 					  {
+// 						  if( $parent.hasClass('row-status-closed' ) )
+// 						  {
+// 							  $parent.removeClass('row-status-closed' );
+// 							  $parent.addClass('row-status-opened' );
+// 						  }
+// 						  else
+// 						  {
+// 							  $parent.removeClass('row-status-opened' );
+// 							  $parent.addClass('row-status-closed' );
+// 						  }
+// 					  });
+// 				  });
+// 				});
+			      }
+			      $("#imgHistoryServices").hide();
+			    },
+			    error: function(xhr, textStatus, errorThrown){
+			    
+			    $("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV>");
+			    
+			    
+			      
+			    //put a symbol in the raw to show that it has failed
+				var errore = "<%= FiLabInfographics.nodata %>";
+				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					errore = xhr.responseText;
+// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				$('#errorMessageBar').html(errore);
+//     				alert('request failed->'+textStatus);
+//     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+
+			      $("#imgHistoryServices").hide();
+			    } 
+		      }
+		    )};
+		    
+		    ajaxFunGenInfo = function (since) { 
+		    
+		    var granularity = null
+		    if(since == "days")
+		    {
+		      granularity = null;/*default granularity:for hour*/
+		    }
+		    else if(since == "week")
+		    {
+		      granularity = "day";
+		    }
+		    else if(since == "month")
+		    {
+		      granularity = "day";
+		    }
+		    else if(since == "year")
+		    {
+		      granularity = "week";
+		    }
+		    
+		    since = computeDateOfLast(since);
+		    
+		    $("#imgHistoryInfo").show();
+		    $('#errorMessageLine').html("");
+		    
+		    var jsonToSend = {};
+		    if(granularity!=null)
+		    {
+			jsonToSend = {
+			    'granularity' : granularity
+			};
+		    }
+		    
+		    $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/region/"+"<%= @idNode %>"+"/since/"+since,//to know status services of the region since...
+				  contentType: "application/json; charset=utf-8",
+				  data: JSON.stringify(jsonToSend),
+// 				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var measuresList = json;
+				    $('#myChart').replaceWith('<canvas id="myChart" width="690" height="400"></canvas>');
+				    var ctx = document.getElementById("myChart").getContext("2d");
+				    
+				    if(measuresList != null && measuresList != "undefined" )
+				    {
+// 				      $("#tableContentInfo").html("");
+				      
+				      var timestamps = Object.keys(measuresList);
+				      var nb_cores = [];
+				      var nb_cores_enabled = [];
+				      var nb_ram = [];
+				      var nb_disk = [];
+				      var nb_vm = [];
+// 				      var power_consumption = [];
+				      var percRAMUsed = [];
+				      var finalTimestamps = [];
+				      
+				      $.each(timestamps, function( i, timestamp ){
+// 					if((i>0 &&					
+// 					measuresList[timestamp]["nb_cores"] == nb_cores[nb_cores.length-1] &&
+// 					measuresList[timestamp]["nb_cores_enabled"] == nb_cores_enabled[nb_cores_enabled.length-1] &&
+// 					measuresList[timestamp]["nb_ram"] == nb_ram[nb_ram.length-1] &&
+// 					measuresList[timestamp]["nb_disk"] == nb_disk[nb_disk.length-1] &&
+// 					measuresList[timestamp]["nb_vm"] == nb_vm[nb_vm.length-1] &&
+// 					measuresList[timestamp]["power_consumption"] == power_consumption[power_consumption.length-1] &&
+// 					measuresList[timestamp]["percRAMUsed"] == percRAMUsed[percRAMUsed.length-1]) ||
+// 					measuresList[timestamp]["nb_cores"] == null)
+// 					{//we don't show null values for cores and same contiguous data
+// 					  
+// 					}
+					if((measuresList[timestamp]["nb_cores"] == 0 || measuresList[timestamp]["nb_cores"] == null) &&
+					measuresList[timestamp]["nb_cores_enabled"] == 0 &&
+					measuresList[timestamp]["nb_ram"] == 0 &&
+					measuresList[timestamp]["nb_disk"] == 0 &&
+					measuresList[timestamp]["nb_vm"] == 0 &&
+// 					measuresList[timestamp]["power_consumption"] == 0 &&
+					measuresList[timestamp]["percRAMUsed"] == 0)
+					{//we don't show 0 values that represent node down
+					}
+					else
+					{
+					  nb_cores.push(measuresList[timestamp]["nb_cores"]); 
+					  nb_cores_enabled.push(measuresList[timestamp]["nb_cores_enabled"]);
+					  nb_ram.push(measuresList[timestamp]["nb_ram"]);
+					  nb_disk.push(measuresList[timestamp]["nb_disk"]);
+					  nb_vm.push(measuresList[timestamp]["nb_vm"]);
+// 					  power_consumption.push(measuresList[timestamp]["power_consumption"]);
+					  percRAMUsed.push(measuresList[timestamp]["percRAMUsed"]);
+					  finalTimestamps.push(timestamp.replace(/T/g , ' ').replace(/:00.000Z/g , ''));
+					}
+				      });
+				      
+// 				      console.log(finalTimestamps);
+				      var data = {
+						      labels: finalTimestamps,
+						      datasets: [
+							  {
+							      label: "Cores",
+							      fillColor: "rgba(70,130,180,0.2)",//blue
+							      strokeColor: "rgba(70,130,180,1)",
+							      pointColor: "rgba(70,130,180,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(70,130,180,1)",
+							      data: nb_cores
+							  },
+							  {
+							      label: "Cores Enabled",
+							      fillColor: "rgba(151,187,205,0.2)",//light blue
+							      strokeColor: "rgba(151,187,205,1)",
+							      pointColor: "rgba(151,187,205,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(151,187,205,1)",
+							      data: nb_cores_enabled
+							  },
+							  {
+							      label: "Gb of RAM",
+							      fillColor: "rgba(179, 138, 181,0.2)",//purple
+							      strokeColor: "rgba(179, 138, 181,1)",
+							      pointColor: "rgba(179, 138, 181,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(179, 138, 181,1)",
+							      data: nb_ram
+							  },
+							  {
+							      label: "Tb of Disk",
+							      fillColor: "rgba(199, 70, 69,0.2)",//red
+							      strokeColor: "rgba(199, 70, 69,1)",
+							      pointColor: "rgba(199, 70, 69,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(199, 70, 69,1)",
+							      data: nb_disk
+							  },
+							  {
+							      label: "VMs",
+							      fillColor: "rgba(78, 141, 90,0.2)",//green
+							      strokeColor: "rgba(78, 141, 90,1)",
+							      pointColor: "rgba(78, 141, 90,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(78, 141, 90,1)",
+							      data: nb_vm
+							  }/*,
+							  {
+							      label: "Power cons.",
+							      fillColor: "rgba(244,164,96,0.2)",//orange
+							      strokeColor: "rgba(244,164,96,1)",
+							      pointColor: "rgba(244,164,96,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(244,164,96,1)",
+							      data: power_consumption
+							  }*/,
+							  {
+							      label: "% RAM used",
+							      fillColor: "rgba(255,105,180,0.2)",//pink
+							      strokeColor: "rgba(255,105,180,1)",
+							      pointColor: "rgba(255,105,180,1)",
+							      pointStrokeColor: "#fff",
+							      pointHighlightFill: "#fff",
+							      pointHighlightStroke: "rgba(255,105,180,1)",
+							      data: percRAMUsed
+							  }
+						      ]
+						 };
+				      var options = {
+							  showScale: true,
+							  
+							  ///Boolean - Whether grid lines are shown across the chart
+							  scaleShowGridLines : true,
+
+							  //String - Colour of the grid lines
+							  scaleGridLineColor : "rgba(0,0,0,.05)",
+
+							  //Number - Width of the grid lines
+							  scaleGridLineWidth : 1,
+
+							  //Boolean - Whether the line is curved between points
+							  bezierCurve : true,
+
+							  //Number - Tension of the bezier curve between points
+							  bezierCurveTension : 0.4,
+
+							  //Boolean - Whether to show a dot for each point
+							  pointDot : true,
+
+							  //Number - Radius of each point dot in pixels
+							  pointDotRadius : 3,
+
+							  //Number - Pixel width of point dot stroke
+							  pointDotStrokeWidth : 1,
+
+							  //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+							  pointHitDetectionRadius : 2,
+
+							  //Boolean - Whether to show a stroke for datasets
+							  datasetStroke : true,
+
+							  //Number - Pixel width of dataset stroke
+							  datasetStrokeWidth : 2,
+
+							  //Boolean - Whether to fill the dataset with a colour
+							  datasetFill : false,
+
+							  //String - A legend template
+							  
+
+
+						      };
+				      var myLineChart = new Chart(ctx).Line(data, options);
+// 				      $.each(measuresList, function( timestamp, measures ){
+// 					
+// 					var servicesNames = Object.keys(measures);
+// 					allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+// 						  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+// 					      "</DIV>"+
+// 					      "<DIV CLASS='field field-service field-service-node'>"+timestamp.replace(/T/g , ' ').replace(/:00.000Z/g , '')+"</DIV>"+
+// 					      "<DIV CLASS='field field-service field-service-overall'>"+measures["nb_cores"]+"</DIV>";
+// 				  
+// 					$.each(servicesNames, function( index, value ) {
+// 					  if(value != "nb_cores")
+// 					  {
+// 						  var widthCell = "field";
+// 						  if(value == "percRAMUsed" || value == "power_consumption") widthCell = "support";
+// 						  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-"+widthCell+"'>"+measures[value]+"</DIV>";
+// 					  }
+// 					});
+// 					
+// 					$("#tableContentInfo").append("<DIV CLASS='status-row row-status-service row-status-closed' id='"+timestamp+"' style='width:690px;'>"+allSubRows+"</DIV>");
+					
+					
+// 					$("#legendInfo").append(myLineChart.generateLegend());
+// 					$("#tableContentInfo").append("<DIV CLASS='row-message'>"+measures["overallStatus"]['description']+"</DIV>");
+					
+					
+// 				      });
+				    }
+				    $("#imgHistoryInfo").hide();  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessageLine').html(errore);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				    $("#imgHistoryInfo").hide();
+				  } 
+		      }
+		    )};
+		    
+		    ajaxFunMessages = function (since) { 
+		    
+		    since = computeDateOfLast(since);
+		    
+		    $("#imgHistoryMessages").show();
+		    $('#errorMessageMsgs').html("");
+		    
+		    $.ajax (
+			    {
+				  type: "GET",
+				  url: "../../api/v1/message/"+"<%= @idNode %>"+"/"+since,//to get messages about node...
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var messageData = json;
+				    
+				    if(messageData != null && messageData != "undefined" )
+				    {
+				      $("#tableContentMessages").html("");
+				      
+				      $.each(messageData, function( index, message ){
+				      
+					allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+						  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+					      "</DIV>"+
+					      "<DIV CLASS='field field-service field-service-node' style='line-height:60px;'>"+message["created_at"].replace(/T/g , ' ').replace(/:[0-9]{2}.[0-9]{3}Z/g , '')+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-overall' style='line-height:60px;'>"+message["user_name"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-field' style='width:480px;' id='message-"+message["id"]+"'>"+message["message"]+"</DIV>";
+					      
+					$("#tableContentMessages").append("<DIV CLASS='status-row row-status-service row-status-closed' style='height:60px;width:690px;' id='"+message["id"]+"'>"+allSubRows+"</DIV>");
+				      });
+				      
+				      
+				    }
+				    $("#imgHistoryMessages").hide();  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessageMsgs').html(errore);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				    $("#imgHistoryMessages").hide();
+				  } 
+			      }
+		    )};
+		    
+		    ajaxFunServices("month");
+		    ajaxFunGenInfo("month");
+		    ajaxFunMessages("month");
+	  });
+	  
+</script>
+
+<%end %>
+<%end %>

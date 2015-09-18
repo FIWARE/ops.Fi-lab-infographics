@@ -32,29 +32,61 @@ FiLabInfographics::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
  # root 'welcome#index'
+  devise_scope :user do
+#    get '/users/sign_in', :to => 'sessions#new', :as => :new_user_session
+    get 'users/:id/mynode', :to => 'welcome#mynode', :as => :mynode
+    get 'users/:id/admin', :to => 'welcome#admin', :as => :admin
+#    get '/logout' =>  'devise/sessions#destroy', :as => :destroy_user_session
+  end
   
   get '/info', to: 'welcome#info'
   get '/status', to: 'welcome#status'
   get '/historical', to: 'welcome#historical'
+  get '/node/:nodeId', to: 'welcome#node', :as => :node
+  get '/node/:nodeId/history', to: 'welcome#history', :as => :history
+  get '/reward', to: 'welcome#reward', :as => :reward
 #  get '/nam' => redirect('http://138.4.47.33:5000/')
   
   scope "/api/v1" do
     scope "/region" do
       get "/" => "region#renderRegions"      
       get "/totData"  => "region#renderRegionsTotData"
-      get "/vm" => "region#renderVms"
+#       get "/vm" => "region#renderVms"
       get "/services" => "region#renderServices" 
       get "/services/:nodeId" => "region#renderServicesForRegion"
+      get "/services/:nodeId/since/:timestamp" => "region#renderServicesForRegionSince"
       get "/historical/:nodeId" => "region#renderHistoricalForRegion"
       get "/list" => "region#renderRegionIdListFromDb"
+      post "/:nodeId/since/:timestamp"  => "region#renderRegionsDataForRegionSince"
       get "/:nodeId"  => "region#renderRegionsDataForRegion"
 #      options "/list" => "region#getRegionIdList"
 #       get ":region_id" => "region#getRegion"
-#       get ":region_id/vm" => "region#getVMs"
-#       get ":region_id/vm/:vm_id" => "region#getVM"
+      get ":nodeId/vms" => "region#renderVMsListForRegion"
+      get ":nodeId/vms/:vm_id" => "region#renderVMForRegion"
+      get ":nodeId/hosts" => "region#renderHostsListForRegion"
+      get ":nodeId/hosts/:host_id" => "region#renderHostForRegion"
     end
     scope "/jira" do
       post "/issue" => "jira#createIssue"
+      get "/info/:idNode" => "jira#getInfo"
+      post "/save/:idNode" => "jira#saveInfo"
+    end
+    scope "/message" do
+      post "/" => "message#createMessage"
+      get "/:idNode(/:since)" => "message#renderMessages"
+      delete "/" => "message#deleteMessage"
+      put "/" => "message#updateMessage"
+    end
+    scope "/user" do
+      post "/" => "user#renderUsers"
+      put "/" => "user#updateUser"
+    end
+    scope "/institution" do
+      post "(/:category)" => "institution#renderInstitutions"
+      get "/category" => "institution#renderInstitutionsGroupedForCategory"
+      delete "/" => "institution#deleteInstitution"
+      delete "/:nodeId" => "institution#deleteInstitutionAssociation"
+#       put "/" => "user#updateUser"
     end
   end
   

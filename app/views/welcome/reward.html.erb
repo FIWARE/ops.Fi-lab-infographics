@@ -1,0 +1,78 @@
+<div class="layoutContainer">
+	<div class="row-fluid">
+	  <!--<div class="span6" style="margin: 0 auto;float: none;text-align:center">-->
+	  <div class="span6">
+	    <div class="title" style="">Recognition & Reward Programme</div>
+	    <img src="../assets/infographic/reward.jpg" />
+	    <div>The Recognition & Reward Programme has been launched to further strengthen the FIWARE Lab infrastructure federation and its attractiveness for users and node operators. In addition to recognising and rewarding the existing nodes, the programme aims to encourage further infrastructures to join the FIWARE Lab federation.</div>
+	    <div id="errorMessage"></div>
+	    <div id="categories" style="margin-top:20px;"></div>
+	  </div>
+	</div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+	  $(document).ready(function() 
+	  {
+// 	      $('.infographic').removeClass('active');
+// 	      $('.status').removeClass('active');
+	    
+	    ajaxFunGetCategories = function () {
+	      $.ajax (
+			    {
+				  type: "GET",
+				  url: "../../api/v1/institution/category",//to get institutions grouped by category
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var categoriesData = json;
+	  			      
+				    if(categoriesData != null && categoriesData != "undefined" )
+				    {
+				      $('#errorMessage').html("");
+				      $("#categories").html("");
+				      
+				      $.each(categoriesData, function( index, category ){
+				      
+					$("#categories").append("<img alt=\""+category["name"]+"\" title=\""+category["name"]+"\" src=\"../assets/infographic/"+category["logo"]+"\"/><span>"+category["name"]+"</span>"+
+					"<div>"+category["description"]+"</div>"+
+					"<div id=\""+category["id"]+"\" class=\"parternList\"></div>");
+					
+					if(category["institutions"] != null && category["institutions"] != "undefined")
+					{
+					  $.each(category["institutions"], function( index, institution ){
+					    if(institution["link"]!= null && institution["link"] != "undefined")
+					      $("#"+category["id"]).append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"../assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+					    else
+					      $("#"+category["id"]).append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"../assets/infographic/loghi/"+institution["logo"]+"\"/>");
+					   });
+					 }
+					});
+					      
+// 					$("#categories").append("<DIV CLASS='status-row row-status-service row-status-closed' style='width:690px;' id='"+user["id"]+"'>"+allSubRows+"</DIV>");
+				      }				      
+				      
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessage').html(errore);
+	  //     				alert('request failed->'+textStatus);
+      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 				    $("#imgHistoryMessages").hide();
+				  } 
+		      }
+	    )};
+	    
+	    ajaxFunGetCategories();
+	  });
+</script>
+<% end %>

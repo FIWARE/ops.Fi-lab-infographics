@@ -2,16 +2,35 @@
   <h5><%= FiLabApp.appname%></h5>
   <h5 class="tablet"><%= FiLabApp.appname%></h5>
   <ul class="main_nav">
-    <li class="home<%= ' active' if controller.controller_name == 'users' %>">
-      <%= link_to fi_lab_app.user_path(current_user.id) do %>
-        <i class='icon_menu-20-home'></i>
-        <h2>Home</h2>
-      <% end %>
-    </li>
-    <% if user_role(current_user,'InfrastructureOwner') %>
+    <% if current_user %>
+      <li class="home<%= ' active' if controller.controller_name == 'users' and controller.action_name == 'show' %>">
+	<%= link_to fi_lab_app.user_path(current_user.id) do %>
+	  <i class='icon_menu-20-home'></i>
+	  <h2>Home</h2>
+	<% end %>
+      </li>
     <% end %>
-    <% if user_role(current_user,'Provider') %>
-     pippo
+    <% if current_user && user_role(current_user,'InfrastructureOwner') %>
+      <li class="administrators<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'mynode' %>">
+        <%= link_to main_app.mynode_path(current_user.id) do %>
+          <i class="icon_menu-20-administrators"></i>
+          <h2>My Node</h2>
+	<% end %>     
+      </li>
+    <% end %>
+    <% if current_user && user_role(current_user,'Provider') %>
+      <li class="administrators<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'admin' %>">
+        <%= link_to main_app.admin_path(current_user.id) do %>
+          <i class="icon_menu-20-administrators"></i>
+          <h2>Admin</h2>
+	<% end %>     
+     </li>
+      <!--<li class="administrators<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'mynode' %>">
+        <%= link_to main_app.mynode_path(current_user.id) do %>
+          <i class="icon_menu-20-administrators"></i>
+          <h2>My Node</h2>
+	<% end %>     
+     </li>-->
     <% end %>
     <hr class="soften">
   </ul>

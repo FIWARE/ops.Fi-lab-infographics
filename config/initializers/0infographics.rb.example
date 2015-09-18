@@ -6,6 +6,7 @@ require_dependency 'fi_lab_infographics'
 
 FiLabInfographics.setup do |config|
   # Node.js proxy for monitoring
+  # config.securenodejs = 'http://127.0.0.1:1026'
   # config.nodejs = 'http://127.0.0.1:1026'
   # config.timeout = 5
   # config.nodata = 'No Data'
@@ -15,5 +16,7 @@ FiLabInfographics.setup do |config|
   # config.jira_test = 1
   # config.jira_default_project = 'FIL'
   # config.jira_success_message = 'Thanks for reporting your issue. You will receive a notification for every update to the issue.'
+  # config.client_id = ''
+  # config.client_secret = ''
 
 end

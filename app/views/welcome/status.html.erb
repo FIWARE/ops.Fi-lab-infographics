@@ -54,16 +54,19 @@
 <div class="row-fluid">
     <div class="span12">	
 	<div id="world-map-nodes"></div>
+	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');">
+	  Show All
+	</DIV>	
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span6">	
+    <div class="span6 myspan">	
 <!-- 	<div id="errorMessage"></div> -->
 	<div id="table-title" class="chartTitle">FiWARE services status</div>
 	<DIV ID="status">
 			  
-		<DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
-			<DIV CLASS='field field-header field-header-node'>Node</DIV>
+		<DIV id="tableHeaderContent" CLASS='status-row-min status-row-header'>
+			<DIV CLASS='field field-header field-header-node-min'>Node</DIV>
 			<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
 			<DIV CLASS='field field-header field-header-service'>Nova</DIV>
 			<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
@@ -77,13 +80,10 @@
 		
 		<DIV id="tableContent">
 			
-		</DIV>
-		<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:right;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');">
-		  Show All
-		</DIV>		  
+		</DIV>			  
 	</DIV>
     </div>
-    <div class="span6">
+    <div class="span6 myspan">
 	<div id="historical">
 	    <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
 	    <!--<div id="chart-options" class="chartOptions">
@@ -118,6 +118,7 @@
 	var GRAY   = 'gray';
 
 	var selected_chart_id = "chart-histogram";
+	var selected_node_id = null;
 
 	var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
 	    chart_content_height = null,
@@ -131,9 +132,9 @@
 	function ChartCalendar() {
 	    var year_ini = new Date().getFullYear() - 1,
 		year_end = year_ini + 1,
-		cellSize = 10,/*17,*/
+		cellSize = 9,/*17,*/
 		height = 100,/*136,*/
-		width = chart_content_maxwidth;
+		width = chart_content_maxwidth-(0.025641*Math.round($('.span6').width()));
 
 	    var day = d3.time.format("%w"),
 		week = d3.time.format("%U"),
@@ -182,7 +183,7 @@
 		.attr("class", "month")
 		.attr("d", monthPath);
 
-	    chart_content_height = (year_end - year_ini + 1) * height;
+	    chart_content_height = 310/*(year_end - year_ini + 1) * height*/;
 	    d3.select($("#chart-content")[0]).style("height", chart_content_height + "px");
 	}
 
@@ -440,6 +441,7 @@
 		      $('#'+selectedMarkers[index].id).removeClass('collapsed');
 		      updateCalendar(selectedMarkers[index].id);
 		      onChartChange('chart-calendar');
+		      selected_node_id = selectedMarkers[index].id;
 		      $('#buttonShowAll').removeClass('collapsed');
 		      
 // 		      d3.select('#chart_id')[0][0].value = 'chart-calendar';
@@ -515,12 +517,12 @@
 				    for (var i=0;i<idRegionsCount;i++)
 				    {
 					var theRegionId = totData["total_regions_ids"][i];
-					allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed' id='"+theRegionId+"'>"+
+					allRows = allRows + "<DIV CLASS='status-row-min row-status-service row-status-closed' id='"+theRegionId+"'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+
 									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
 								  "</DIV>"+"<a name=\""+theRegionId+"\"></a>"+
-								  "<DIV CLASS='field field-service field-service-node "+theRegionId+"'></DIV>"+			
-							  "</DIV><DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 559px; height: 59px;' id='message-"+theRegionId+"'>Loading...</div></DIV>";
+								  "<DIV CLASS='field field-service field-service-node-min "+theRegionId+"'></DIV>"+			
+							  "</DIV><DIV CLASS='row-messageMin'><div style='overflow-y:auto; height:400px;width: 543px; height: 59px;' id='message-"+theRegionId+"'>Loading...</div></DIV>";
 				    }
 				    
 				    $('#tableContent').html(allRows);
@@ -529,7 +531,7 @@
 				    var height = $('#world-map-nodes').height()+$('#status').height()+80;
 // 				    $('.wrapper').css("cssText", "height: "+height+"px !important;");
 				    
-				    $(".row-message").hide();				  
+				    $(".row-messageMin").hide();				  
 				    $('.field-group-expand').click( function()
 				    {
 					    var $image = $(this).children();
@@ -545,7 +547,7 @@
 					    }
 					    var $parent = $(this).parent();
 					    
-					    var $message = $parent.next(".row-message");
+					    var $message = $parent.next(".row-messageMin");
 					    $message.slideToggle(function()
 					    {
 						    if( $parent.hasClass('row-status-closed' ) )
@@ -836,11 +838,11 @@
 							  var jira_url = regionAttributes["services"]["overallStatus"]["jira_project_url"]
 							  if( !jira_url) jira_url = "#";
 							  
-							  allRows = allRows + "<DIV id='"+idRegion+"' CLASS='status-row row-status-service row-status-closed'>"+
+							  allRows = allRows + "<DIV id='"+idRegion+"' CLASS='status-row-min row-status-service row-status-closed'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+
 									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
 								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
-								  "<DIV CLASS='field field-service field-service-node'><a href='../node/"+idRegion+"' CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+regionAttributes['name']+"</a></DIV>"+
+								  "<DIV CLASS='field field-service field-service-node-min'><a href='../node/"+idRegion+"' CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+regionAttributes['name']+"</a></DIV>"+
 								  
 								  allSubRows+/*encodeURIComponent(JSON.stringify(regionAttributes["allNodes"]))*/
 								  
@@ -849,7 +851,7 @@
 //									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 //								  "</DIV>"+			
 							  "</DIV>"+
-							  "<DIV CLASS='row-message'>"+
+							  "<DIV CLASS='row-messageMin'>"+
 								  regionAttributes["services"]["overallStatus"]['description']+
 							  "</DIV>";
 						  }
@@ -873,10 +875,10 @@
 						  $('#tableContent').html(allRows);
 // 						  $('#buttonShowAll').addClass('collapsed');
 						  console.log(selected_chart_id);
-						  if(selected_chart_id == 'chart-calendar')
+						  if(selected_chart_id == 'chart-calendar' && selected_node_id)
 						  {
 						    $('.row-status-service').addClass('collapsed');
-						    $('#'+calendar.idNode).removeClass('collapsed');
+						    $('#'+selected_node_id).removeClass('collapsed');
 						  }
 // 						  onChartChange('chart-histogram');
 						  $('#errorMessage').html("");
@@ -891,7 +893,7 @@
 					  mapNodes.addMarkers(selectedMarkers);					  
 					  histogram.update(sanitySuccess);
 					  
-					  $(".row-message").hide();
+					  $(".row-messageMin").hide();
 					  $('.field-group-federation').click( function()
 					  {
 						  var $image = $(this).children();
@@ -907,7 +909,7 @@
 						  }
 						  var $parent = $(this).parent();
 						  
-						  var $message = $parent.next(".row-message");
+						  var $message = $parent.next(".row-messageMin");
 						  $message.slideToggle(function()
 						  {
 							  if( $parent.hasClass('row-status-closed' ) )
@@ -937,7 +939,7 @@
 						  }
 						  var $parent = $(this).parent();
 						  
-						  var $message = $parent.next(".row-message");
+						  var $message = $parent.next(".row-messageMin");
 						  $message.slideToggle(function()
 						  {
 							  if( $parent.hasClass('row-status-closed' ) )

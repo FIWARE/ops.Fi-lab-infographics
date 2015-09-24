@@ -1199,7 +1199,8 @@ class RegionController < ApplicationController
     #sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
 
     begin
-      servicesRegionHistoricalData = self.performRequest('regions/' + idNode + '/services?since=2015-07-21T00:00:00&aggregate=d', false)
+      timeago = Time.at(3.months.ago).strftime("%y-%m-%d")
+      servicesRegionHistoricalData = self.performRequest('regions/' + idNode + '/services?since=' + timeago + 'T00:00:00&aggregate=d', false)
       if servicesRegionHistoricalData != nil &&  servicesRegionHistoricalData["measures"] != nil
         #logger.info servicesRegionHistoricalData["measures"]
         result['measures']=servicesRegionHistoricalData["measures"]

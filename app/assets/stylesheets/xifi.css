@@ -436,6 +436,13 @@ padding-bottom: 10px;
 	height:30px;
 	line-height:30px;
 }
+.status-row-min
+{
+/* 	width:800px; */
+	width:559px;
+	height:30px;
+	line-height:30px;
+}
 .status-row-header
 {
 	border:1px solid #CFCFCF;
@@ -464,10 +471,24 @@ padding-bottom: 10px;
 	border-right:1px solid #CFCFCF;
 	border-bottom:1px solid #CFCFCF;
 }
-
+.row-messageMin
+{
+	padding-left: 24px;
+	width:535px;
+	height:60px;
+	line-height:30px;
+	border-left:1px solid #CFCFCF;
+	border-right:1px solid #CFCFCF;
+	border-bottom:1px solid #CFCFCF;
+}
 .field-header-node
 {
 	width:150px;
+	text-align:center;
+}
+.field-header-node-min
+{
+	width:134px;
 	text-align:center;
 }
 .field-header-overall
@@ -494,6 +515,11 @@ padding-bottom: 10px;
 {
 	margin-left:4px;
 	width:126px;
+}
+.field-service-node-min
+{
+	margin-left:4px;
+	width:110px;
 }
 .field-service-overall
 {
@@ -898,6 +924,20 @@ div.home div.services input {
       margin: 20px auto;
       width: 74%;
     }
+    
+  .row-fluid .myspan{
+    margin: 20px auto !important;
+    width: 72% !important;
+    *width: 71.95238%
+  }
+}
+
+@media (min-width: 979px) and (max-width: 1274px) {
+   .row-fluid .myspan{
+     margin: 20px auto !important;
+    width: 72% !important;
+    *width: 71.95238%
+  }
 }
 
 div.services {

@@ -183,24 +183,29 @@ class RegionController < ApplicationController
   #check and shift two map points too close 
   def checkLatLong (points)
     
-    points.each do |regionToCheckKey,regionToCheck|
-      points.each do |regionKey,region|
-	if regionToCheck["id"] != region["id"]
-	  if (regionToCheck["latitude"].to_f - region["latitude"].to_f).abs < 0.2
-	    regionToCheck["latitude"] = regionToCheck["latitude"].to_f+0.5
-	  end
-	  if (regionToCheck["longitude"].to_f - region["longitude"].to_f).abs < 0.2
-	    regionToCheck["longitude"] = regionToCheck["longitude"].to_f+0.5
-	  end
-	end
-      end
+    if(points['PiraeusN'] != nil && points['PiraeusN']["latitude"] != nil)
+      points['PiraeusN']["latitude"] = points['PiraeusN']["latitude"].to_f+0.5
+      points['PiraeusN']["longitude"] = points['PiraeusN']["longitude"].to_f-1
     end
+      
+#     points.each do |regionToCheckKey,regionToCheck|
+#       points.each do |regionKey,region|
+# 	if regionToCheck["id"] != region["id"]
+# 	  if (regionToCheck["latitude"].to_f - region["latitude"].to_f).abs < 0.2
+# 	    regionToCheck["latitude"] = regionToCheck["latitude"].to_f+0.5
+# 	  end
+# 	  if (regionToCheck["longitude"].to_f - region["longitude"].to_f).abs < 0.2
+# 	    regionToCheck["longitude"] = regionToCheck["longitude"].to_f+0.5
+# 	  end
+# 	end
+#       end
+#     end
     
     return points
   end
   
   #get all general data and specific data about all regions 
-  def getRegionsData
+  def getRegionsData (histogramData)
     
     begin
       totRegionsData = self.getRegionsTotData
@@ -217,7 +222,11 @@ class RegionController < ApplicationController
     
       idRegions.each do |idRegion|
 	begin
-	  attributesRegion = self.getRegionsDataForNodeId(idRegion)
+	  if (histogramData != nil)
+	    attributesRegion = self.getRegionsDataForNodeId(idRegion)
+	  else
+	    attributesRegion = self.getRegionsDataForNodeIdWithoutHistogramData(idRegion)
+	  end
 	rescue CustomException => e
 	  raise e
 	  return
@@ -240,9 +249,9 @@ class RegionController < ApplicationController
   
   #render all general data and specific data about all regions 
   def renderRegions
-
+    histogramData = params[:histogramData]
     begin
-      regionsData = self.getRegionsData
+      regionsData = self.getRegionsData(histogramData)
     rescue CustomException => e
       if e.status
 	render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => e.status
@@ -454,6 +463,71 @@ class RegionController < ApplicationController
 
       return attributesRegion
       #end
+    end 
+    return nil
+  end
+  
+  #get specific data about one region without Histogram Data
+  def getRegionsDataForNodeIdWithoutHistogramData (idNode)
+    begin
+      regionsData = self.performRequest('regions/' + idNode, false)
+    rescue CustomException => e
+      raise e
+    end
+
+    if regionsData != nil
+            
+      attributesRegion = Hash.new
+      attributesRegion["id"] = regionsData["id"]
+      if(regionsData["id"]=='Berlin2')
+         attributesRegion["name"] = 'Berlin'
+      elsif(regionsData["id"]=='Spain2')
+         attributesRegion["name"] = 'Spain'
+      elsif(regionsData["id"]=='Lannion2')
+         attributesRegion["name"] = 'Lannion'
+      elsif(regionsData["id"]=='Karlskrona2')
+         attributesRegion["name"] = 'Karlskrona'
+      elsif(regionsData["id"]=='Budapest2')
+         attributesRegion["name"] = 'Budapest'
+      elsif(regionsData["id"]=='Stockholm2')
+         attributesRegion["name"] = 'Stockholm'
+      else 
+        attributesRegion["name"] = regionsData["name"]
+      end
+      
+      attributesRegion["country"] = regionsData["country"]
+      attributesRegion["latitude"] = regionsData["latitude"]
+      attributesRegion["longitude"] = regionsData["longitude"]
+      
+      if regionsData["measures"]!= nil && regionsData["measures"].length > 0 && regionsData["measures"][0]!= nil
+	
+	attributesRegion["timestamp"] = regionsData["measures"][0]["timestamp"]
+	attributesRegion["nb_users"] = regionsData["measures"][0]["nb_users"]
+	attributesRegion["nb_cores"] = regionsData["measures"][0]["nb_cores"]
+	attributesRegion["nb_cores_used"] = regionsData["measures"][0]["nb_cores_used"]
+	attributesRegion["nb_ram"] = regionsData["measures"][0]["nb_ram"]
+	attributesRegion["percRAMUsed"] = regionsData["measures"][0]["percRAMUsed"]
+	if(regionsData["measures"][0]["cpu_allocation_ratio"])
+	  attributesRegion["cpu_allocation_ratio"] = regionsData["measures"][0]["cpu_allocation_ratio"]
+	else
+	  attributesRegion["cpu_allocation_ratio"] = 16.0
+	end
+	if(regionsData["measures"][0]["ram_allocation_ratio"])
+	  attributesRegion["ram_allocation_ratio"] = regionsData["measures"][0]["ram_allocation_ratio"]
+	else
+	  attributesRegion["ram_allocation_ratio"] = 1.5
+	end
+	attributesRegion["nb_disk"] = regionsData["measures"][0]["nb_disk"]
+	attributesRegion["percDiskUsed"] = regionsData["measures"][0]["percDiskUsed"]
+	attributesRegion["ipTot"] = regionsData["measures"][0]["ipTot"]
+	attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
+	attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
+	attributesRegion["nb_vm"] = regionsData["nb_vm"]
+	
+      end
+      
+
+      return attributesRegion
     end 
     return nil
   end
@@ -1232,7 +1306,7 @@ class RegionController < ApplicationController
   def renderServices
     
     begin
-      regionsData = self.getRegionsData
+      regionsData = self.getRegionsData("Histogram")
     rescue CustomException => e
       if e.status
 	render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => e.status

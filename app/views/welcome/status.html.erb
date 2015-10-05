@@ -52,8 +52,11 @@
 
 <div class="layoutContainer">
 <div class="row-fluid">
-    <div class="span12">	
-	<div id="world-map-nodes"></div>
+    <div class="span12">
+	<div class="map-container">		
+	    <div id="world-map-nodes"></div>
+	    <div id="loadingMap" class="aftermap">Loading <span id="regionsNum"></span> Nodes...</div>
+	</div>
 	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');">
 	  Show All
 	</DIV>	
@@ -107,6 +110,7 @@
 <% content_for :jsfooter do %>
   <script type="text/javascript">
 
+	var semaforo = 1;
 	var STATUS_OK  = "<%= STATUS_OK %>",
 	    STATUS_NOK = "<%= STATUS_NOK %>",
 	    STATUS_POK = "<%= STATUS_POK %>",
@@ -402,6 +406,7 @@
 		  var mapNodes = new jvm.WorldMap({
 		  container: $('#world-map-nodes'),
 		  map: 'world_mill_en',
+		  zoomOnScroll: false,
 		  regionStyle: {
 			    initial: {
 			      fill: '#ffffff',
@@ -474,21 +479,26 @@
 		  function checkLatLong (points)
 		  {
 		      if(points.count <= 1) return points;
-		      $.each(points, function( regionToCheckKey, regionToCheck )
-		      {
-			  $.each(points, function( regionKey, region )
-			  {
-			      if (regionToCheck["name"] != region["name"])
-			      {
-				if (Math.abs((regionToCheck["latLng"])[0] - (region["latLng"])[0]) < 0.2)
-				  (regionToCheck["latLng"])[0] = (regionToCheck["latLng"])[0]+0.5
-				
-				if (Math.abs((regionToCheck["latLng"])[1] - (region["latLng"])[1]) < 0.2)
-				  (regionToCheck["latLng"])[1] = (regionToCheck["latLng"])[1]+0.5
-				
-			      }
-			  });
-		      });
+// 		      $.each(points, function( regionToCheckKey, regionToCheck )
+// 		      {
+// 			  $.each(points, function( regionKey, region )
+// 			  {
+// 			      if (regionToCheck["name"] != region["name"])
+// 			      {
+// 				if (Math.abs((regionToCheck["latLng"])[0] - (region["latLng"])[0]) < 0.2)
+// 				  (regionToCheck["latLng"])[0] = (regionToCheck["latLng"])[0]+0.5
+// 				
+// 				if (Math.abs((regionToCheck["latLng"])[1] - (region["latLng"])[1]) < 0.2)
+// 				  (regionToCheck["latLng"])[1] = (regionToCheck["latLng"])[1]+0.5
+// 				
+// 			      }
+// 			  });
+// 		      });
+		    if(points['PiraeusN'] != null && points['PiraeusN']["latitude"] != null)
+		    {
+		      points['PiraeusN']["latitude"] = points['PiraeusN']["latitude"].to_f+0.5
+		      points['PiraeusN']["longitude"] = points['PiraeusN']["longitude"].to_f-1
+		    }
 		    
 		    return points
 		  }
@@ -512,6 +522,8 @@
 				    
 				    var idRegions = totData["total_regions_ids"];
 				    var idRegionsCount = totData["total_regions_count"];
+				    semaforo = parseInt(idRegionsCount);
+				    $('#regionsNum').html(idRegionsCount);
 				    //draw table with # empty raws
 				    var allRows = "";
 				    for (var i=0;i<idRegionsCount;i++)
@@ -623,6 +635,12 @@
 								    cache: false,
 								    success: function(json){
 									
+								      $('#loadingMap').removeClass();
+								      $('#loadingMap').addClass('aftermaphide');
+								      
+								      semaforo -= 1;
+// 								      console.log(semaforo);
+								      
 								      var services = json;
 								      
 								      var servicesNames = Object.keys(services);								      
@@ -643,7 +661,10 @@
 								      
 	    // 							  selectedMarkers = $.map(markers, function(val, key) { return val; });
 								      selectedMarkers.push(markers[regionId]);
-								      selectedMarkers = checkLatLong(selectedMarkers);
+								      if(regionId == "PiraeusN")
+								      {
+									selectedMarkers = checkLatLong(selectedMarkers);
+								      }
 	    // 							  console.log(selectedMarkers);
 								      mapNodes.removeAllMarkers();
 								      mapNodes.addMarkers(selectedMarkers);
@@ -693,6 +714,7 @@
 								    },
 								    error: function(xhr, textStatus, errorThrown){
 								    
+								    semaforo -= 1;
 								    $("#"+regionId).append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><!--<DIV CLASS='field field-service field-service-status-support'>"+
 										      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
 										      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
@@ -703,7 +725,10 @@
 								    
 	    // 							selectedMarkers = $.map(markers, function(val, key) { return val; });
 								    selectedMarkers.push(markers[regionId]);
-								    selectedMarkers = checkLatLong(selectedMarkers);
+								    if(regionId == "PiraeusN")
+								    {
+								      selectedMarkers = checkLatLong(selectedMarkers);
+								    }
 	    // 							console.log(selectedMarkers);
 								    mapNodes.removeAllMarkers();
 								    mapNodes.addMarkers(selectedMarkers);
@@ -722,6 +747,7 @@
 							  
 							  },
 							  error: function(xhr, textStatus, errorThrown){
+							  semaforo -= 1;
 							  //put a symbol in the raw to show that it has failed
 							      var errore = "<%= FiLabInfographics.nodata %>";
 							      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
@@ -738,6 +764,7 @@
 				  
 				  },
 				  error: function(xhr, textStatus, errorThrown){
+				      semaforo = 0;
 				      var errore = "<%= FiLabInfographics.nodata %>";
 				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					      errore = xhr.responseText;
@@ -750,7 +777,15 @@
 			  )
 		  };
 		  
-		  function ajaxFun() { $.ajax (
+		  function ajaxFun() { 
+		  if(semaforo > 0) 
+		  {
+// 		    console.log("AAAAAAancora no!!! "+semaforo);
+		    return;
+		  }
+		  semaforo = 1;
+		  
+		  $.ajax (
 			    {
 				  type: "GET",
 				  url: "../api/v1/region/services",
@@ -760,6 +795,7 @@
 				  cache: false,
 				  success: function(json){
 				  
+					  semaforo = 0;
 					  var allHeaders = "";
 					  var allRows = "";
 					  var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
@@ -958,6 +994,7 @@
 					  
 				  },
 				  error: function(xhr, textStatus, errorThrown){
+				      semaforo = 0;
 				      var errore = "<%= FiLabInfographics.nodata %>";
 				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					      errore = xhr.responseText;

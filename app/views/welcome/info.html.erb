@@ -29,12 +29,17 @@
 			  <div class="tileSubList"><span id="basicNum"></span> Basic Users</div>
 			  <div class="tileSubList"><span id="trialNum"></span> Trial Users</div>
 			  <div class="tileSubList"><span id="communityNum"></span> Community Users</div>
-			  <div class="tileList"><span id="orgsNum"></span> orgs.</div>
+		      </div>
+		  </div>
+		  <div class="tile selected" id="users1" onclick="loadMap(this.id);">
+		      <div class="tileListContainer">	
 			  <div class="tileList"><span class="regionsNum"></span> regions</div>
+			  <div class="tileList"><span id="orgsNum"></span> orgs.</div>
+			  <div class="tileList"><span id="parternCount"></span> insts.</div>
 		      </div>
 		  </div>
 		  <div class="tile" id="cpu" onclick="loadMap(this.id);">
-		      <div class="leftIcon">
+		      <div class="centerIcon">
 			      <img src="/assets/infographic/iconCpu.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
@@ -43,7 +48,7 @@
 		      <div class="clear"></div>
 		  </div>
 		  <div class="tile" id="ram" onclick="loadMap(this.id);">
-		      <div class="leftIcon">
+		      <div class="centerIcon">
 			      <img src="/assets/infographic/iconRam.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
@@ -52,7 +57,7 @@
 		      <div class="clear"></div>
 		  </div>
 		  <div class="tile" id="hd" onclick="loadMap(this.id);">
-		      <div class="leftIcon">
+		      <div class="centerIcon">
 			      <img src="/assets/infographic/iconDisk.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
@@ -61,7 +66,7 @@
 		      <div class="clear"></div>
 		  </div>
 		  <div class="tile" id="ip" onclick="loadMap(this.id);">
-		      <div class="leftIcon">
+		      <div class="centerIcon">
 			      <img src="/assets/infographic/iconNetwork.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
@@ -70,7 +75,7 @@
 		      <div class="clear"></div>
 		  </div>
 		  <div class="tile" id="vm" onclick="loadMap(this.id);">
-		      <div class="leftIcon">
+		      <div class="centerIcon">
 			      <img src="/assets/infographic/iconVM.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
@@ -91,11 +96,11 @@
 					
 				</div>
 				<div class="partnerType">
-					Institutions
+					FIWARE Lab Capacity is supported by:
 				</div>
-				<div class="rightDetail">
-					<div id="parternCount"><!--<span class="badge"></span>--></div>
-				</div>
+				<!--<div class="rightDetail">
+					<div id="parternCount"></div>
+				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel leaveOpen" id="parternList">
@@ -234,12 +239,19 @@
 		$('.tile').removeClass('selected');
 		$('.tileRight').removeClass('selected');
 		
-		$('#'+divId).addClass('selected');
+		if(divId == "users" || divId == "users1")
+		{
+		    $('#users').addClass('selected');
+		    $('#users1').addClass('selected');
+		}
+		else
+		  $('#'+divId).addClass('selected');
 		
 		tileSelected = divId;
 		
 		switch (divId) {
 		    case "users": 
+		    case "users1": 
 		    {
 		      if(selectedMarkers!=[] && selectedRegions!=[])
 		      {
@@ -425,6 +437,9 @@
 		     $('#world-map-nodes').vectorMap('set', 'focus', code);
 		      
 		      
+		  },
+		  onMarkerLabelShow: function(event, label, code) {
+		      label.html(label.html().replace(/\n/g,"<br>"));                
 		  }
 
 		  });
@@ -662,7 +677,7 @@
 					  $(".parternList").html("");
 					  
 					  var parternCount = institutionsData.length;
-					  $("#parternCount").html("<span class=\"badge\">"+parternCount+"</span>");
+					  $("#parternCount").html(parternCount);//("<span class=\"badge\">"+parternCount+"</span>");
     // 				      var parternRows = Math.ceil(parternCount/3);
     // 				      var heightPanel = parternRows*130;
 					  
@@ -839,7 +854,12 @@
 						    marker["name"] = this['name']+": Last Update on "+the_time;
 						  }
 						  else{
-						    marker["name"] = this['name'];
+						    marker["name"] = this['name']+
+						    "\nCores: "+parseInt(this['nb_cores'])+
+						    ", \nRAM: "+(parseInt(this['nb_ram'])/1024).toFixed(1)+" GB"+
+						    ", \nDisk: "+(parseInt(this['nb_disk'])/1024).toFixed(1) +" TB"+
+						    ", \nIPs: "+parseInt(this['ipTot'])+
+						    ", \nVMs: "+parseInt(this['nb_vm']);
 						  }
 						  //marker["name"] = this['name'];
 						  selectedMarkers.push(marker);

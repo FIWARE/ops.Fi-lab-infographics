@@ -97,7 +97,7 @@ footer {
 #mini-tiles {
   color: #002D67;
   margin-bottom:20px;
-  height: 162px;
+  height: 147px;
   background-color: gray;
 }
 
@@ -109,9 +109,9 @@ footer {
 .tile {
         margin: 0px;
         min-width: 140px;
-	width: 16.5%;
-	height: 160px;
-	margin-left: 0.14%;
+	width: 14.1%;
+	height: 145px;
+	margin-left: 0.16%;
 /*         display: inline-block; */
 	float:left;
 	background-color: #e2e2e2;
@@ -130,7 +130,7 @@ footer {
 /* 	margin-right: 0px; */
         min-width: 140px;
 	width: 16.5%;
-	height: 160px;
+	height: 145px;
 /*         display: inline-block; */
 	float:left;
 	background-color: #e2e2e2;
@@ -144,19 +144,22 @@ footer {
 }
 
 .tileListContainer {
-	padding: 17px 5px 5px 17px;
+/* 	padding: 0px 5px 5px 17px; */
+	text-align: center;
 }
 
 .tileList {	
 	font-family: "NeoTech-Regular";
 	font-size: 17px;
 	font-weight: bold;
-/* 	margin-top: 10px; */
+	margin-top: 17px;
+
 }
 
 .tileSubList {
 	font-family: "NeoTech-Regular";
 	font-size: 13px;
+	margin-top: 12px;
 /* 	font-weight: bold; */
 }
 
@@ -234,6 +237,16 @@ padding-bottom: 10px;
 	height: 226px;
 }
 
+.centerIcon {
+	text-align: center;
+	margin: 17px 0px 17px 0px;
+	width: 100%;
+}
+
+.centerIcon img {
+  height: 55px;
+}
+
 .leftIcon {
 	float: left;
 	margin: 17px 0px 17px 17px;
@@ -277,7 +290,7 @@ padding-bottom: 10px;
 	font-family: "NeoTech-Regular";
 	font-size: 17px;
 	font-weight: bold;
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .rightDetail {
@@ -892,7 +905,7 @@ input.text{ width:95%;}
     background: none repeat scroll 0 0 rgba(44, 44, 44, 0.9);
     bottom: 0;
     left: 0;
-    position: absolute;
+    position: fixed;
     z-index: 1040;
 }
 #cookie-law p {

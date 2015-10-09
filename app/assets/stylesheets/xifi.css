@@ -14,6 +14,8 @@ svg {
 .chartTitle {
   font-weight: bold;
   padding: 17px 0 0;
+  color: rgb(0, 45, 103);
+  font-family: "NeoTech-Regular";
 }
 
 .chartOptions {
@@ -193,7 +195,7 @@ section.partners {
 	min-width: 310px;
 }
 #parternList {
-  height: 230px;
+/*   height: 230px; */
   
 }
 
@@ -239,7 +241,7 @@ padding-bottom: 10px;
 }
 
 .bigPanel {
-	height: 226px;
+/* 	height: 226px; */
 }
 
 .centerIcon {
@@ -272,11 +274,12 @@ padding-bottom: 10px;
 }
 
 .partnerType {
-	float: left;
-	color: #002D67;
-	font-size: 20px;
-	font-weight: bold;
-	margin-top: 34px;
+    color: rgb(0, 45, 103);
+    float: left;
+    font-family: "NeoTech-Regular";
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 38px;
 }
 
 .leftDetail {

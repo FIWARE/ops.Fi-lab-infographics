@@ -374,7 +374,7 @@
 			else if (region=="Stockholm2")
 			  region="Stockholm"
 		    
-			titleSuffix = ' for ' + region;
+			titleSuffix = ' for ' + region + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 			makeVisible = true;
 		    }
 		    break;
@@ -383,7 +383,7 @@
 		    break;
 	    }
 	    if (makeVisible) chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
-	    $('#chart-title').html('FiHealth sanity check status' + titleSuffix+ '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">');
+	    $('#chart-title').html('FiHealth sanity check status' + titleSuffix);
 	}
 
 	function updateCalendar(idNode,from,to) {

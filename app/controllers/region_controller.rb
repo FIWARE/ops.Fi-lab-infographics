@@ -1302,6 +1302,90 @@ class RegionController < ApplicationController
 
   end
 
+  def renderHistoricalForRegionFromTo
+    idNode = params[:nodeId]
+    fromDate = params[:from]
+    toDate = params[:to]
+    if idNode=="Spain"
+       idNode="Spain2"
+    elsif idNode=="Berlin"
+       idNode="Berlin2"
+    elsif idNode=="Lannion"
+       idNode="Lannion2"
+    elsif idNode=="Karlskrona"
+      idNode="Karlskrona2"
+    elsif idNode=="Budapest"
+      idNode="Budapest2"
+    elsif idNode=="Stockholm"
+      idNode="Stockholm2"
+    end
+
+    begin
+      services = self.getHistoricalForNodeIdFromTo(idNode,fromDate,toDate)
+    rescue CustomException => e
+      if e.status
+	render :json=>"Problem in retrieving historical for region "+idNode+": "+e.data, :status => e.status
+      else
+	render :json=>"Problem in retrieving historical for region "+idNode+": "+e.data, :status => :service_unavailable
+      end
+      return
+    end
+
+    render :json => services.to_json
+  end
+
+  #get historical data about services of one region for a specific interval
+  def getHistoricalForNodeIdFromTo (idNode,fromDate,toDate)
+
+    #if ENV["RAILS_ENV"] != "test"
+    #  raise "TODO: available only for testing/demo purposes!"
+    #end
+
+    require 'json'
+    require 'date'
+
+    result = Hash.new
+    result['measures'] = Array.new
+    #sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
+
+    begin
+      timeago = Time.at(3.months.ago).strftime("%y-%m-%d")
+      timenow = Time.now.strftime("%y-%m-%d")
+      if fromDate!=nil
+	timeago = fromDate
+      end
+      if toDate=nil
+	timenow = toDate
+      end
+      
+      servicesRegionHistoricalData = self.performRequest('regions/' + idNode + '/services?since=' + timeago + 'T00:00:00&aggregate=d', false)
+      if servicesRegionHistoricalData != nil &&  servicesRegionHistoricalData["measures"] != nil
+        #logger.info servicesRegionHistoricalData["measures"]
+        result['measures']=servicesRegionHistoricalData["measures"]
+      end 
+    rescue CustomException => e
+      raise e
+    end
+
+    year = Date.today.year
+    yday = Date.today.yday
+    seed = idNode.sum(2048)
+    prng = Random.new(seed)
+
+    #for day in 1..yday
+    #  timestamp = Date.ordinal(year, day).strftime('%Y-%m-%d 00.00')
+    #  fihealth = sample['FiHealthStatus'].clone
+    #  random = prng.rand(-10..100)
+    #  fihealth['value'] = random > 1 ? STATUS_OK : random < 0 ? STATUS_NOK : STATUS_POK
+    #  sample['timestamp'] = timestamp
+    #  sample['FiHealthStatus'] = fihealth
+    #  result['measures'].push(sample.clone)
+    #end
+
+    return result
+
+  end
+  
   #render data about services of all regions
   def renderServices
     

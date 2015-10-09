@@ -57,7 +57,7 @@
 	    <div id="world-map-nodes"></div>
 	    <div id="loadingMap" class="aftermap">Loading <span id="regionsNum"></span> Nodes...</div>
 	</div>
-	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');">
+	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');$('#chart-cal').addClass('chartHidden');">
 	  Show All
 	</DIV>	
     </div>
@@ -65,7 +65,7 @@
 <div class="row-fluid">
     <div class="span6 myspan">	
 <!-- 	<div id="errorMessage"></div> -->
-	<div id="table-title" class="chartTitle">FiWARE services status</div>
+	<div id="table-title" class="chartTitle">FiWARE services status <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgServices" style="display:none"></div>
 	<DIV ID="status">
 			  
 		<DIV id="tableHeaderContent" CLASS='status-row-min status-row-header'>
@@ -88,7 +88,19 @@
     </div>
     <div class="span6 myspan">
 	<div id="historical">
-	    <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
+	    <div id="chart-title" class="chartTitle">FiHealth sanity check status <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
+	      <div id="chart-cal" class="chartHidden">
+		<div class="floatLeft datePickerField">
+		  From: <input type="text" id="datepickerFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
+		</div>
+		<div class="floatLeft datePickerField">
+		  To: <input type="text" id="datepickerTo" readonly="readonly" style="background:white;cursor:pointer;"/> 
+		</div>
+		<div class="floatLeft">
+		  <button class="showCalendar">Show</button>
+		</div>
+		<div class="clear"></div>
+	      </div>
 	    <!--<div id="chart-options" class="chartOptions">
 		Chart type <%= select_tag(:chart_id,
 			options_for_select([
@@ -221,6 +233,12 @@
 		.key(function(d) { return d.Date; })
 		.rollup(function(d) { return d[0].Value; })
 		.map(dataset);
+		
+// 	    clear previous data
+	    self.rect.attr("class", "day");
+	    self.rect.select("title").text(function(d) { return d; });
+// 	    end clear
+	    
 	    self.rect.filter(function(d) { return d in self.historical_data; })
 		.attr("class", function(d) { return "day " + color(self.historical_data[d]); })
 		.select("title")
@@ -365,13 +383,17 @@
 		    break;
 	    }
 	    if (makeVisible) chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
-	    $('#chart-title').html('FiHealth sanity check status' + titleSuffix);
+	    $('#chart-title').html('FiHealth sanity check status' + titleSuffix+ '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">');
 	}
 
-	function updateCalendar(idNode) {
+	function updateCalendar(idNode,from,to) {
+	    $("#imgHistorical").show();
+	    $( ".showCalendar" ).button().attr('disabled', true);
+	    var url = "../api/v1/region/historical/" + idNode;
+	    if(from != null && to != null) url += "/from/" + from + "/to/" + to
 	    $.ajax ({
 		type: "GET",
-		url: "../api/v1/region/historical/" + idNode,
+		url: url,
 		contentType: "application/json; charset=utf-8",
 		data: {},
 		dataType: "json",
@@ -379,6 +401,8 @@
 		success: function(json) {
 		    calendar.update(idNode, json['measures']);
 		    onChartChange('chart-calendar');
+		    $( ".showCalendar" ).button().attr('disabled', false);
+		    $("#imgHistorical").hide();
 		},
 		error: function(xhr, textStatus, errorThrown) {
 		    var errors = "<%= FiLabInfographics.nodata %>";
@@ -386,6 +410,8 @@
 			errors = xhr.responseText;
 		    }
 		    $('#errorMessage').html(errors);
+		    $( ".showCalendar" ).button().attr('disabled', false);
+		    $("#imgHistorical").hide();
 		}
 	    });
 	}
@@ -399,6 +425,67 @@
 		  
 		  $('#world-map-nodes').css('width',Math.round($('.span12').width()));
 		  $('#world-map-nodes').css('height',Math.round($('.span12').width()*300/545));
+		  $( "#datepickerFrom" ).datepicker({
+		    constrainInput: false,
+		    dateFormat: 'yy-mm-dd',
+		    maxDate: new Date(),
+		    minDate: new Date(2015,7,11)
+		    
+		  });
+		  $( "#datepickerTo" ).datepicker({
+		    constrainInput: false,
+		    dateFormat: 'yy-mm-dd',
+		    maxDate: new Date(),
+		    minDate: new Date()//new Date(2015,7,11)
+		  });
+
+// 		  var nowDate = new Date();
+// 		  var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
+// 		  var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+// 		  var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+// 		  $( "#datepickerTo" ).datepicker('setDate', nowString);
+// 		  
+// 		  nowDate.setMonth(nowDate.getMonth() - 3);
+// 		  nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
+// 		  nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+// 		  nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+// 		  $( "#datepickerFrom" ).datepicker('setDate', nowString);
+		  
+		  $( ".showCalendar" ).button().click(function(){ 
+		      var valFrom = $("#datepickerFrom").val();
+		      var dateFrom = Date.parse( valFrom );
+		      
+		      var valTo = $("#datepickerTo").val();
+		      var dateTo = Date.parse( valTo );
+
+		      if (isNaN(dateFrom) == true) {
+			alert("From Date is not valid")
+		      }
+		      else if (isNaN(dateTo) == true) {
+			alert("To Date is not valid")
+		      }
+		      else if (dateFrom > dateTo) {
+			alert("To Date must be greater than From Date")
+		      }
+		      else {
+			var from = $( "#datepickerFrom" ).datepicker( "getDate" );
+			var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+			var fday = from.getDate();if (fday<10)fday="0"+fday;
+			var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+			var to = $( "#datepickerTo" ).datepicker( "getDate" );
+			var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
+			var tday = to.getDate();if (day<10)day="0"+day;
+			var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
+		      
+// 			alert(fromString+" "+toString);
+			
+			updateCalendar(selected_node_id, fromString, toString);
+		      }
+				      
+		      
+		  });
+		  
+		  $( ".showCalendar" ).button().attr('disabled', true);
 
 		  var selectedMarkers = [];
 		  var sanitySuccess = [];
@@ -444,11 +531,24 @@
 		     
 		      $('.row-status-service').addClass('collapsed');
 		      $('#'+selectedMarkers[index].id).removeClass('collapsed');
-		      updateCalendar(selectedMarkers[index].id);
+		      $('#chart-cal').removeClass('chartHidden');
+		      $( ".showCalendar" ).button().attr('disabled', true);
+		      updateCalendar(selectedMarkers[index].id, null, null);
 		      onChartChange('chart-calendar');
 		      selected_node_id = selectedMarkers[index].id;
 		      $('#buttonShowAll').removeClass('collapsed');
 		      
+		      var nowDate = new Date();
+		      var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
+		      var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+		      var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+		      $( "#datepickerTo" ).datepicker('setDate', nowString);
+		      
+		      nowDate.setMonth(nowDate.getMonth() - 3);
+		      nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
+		      nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+		      nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+		      $( "#datepickerFrom" ).datepicker('setDate', nowString);
 // 		      d3.select('#chart_id')[0][0].value = 'chart-calendar';
 		      
 		      
@@ -474,6 +574,10 @@
 		  });
 		  
 		  $('#world-map-nodes').vectorMap('set', 'focus', 1.7, 0.4, 0.5);
+		  
+		  $('#world-map-nodes').css('width',"100%");
+// 		  $('.jvectormap-container svg').css('width',"100%");
+// 		  $('.jvectormap-container svg').attr( "width", "100%" );
 		  
 		  //check and shift two map points too close 
 		  function checkLatLong (points)
@@ -504,6 +608,8 @@
 		  }
 
 		  function ajaxFunInit() { 
+		  $("#imgServices").show();
+		  $("#imgHistorical").show();
 		  $.ajax (
 			    {
 				  type: "GET",
@@ -637,7 +743,8 @@
 									
 								      $('#loadingMap').removeClass();
 								      $('#loadingMap').addClass('aftermaphide');
-								      
+								      $("#imgServices").hide();
+								      $("#imgHistorical").hide();
 								      semaforo -= 1;
 // 								      console.log(semaforo);
 								      
@@ -759,7 +866,7 @@
 							  } 
 						    }
 					    )
-				    });				    
+				    });	  
 				   
 				  
 				  },
@@ -770,6 +877,8 @@
 					      errore = xhr.responseText;
 // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
 				      $('#errorMessage').html(errore);
+				      $("#imgServices").hide();
+				      $("#imgHistorical").hide();
   //     				alert('request failed->'+textStatus);
   //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
 				  } 
@@ -784,7 +893,9 @@
 		    return;
 		  }
 		  semaforo = 1;
-		  
+		  $("#imgServices").show();
+		  $("#imgHistorical").show();
+				   
 		  $.ajax (
 			    {
 				  type: "GET",
@@ -991,7 +1102,8 @@
 						  });
 					  });
 					  
-					  
+				    $("#imgServices").hide();
+				    $("#imgHistorical").hide();  
 				  },
 				  error: function(xhr, textStatus, errorThrown){
 				      semaforo = 0;
@@ -999,6 +1111,8 @@
 				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					      errore = xhr.responseText;
 				      $('#errorMessage').html(errore);
+				      $("#imgServices").hide();
+				      $("#imgHistorical").hide();
 				  } 
 			    }
 			      
@@ -1008,7 +1122,7 @@
 		//Chiamo il mio ajax la prima volta
 		ajaxFunInit();
 		//e poi lo richiamo dopo 60 secondi
-		setInterval(function(){ajaxFun()}, 60000);
+		setInterval(function(){ajaxFun()}, 120000);
 	  });
 			    		  
   </script>

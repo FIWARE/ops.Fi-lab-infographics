@@ -56,6 +56,7 @@ FiLabInfographics::Application.routes.draw do
       get "/services/:nodeId" => "region#renderServicesForRegion"
       get "/services/:nodeId/since/:timestamp" => "region#renderServicesForRegionSince"
       get "/historical/:nodeId" => "region#renderHistoricalForRegion"
+      get "/historical/:nodeId/from/:from/to/:to" => "region#renderHistoricalForRegionFromTo"
       get "/list" => "region#renderRegionIdListFromDb"
       post "/:nodeId/since/:timestamp"  => "region#renderRegionsDataForRegionSince"
       get "/:nodeId"  => "region#renderRegionsDataForRegion"

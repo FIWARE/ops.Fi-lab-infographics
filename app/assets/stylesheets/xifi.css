@@ -73,6 +73,9 @@ svg {
 }
 
 /* [END] D3 Charts */
+.datePickerField {
+	margin-right:15px;
+}
 
 .clear {
 	clear: both;
@@ -97,7 +100,7 @@ footer {
 #mini-tiles {
   color: #002D67;
   margin-bottom:20px;
-  height: 147px;
+/*   height: 147px; */
   background-color: gray;
 }
 
@@ -112,6 +115,7 @@ footer {
 	width: 14.1%;
 	height: 145px;
 	margin-left: 0.16%;
+	margin-bottom: 2px;
 /*         display: inline-block; */
 	float:left;
 	background-color: #e2e2e2;
@@ -127,6 +131,7 @@ footer {
 
 .tileRight {
         margin-left: 0.23%;
+	margin-bottom: 2px;
 /* 	margin-right: 0px; */
         min-width: 140px;
 	width: 16.5%;

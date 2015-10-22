@@ -88,7 +88,7 @@
     </div>
     <div class="span6 myspan">
 	<div id="historical">
-	    <div id="chart-title" class="chartTitle">FiHealth sanity check status <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
+	    <div class="chartTitle"><span id="chart-title">FiHealth sanity check status </span><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
 	      <div id="chart-hist">
 		<div class="floatLeft datePickerField">
 		  From: <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
@@ -384,11 +384,12 @@
 			else if (region=="Stockholm2")
 			  region="Stockholm"
 		    
-			titleSuffix = ' for ' + region + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
+			titleSuffix = ' for ' + region;// + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 			makeVisible = true;
 		    }
 		    break;
 		case 'chart-histogram':
+// 		    titleSuffix = ' <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 		    makeVisible = true;
 		    break;
 	    }

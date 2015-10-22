@@ -57,7 +57,7 @@
 	    <div id="world-map-nodes"></div>
 	    <div id="loadingMap" class="aftermap">Loading <span id="regionsNum"></span> Nodes...</div>
 	</div>
-	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');$('#chart-cal').addClass('chartHidden');">
+	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');$('#chart-cal').addClass('chartHidden');$('#chart-hist').show();">
 	  Show All
 	</DIV>	
     </div>
@@ -89,13 +89,23 @@
     <div class="span6 myspan">
 	<div id="historical">
 	    <div id="chart-title" class="chartTitle">FiHealth sanity check status <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
+	      <div id="chart-hist">
+		<div class="floatLeft datePickerField">
+		  From: <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
+		</div>
+		<div class="floatLeft">
+		  <button class="showHistogram">Show</button>
+		</div>
+		<div class="clear"></div>
+	      </div>
+	      
 	      <div id="chart-cal" class="chartHidden">
 		<div class="floatLeft datePickerField">
 		  From: <input type="text" id="datepickerFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
 		</div>
-		<div class="floatLeft datePickerField">
+		<!--<div class="floatLeft datePickerField">
 		  To: <input type="text" id="datepickerTo" readonly="readonly" style="background:white;cursor:pointer;"/> 
-		</div>
+		</div>-->
 		<div class="floatLeft">
 		  <button class="showCalendar">Show</button>
 		</div>
@@ -432,47 +442,64 @@
 		    minDate: new Date(2015,7,11)
 		    
 		  });
-		  $( "#datepickerTo" ).datepicker({
+		  var d=new Date(); // current date
+		  d.setDate(1); // going to 1st of the month
+		  d.setHours(-1); // going to last hour before this date even started.
+		  $( "#datepickerHistogramFrom" ).datepicker({
 		    constrainInput: false,
 		    dateFormat: 'yy-mm-dd',
-		    maxDate: new Date(),
-		    minDate: new Date()//new Date(2015,7,11)
+		    maxDate: d,
+		    minDate: new Date(2015,0,1)
+		    
 		  });
+		  
+		  var nowDate = new Date();
+// 		      var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
+// 		      var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+// 		      var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+// 		      $( "#datepickerTo" ).datepicker('setDate', nowString);
+		  
+		  nowDate.setMonth(nowDate.getMonth() - 6);
+		  nmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
+		  nday = nowDate.getDate();//if (nday<10)nday="0"+nday;
+		  nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+		  $( "#datepickerHistogramFrom" ).datepicker('setDate', nowString);
+// 		  $( "#datepickerTo" ).datepicker({
+// 		    constrainInput: false,
+// 		    dateFormat: 'yy-mm-dd',
+// 		    maxDate: new Date(),
+// 		    minDate: new Date()//new Date(2015,7,11)
+// 		  });
 
-// 		  var nowDate = new Date();
-// 		  var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
-// 		  var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
-// 		  var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
-// 		  $( "#datepickerTo" ).datepicker('setDate', nowString);
-// 		  
-// 		  nowDate.setMonth(nowDate.getMonth() - 3);
-// 		  nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
-// 		  nday = nowDate.getDate();if (nday<10)nday="0"+nday;
-// 		  nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
-// 		  $( "#datepickerFrom" ).datepicker('setDate', nowString);
 		  
 		  $( ".showCalendar" ).button().click(function(){ 
 		      var valFrom = $("#datepickerFrom").val();
+		      if(valFrom == null || valFrom == "undefined")
+		      {
+			  alert("From Date is not valid");
+			  return;
+		      }
 		      var dateFrom = Date.parse( valFrom );
 		      
-		      var valTo = $("#datepickerTo").val();
-		      var dateTo = Date.parse( valTo );
+// 		      var valTo = $("#datepickerTo").val();
+// 		      var dateTo = Date.parse( valTo );
 
 		      if (isNaN(dateFrom) == true) {
-			alert("From Date is not valid")
+			alert("From Date is not valid");
 		      }
-		      else if (isNaN(dateTo) == true) {
-			alert("To Date is not valid")
-		      }
-		      else if (dateFrom > dateTo) {
-			alert("To Date must be greater than From Date")
-		      }
+// 		      else if (isNaN(dateTo) == true) {
+// 			alert("To Date is not valid")
+// 		      }
+// 		      else if (dateFrom > dateTo) {
+// 			alert("To Date must be greater than From Date")
+// 		      }
 		      else {
 			var from = $( "#datepickerFrom" ).datepicker( "getDate" );
 			var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
 			var fday = from.getDate();if (fday<10)fday="0"+fday;
 			var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
-			var to = $( "#datepickerTo" ).datepicker( "getDate" );
+// 			var to = $( "#datepickerTo" ).datepicker( "getDate" );
+			var to = new Date();
 			var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
 			var tday = to.getDate();if (day<10)day="0"+day;
 			var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
@@ -486,7 +513,49 @@
 		  });
 		  
 		  $( ".showCalendar" ).button().attr('disabled', true);
+		  
+		  $( ".showHistogram" ).button().click(function(){ 
+		      var valFrom = $("#datepickerHistogramFrom").val();
+		      if(valFrom == null || valFrom == "undefined")
+		      {
+			  alert("From Date is not valid");
+			  return;
+		      }
+		      var dateFrom = Date.parse( valFrom );
+		      
+// 		      var valTo = $("#datepickerTo").val();
+// 		      var dateTo = Date.parse( valTo );
 
+		      if (isNaN(dateFrom) == true) {
+			alert("From Date is not valid")
+		      }
+// 		      else if (isNaN(dateTo) == true) {
+// 			alert("To Date is not valid")
+// 		      }
+// 		      else if (dateFrom > dateTo) {
+// 			alert("To Date must be greater than From Date")
+// 		      }
+		      else {
+// 			var from = $( "#datepickerHistogramFrom" ).datepicker( "getDate" );
+// 			var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+// 			var fday = from.getDate();if (fday<10)fday="0"+fday;
+// 			var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+// 			var to = new Date();
+// 			var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
+// 			var tday = to.getDate();if (day<10)day="0"+day;
+// 			var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
+		      
+// 			alert(fromString+" "+toString);
+			
+// 			updateHistogram(fromString, toString);
+			ajaxFun();
+		      }
+				      
+		      
+		  });
+
+		  $( ".showHistogram" ).button().attr('disabled', true);
+		  
 		  var selectedMarkers = [];
 		  var sanitySuccess = [];
 		  
@@ -532,6 +601,7 @@
 		      $('.row-status-service').addClass('collapsed');
 		      $('#'+selectedMarkers[index].id).removeClass('collapsed');
 		      $('#chart-cal').removeClass('chartHidden');
+		      $('#chart-hist').hide();
 		      $( ".showCalendar" ).button().attr('disabled', true);
 		      updateCalendar(selectedMarkers[index].id, null, null);
 		      onChartChange('chart-calendar');
@@ -539,14 +609,14 @@
 		      $('#buttonShowAll').removeClass('collapsed');
 		      
 		      var nowDate = new Date();
-		      var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
-		      var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
-		      var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
-		      $( "#datepickerTo" ).datepicker('setDate', nowString);
+// 		      var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
+// 		      var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+// 		      var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+// 		      $( "#datepickerTo" ).datepicker('setDate', nowString);
 		      
 		      nowDate.setMonth(nowDate.getMonth() - 3);
-		      nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
-		      nday = nowDate.getDate();if (nday<10)nday="0"+nday;
+		      nmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
+		      nday = nowDate.getDate();//if (nday<10)nday="0"+nday;
 		      nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
 		      $( "#datepickerFrom" ).datepicker('setDate', nowString);
 // 		      d3.select('#chart_id')[0][0].value = 'chart-calendar';
@@ -681,14 +751,27 @@
 					    });
 				    });
 				    
+				    var nowDate = new Date();
+		  
+				    nowDate.setMonth(nowDate.getMonth() - 6);
+				    var fmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
+				    var fday = nowDate.getDate();//if (nday<10)nday="0"+nday;
+				    var fromString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+
+				    var jsonToSend = {
+					'histogramData' : {
+					    'since' : fromString,
+					    'aggregate' : "m"
+					}
+				    };
 				    //for each region do:
 				    $.each(idRegions, function( index, regionId ) {
 				      $.ajax (
 						    {
-							  type: "GET",
+							  type: "POST",
 							  url: "../api/v1/region/"+regionId,//to know name, lat and long of a region
 							  contentType: "application/json; charset=utf-8",
-							  data: {},
+							  data: JSON.stringify(jsonToSend),
 							  dataType: "json",
 							  cache: false,
 							  success: function(json){
@@ -747,6 +830,10 @@
 								      $("#imgHistorical").hide();
 								      semaforo -= 1;
 // 								      console.log(semaforo);
+								      if(semaforo == 0) //loading has finished
+								      {
+									  $( ".showHistogram" ).button().attr('disabled', false);
+								      }
 								      
 								      var services = json;
 								      
@@ -822,6 +909,10 @@
 								    error: function(xhr, textStatus, errorThrown){
 								    
 								    semaforo -= 1;
+								    if(semaforo == 0) //loading has finished
+								    {
+									$( ".showHistogram" ).button().attr('disabled', false);
+								    }
 								    $("#"+regionId).append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><!--<DIV CLASS='field field-service field-service-status-support'>"+
 										      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionId+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
 										      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
@@ -855,6 +946,10 @@
 							  },
 							  error: function(xhr, textStatus, errorThrown){
 							  semaforo -= 1;
+							  if(semaforo == 0) //loading has finished
+							  {
+							      $( ".showHistogram" ).button().attr('disabled', false);
+							  }
 							  //put a symbol in the raw to show that it has failed
 							      var errore = "<%= FiLabInfographics.nodata %>";
 							      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
@@ -895,18 +990,37 @@
 		  semaforo = 1;
 		  $("#imgServices").show();
 		  $("#imgHistorical").show();
-				   
+		
+		  var from = $( "#datepickerHistogramFrom" ).datepicker( "getDate" );
+		  var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+		  var fday = from.getDate();if (fday<10)fday="0"+fday;
+		  var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+		  var jsonToSend = {
+		      'histogramData' : {
+			  'since' : fromString,
+			  'aggregate' : "m"
+		      }
+		  };
+		  
+		  $( ".showHistogram" ).button().attr('disabled', true);
+		  
 		  $.ajax (
 			    {
-				  type: "GET",
+				  type: "POST",
 				  url: "../api/v1/region/services",
 				  contentType: "application/json; charset=utf-8",
-				  data: {},
+				  data: JSON.stringify(jsonToSend),
 				  dataType: "json",
 				  cache: false,
 				  success: function(json){
 				  
 					  semaforo = 0;
+					  $( ".showHistogram" ).button().attr('disabled', false);
+					  
+					  //in case first ajax call failed, loading background will be removed now
+					  $('#loadingMap').removeClass();
+					  $('#loadingMap').addClass('aftermaphide');
+					  
 					  var allHeaders = "";
 					  var allRows = "";
 					  var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
@@ -1107,6 +1221,7 @@
 				  },
 				  error: function(xhr, textStatus, errorThrown){
 				      semaforo = 0;
+				      $( ".showHistogram" ).button().attr('disabled', false);
 				      var errore = "<%= FiLabInfographics.nodata %>";
 				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					      errore = xhr.responseText;

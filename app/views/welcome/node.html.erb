@@ -276,7 +276,7 @@
 	      $("#imgServices").show();
 	      $.ajax (
 		      {
-			    type: "GET",
+			    type: "POST",
 			    url: "../../api/v1/region/"+"<%= @idNode %>",//to know name, lat and long of a region
 			    contentType: "application/json; charset=utf-8",
 			    data: {},

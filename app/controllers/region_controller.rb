@@ -222,11 +222,11 @@ class RegionController < ApplicationController
     
       idRegions.each do |idRegion|
 	begin
-	  if (histogramData != nil)
-	    attributesRegion = self.getRegionsDataForNodeId(idRegion)
-	  else
-	    attributesRegion = self.getRegionsDataForNodeIdWithoutHistogramData(idRegion)
-	  end
+# 	  if (histogramData != nil)
+	  attributesRegion = self.getRegionsDataForNodeId(idRegion,histogramData)
+# 	  else
+# 	    attributesRegion = self.getRegionsDataForNodeIdWithoutHistogramData(idRegion)
+# 	  end
 	rescue CustomException => e
 	  raise e
 	  return
@@ -337,8 +337,9 @@ class RegionController < ApplicationController
   #render specific data about one region
   def renderRegionsDataForRegion
     idNode = params[:nodeId]
+    histogramData = params[:histogramData]
     begin
-      regionsData = self.getRegionsDataForNodeId(idNode)
+      regionsData = self.getRegionsDataForNodeId(idNode, histogramData)
     rescue CustomException => e
       if e.status
 	render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => e.status
@@ -352,15 +353,18 @@ class RegionController < ApplicationController
   end
   
   #get specific data about one region
-  def getRegionsDataForNodeId (idNode)
+  def getRegionsDataForNodeId (idNode, histogramData)
+    Rails.logger.debug(histogramData)
     begin
       regionsData = self.performRequest('regions/' + idNode, false)
       #########################################################################
       #       For this first draft I take an hardcoded startintervall         #
       #########################################################################
-      #regionsDataLive= self.performRequest('regions/' + idNode+"/services")
-      regionsDataMonthHist = self.performRequest('regions/' + idNode+"/services?since=2015-01-01T00:00&aggregate=m", false)
-      regionsDataLive= self.performRequest('regions/' + idNode+"/services", false)
+      regionsDataMonthHist = nil
+      if histogramData != nil && histogramData["since"] != nil && histogramData["aggregate"] != nil
+	regionsDataMonthHist = self.performRequest('regions/' + idNode+"/services?since="+histogramData["since"]+"&aggregate="+histogramData["aggregate"], false)
+      end
+#       regionsDataLive= self.performRequest('regions/' + idNode+"/services", false)
     rescue CustomException => e
       raise e
     end
@@ -426,10 +430,10 @@ class RegionController < ApplicationController
       #logger.info regionsDataMonthHist
       sanityTot    =0
       sanityCounter=0
-      attributesRegion["sanityLive"] = STATUS_NA;
-      if regionsDataLive !=nil && regionsDataLive["measures"] != nil && regionsDataLive["measures"].length > 0 && regionsDataLive["measures"][0] != nil && regionsDataLive["measures"][0]["FiHealthStatus"] != nil 
-         attributesRegion["sanityLive"]=regionsDataLive["measures"][0]["FiHealthStatus"]["value"]
-      end
+#       attributesRegion["sanityLive"] = STATUS_NA;
+#       if regionsDataLive !=nil && regionsDataLive["measures"] != nil && regionsDataLive["measures"].length > 0 && regionsDataLive["measures"][0] != nil && regionsDataLive["measures"][0]["FiHealthStatus"] != nil 
+#          attributesRegion["sanityLive"]=regionsDataLive["measures"][0]["FiHealthStatus"]["value"]
+#       end
       if regionsDataMonthHist != nil &&  regionsDataMonthHist["measures"] != nil && regionsDataMonthHist["measures"].length > 0
         
 	for sample  in regionsDataMonthHist["measures"]
@@ -468,69 +472,69 @@ class RegionController < ApplicationController
   end
   
   #get specific data about one region without Histogram Data
-  def getRegionsDataForNodeIdWithoutHistogramData (idNode)
-    begin
-      regionsData = self.performRequest('regions/' + idNode, false)
-    rescue CustomException => e
-      raise e
-    end
-
-    if regionsData != nil
-            
-      attributesRegion = Hash.new
-      attributesRegion["id"] = regionsData["id"]
-      if(regionsData["id"]=='Berlin2')
-         attributesRegion["name"] = 'Berlin'
-      elsif(regionsData["id"]=='Spain2')
-         attributesRegion["name"] = 'Spain'
-      elsif(regionsData["id"]=='Lannion2')
-         attributesRegion["name"] = 'Lannion'
-      elsif(regionsData["id"]=='Karlskrona2')
-         attributesRegion["name"] = 'Karlskrona'
-      elsif(regionsData["id"]=='Budapest2')
-         attributesRegion["name"] = 'Budapest'
-      elsif(regionsData["id"]=='Stockholm2')
-         attributesRegion["name"] = 'Stockholm'
-      else 
-        attributesRegion["name"] = regionsData["name"]
-      end
-      
-      attributesRegion["country"] = regionsData["country"]
-      attributesRegion["latitude"] = regionsData["latitude"]
-      attributesRegion["longitude"] = regionsData["longitude"]
-      
-      if regionsData["measures"]!= nil && regionsData["measures"].length > 0 && regionsData["measures"][0]!= nil
-	
-	attributesRegion["timestamp"] = regionsData["measures"][0]["timestamp"]
-	attributesRegion["nb_users"] = regionsData["measures"][0]["nb_users"]
-	attributesRegion["nb_cores"] = regionsData["measures"][0]["nb_cores"]
-	attributesRegion["nb_cores_used"] = regionsData["measures"][0]["nb_cores_used"]
-	attributesRegion["nb_ram"] = regionsData["measures"][0]["nb_ram"]
-	attributesRegion["percRAMUsed"] = regionsData["measures"][0]["percRAMUsed"]
-	if(regionsData["measures"][0]["cpu_allocation_ratio"])
-	  attributesRegion["cpu_allocation_ratio"] = regionsData["measures"][0]["cpu_allocation_ratio"]
-	else
-	  attributesRegion["cpu_allocation_ratio"] = 16.0
-	end
-	if(regionsData["measures"][0]["ram_allocation_ratio"])
-	  attributesRegion["ram_allocation_ratio"] = regionsData["measures"][0]["ram_allocation_ratio"]
-	else
-	  attributesRegion["ram_allocation_ratio"] = 1.5
-	end
-	attributesRegion["nb_disk"] = regionsData["measures"][0]["nb_disk"]
-	attributesRegion["percDiskUsed"] = regionsData["measures"][0]["percDiskUsed"]
-	attributesRegion["ipTot"] = regionsData["measures"][0]["ipTot"]
-	attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
-	attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
-	attributesRegion["nb_vm"] = regionsData["nb_vm"]
-	
-      end
-      
-
-      return attributesRegion
-    end 
-    return nil
-  end
+#   def getRegionsDataForNodeIdWithoutHistogramData (idNode)
+#     begin
+#       regionsData = self.performRequest('regions/' + idNode, false)
+#     rescue CustomException => e
+#       raise e
+#     end
+# 
+#     if regionsData != nil
+#             
+#       attributesRegion = Hash.new
+#       attributesRegion["id"] = regionsData["id"]
+#       if(regionsData["id"]=='Berlin2')
+#          attributesRegion["name"] = 'Berlin'
+#       elsif(regionsData["id"]=='Spain2')
+#          attributesRegion["name"] = 'Spain'
+#       elsif(regionsData["id"]=='Lannion2')
+#          attributesRegion["name"] = 'Lannion'
+#       elsif(regionsData["id"]=='Karlskrona2')
+#          attributesRegion["name"] = 'Karlskrona'
+#       elsif(regionsData["id"]=='Budapest2')
+#          attributesRegion["name"] = 'Budapest'
+#       elsif(regionsData["id"]=='Stockholm2')
+#          attributesRegion["name"] = 'Stockholm'
+#       else 
+#         attributesRegion["name"] = regionsData["name"]
+#       end
+#       
+#       attributesRegion["country"] = regionsData["country"]
+#       attributesRegion["latitude"] = regionsData["latitude"]
+#       attributesRegion["longitude"] = regionsData["longitude"]
+#       
+#       if regionsData["measures"]!= nil && regionsData["measures"].length > 0 && regionsData["measures"][0]!= nil
+# 	
+# 	attributesRegion["timestamp"] = regionsData["measures"][0]["timestamp"]
+# 	attributesRegion["nb_users"] = regionsData["measures"][0]["nb_users"]
+# 	attributesRegion["nb_cores"] = regionsData["measures"][0]["nb_cores"]
+# 	attributesRegion["nb_cores_used"] = regionsData["measures"][0]["nb_cores_used"]
+# 	attributesRegion["nb_ram"] = regionsData["measures"][0]["nb_ram"]
+# 	attributesRegion["percRAMUsed"] = regionsData["measures"][0]["percRAMUsed"]
+# 	if(regionsData["measures"][0]["cpu_allocation_ratio"])
+# 	  attributesRegion["cpu_allocation_ratio"] = regionsData["measures"][0]["cpu_allocation_ratio"]
+# 	else
+# 	  attributesRegion["cpu_allocation_ratio"] = 16.0
+# 	end
+# 	if(regionsData["measures"][0]["ram_allocation_ratio"])
+# 	  attributesRegion["ram_allocation_ratio"] = regionsData["measures"][0]["ram_allocation_ratio"]
+# 	else
+# 	  attributesRegion["ram_allocation_ratio"] = 1.5
+# 	end
+# 	attributesRegion["nb_disk"] = regionsData["measures"][0]["nb_disk"]
+# 	attributesRegion["percDiskUsed"] = regionsData["measures"][0]["percDiskUsed"]
+# 	attributesRegion["ipTot"] = regionsData["measures"][0]["ipTot"]
+# 	attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
+# 	attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
+# 	attributesRegion["nb_vm"] = regionsData["nb_vm"]
+# 	
+#       end
+#       
+# 
+#       return attributesRegion
+#     end 
+#     return nil
+#   end
   
   #render specific data about one region since timestamp
   def renderRegionsDataForRegionSince
@@ -1354,7 +1358,7 @@ class RegionController < ApplicationController
       if fromDate!=nil
 	timeago = fromDate
       end
-      if toDate=nil
+      if toDate == nil
 	timenow = toDate
       end
       
@@ -1388,9 +1392,9 @@ class RegionController < ApplicationController
   
   #render data about services of all regions
   def renderServices
-    
+    histogramData = params[:histogramData]
     begin
-      regionsData = self.getRegionsData("Histogram")
+      regionsData = self.getRegionsData(histogramData)
     rescue CustomException => e
       if e.status
 	render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => e.status

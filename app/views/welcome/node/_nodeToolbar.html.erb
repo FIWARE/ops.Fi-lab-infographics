@@ -9,9 +9,9 @@
   <h5 class="tablet"><%= @nameNode%></h5>
   <ul class="main_nav">
     <li class="home<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'node' %>">
-      <%= link_to node_path(@idNode) do %>
+      <%= link_to root_url(subdomain: 'status.lab') do %>
         <i class='icon_menu-20-home'></i>
-        <h2>Home</h2>
+        <h2>Back to Status</h2>
       <% end %>
     </li>
    <!-- <li class="resources<%= ' active' if controller.controller_name == 'welcome' and controller.action_name == 'history' %>">

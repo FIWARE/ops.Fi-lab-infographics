@@ -1527,15 +1527,25 @@ class RegionController < ApplicationController
     
     if hostsData != nil
       idHosts = [] 
+      hosts = []
       
       hostsData["hosts"].each do |host|
-		idHosts.push(host["id"])
+	if host["id"] != "None"
+	  begin
+	    hostData = self.getHostForNodeId(host["id"],idNode)
+	    if(hostData["id"] != nil && !(idHosts.include? hostData["id"]))
+	      idHosts.push(hostData["id"])
+	      hosts.push(hostData)
+	    end
+	  rescue CustomException => e
+	  end
+	end
       end
       
       totValues = Hash.new
 
-      totValues["total_hosts_ids"] = idHosts;
-      totValues["total_hosts_count"] = idHosts.count;
+      totValues["total_hosts"] = hosts;
+      totValues["total_hosts_count"] = hosts.count;
       
       return totValues
       

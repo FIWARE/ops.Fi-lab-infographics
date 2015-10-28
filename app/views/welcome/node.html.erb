@@ -631,7 +631,7 @@
 			      }
 			      $('#errorMessageHosts').html("");
 			      
-			      var idHosts = totData["total_hosts_ids"];
+			      var hosts = totData["total_hosts"];
 			      var idHostsCount = totData["total_hosts_count"];
 			      //draw table with # empty raws
 // 			      $('#tableContentHost').html("");
@@ -661,53 +661,20 @@
 			      
 			      for (var i=0;i<idHostsCount;i++)
 			      {
-				  var theHostId = totData["total_hosts_ids"][i];
-				  var allRows ="<DIV CLASS='status-row row-status-service row-status-closed' id='"+theHostId+"' style='height:95px;'>"+
+				  var theHostId = hosts[i]["id"];
+				  var allRows ="<DIV CLASS='status-row row-status-service row-status-closed' id='"+theHostId+"' style='height:98px;'>"+
 						    "<DIV CLASS=\"field field-group field-group-expand\"></DIV>"+
 						    "<a name=\""+theHostId+"\"></a>"+
-						    "<DIV CLASS=\"field field-service field-service-node "+theHostId+"\" style='line-height:95px;'>"+theHostId+"</DIV>"+			
-						"</DIV>";
-						console.log(allRows);
-				  $('#tableContentHost').append(allRows);
-				  console.log(totData["total_hosts_ids"]);
-				  console.log(i);
-				  console.log(theHostId);
-				  $.ajax (
-					    {
-						  type: "GET",
-						  url: "../../api/v1/region/"+"<%= @idNode %>"+"/hosts/"+theHostId,//to know data of host of the region
-						  contentType: "application/json; charset=utf-8",
-						  data: {},
-						  dataType: "json",
-						  cache: false,
-						  success: function(json){
-						      
-						    var totData = json;
-						    if(totData == null || totData == "undefined") return;
-						    
-// 						    var ipList = "";
-// 						    
-// 						    if(totData["ipList"] != null && totData["ipList"] != "undefined")
-// 						    {
-// 						      $.each(totData["ipList"], function( index, value ) {
-// 							if(ipList == "") ipList = "["
-// 							ipList = ipList+value;
-// 							if(index == totData["ipList"].length-1) ipList = ipList+"]"
-// 							else ipList = ipList+"; "
-// 						      });
-// 						    }
-						    console.log(totData["id"]);
-// 						    $("#"+totData["id"]+"").append("<!--<DIV CLASS='field field-service field-service-status-support' style='font-size:11px;'></DIV>--><DIV CLASS='field field-service field-service-status-support'>"+totData["percCPULoad"]+"</DIV><DIV CLASS='field field-service field-service-status-support'>"+totData["percRAMUsed"]+"</DIV><DIV CLASS='field field-service field-service-status-support'>"+totData["percDiskUsed"]+"</DIV><!--<DIV CLASS='field field-service field-service-status-support'>"+/*totData["sysUptime"]+*/"</DIV>-->");
-						    
-						    $("#"+totData["id"]+"").append("<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_cpu_"+totData["id"]+"\" style=\"padding-left: 6px\"></div></DIV>"+
-					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_ram_"+totData["id"]+"\" style=\"padding-left: 6px\"></div></DIV>"+
-					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_disk_"+totData["id"]+"\" style=\"padding-left: 6px\"></div></DIV>"+
+						    "<DIV CLASS=\"field field-service field-service-node "+theHostId+"\" style='line-height:95px;'>"+theHostId+"</DIV>"+
+						    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_cpu_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
+					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_ram_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
+					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_disk_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
 				  
 				    "<script type='text/javascript'>"+
 				    
 // 					  "google.load('visualization', '1', {packages:['gauge','corechart']});"+
 // 					  "google.setOnLoadCallback(function() {"+
-					  "function drawChart_"+String(totData["id"]).replace(/\W/g, '')+"() {"+
+					  "function drawChart_"+String(theHostId).replace(/\W/g, '')+"() {"+
 					    "var options = {"+
 					      "width: 100, height: 120,"+
 					      "redFrom: 90, redTo: 100,"+
@@ -716,57 +683,49 @@
 					    "};"+
 					    
 					    "var percCPULoad = 0;"+
-					    "if ("+totData["percCPULoad"]+") percCPULoad = parseFloat("+totData["percCPULoad"]+").toFixed(2);"+
+					    "if ("+hosts[i]["percCPULoad"]+") percCPULoad = parseFloat("+hosts[i]["percCPULoad"]+").toFixed(2);"+
 					    "var dataCpu = google.visualization.arrayToDataTable(["+
 					      "['Label', 'Value'],"+
 					      "['CPU', parseFloat(percCPULoad)]"+
 					    "]);"+
 					    
 					    "var percRAMUsed = 0;"+
-					    "if ("+totData["percRAMUsed"]+") percRAMUsed = parseFloat("+totData["percRAMUsed"]+").toFixed(2);"+
+					    "if ("+hosts[i]["percRAMUsed"]+") percRAMUsed = parseFloat("+hosts[i]["percRAMUsed"]+").toFixed(2);"+
 					    "var dataRam = google.visualization.arrayToDataTable(["+
 					      "['Label', 'Value'],"+
 					      "['RAM',parseFloat(percRAMUsed)]"
 +					    "]);"+
 					    
 					    "var percDiskUsed = 0;"+
-					    "if ("+totData["percDiskUsed"]+") percDiskUsed = parseFloat("+totData["percDiskUsed"]+").toFixed(2);"+
+					    "if ("+hosts[i]["percDiskUsed"]+") percDiskUsed = parseFloat("+hosts[i]["percDiskUsed"]+").toFixed(2);"+
 					    "var dataDisk = google.visualization.arrayToDataTable(["+
 					      "['Label', 'Value'],"+
 					      "['Disk',parseFloat(percDiskUsed)]"
 +					    "]);"+
 					    
-					    "var chartCpu = new google.visualization.Gauge(document.getElementById('chart_div_cpu_"+totData["id"]+"'));"+
+					    "var chartCpu = new google.visualization.Gauge(document.getElementById('chart_div_cpu_"+theHostId+"'));"+
 					    "chartCpu.draw(dataCpu, options);"+
 					    
-					    "var chartRam = new google.visualization.Gauge(document.getElementById('chart_div_ram_"+totData["id"]+"'));"+
+					    "var chartRam = new google.visualization.Gauge(document.getElementById('chart_div_ram_"+theHostId+"'));"+
 					    "chartRam.draw(dataRam, options);"+
 					    
-					    "var chartDisk = new google.visualization.Gauge(document.getElementById('chart_div_disk_"+totData["id"]+"'));"+
+					    "var chartDisk = new google.visualization.Gauge(document.getElementById('chart_div_disk_"+theHostId+"'));"+
 					    "chartDisk.draw(dataDisk, options);"+ 
 					  "};"+
-					  "drawChart_"+String(totData["id"]).replace(/\W/g, '')+"();"
+					  "drawChart_"+String(theHostId).replace(/\W/g, '')+"();"
 					  
 					  
 					  
 					  
 					  
-					  +"<\/script>");  
-						    
-						    
-						  },
-						  error: function(xhr, textStatus, errorThrown){
-						    //put a symbol in the raw to show that it has failed
-						      var errore = "<%= FiLabInfographics.nodata %>";
-						      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
-							      errore = xhr.responseText;
-		      // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
-						      $('#errorMessageHosts').html(errore);
-		      //     				alert('request failed->'+textStatus);
-		      //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
-						  } 
-					    }
-					  );
+					  +"<\/script>"+
+						"</DIV>";
+						console.log(allRows);
+				  $('#tableContentHost').append(allRows);
+// 				  console.log(totData["total_hosts_ids"]);
+				  console.log(i);
+				  console.log(theHostId);
+				  
 			      }
 			      
 			      

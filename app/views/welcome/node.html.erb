@@ -113,7 +113,7 @@
 	<DIV ID="status">
 	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
 		<DIV CLASS='field field-header field-header-node'>Node</DIV>
-		<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
+		<!--<DIV CLASS='field field-header field-header-overall'>Overall</DIV>-->
 		<DIV CLASS='field field-header field-header-service'>Nova</DIV>
 		<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
 		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
@@ -420,13 +420,28 @@
 				      }
 				      else
 				      {
-					switch (services['overallStatus']['value']) 
-					{
-					      case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
-					      case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
-					      case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
-					      default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
-					}
+					if(services['FiHealthStatus']!=null && 
+					  services['FiHealthStatus']!="undefined" &&
+					  services['FiHealthStatus']['value'] == 1)
+					  {
+					      switch (services['overallStatus']['value']) {
+						    case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
+						    case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
+						    case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
+						    default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+					      }
+					  }
+					  else if(services['FiHealthStatus']!=null && 
+					  services['FiHealthStatus']!="undefined")
+					  {
+					      switch (services['FiHealthStatus']['value']) {
+						    case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
+						    case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
+						    case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
+						    default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+					      }
+					  }
+					  else statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
 				      }
 				      markersData["style"] = {fill: statusColor, r:5};
 				      selectedMarkers = [];
@@ -435,10 +450,10 @@
 				      map.removeAllMarkers();
 				      map.addMarkers(selectedMarkers);
 				      
-				      var colorValueOverall = services["overallStatus"]['value'];
-				      var colorPng = colorValueOverall + "light.png";
-				      if (actualTime>(measureTime+deltaTime) || colorValueOverall == "undefined")colorPng="graylight.png";
-				      allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+// 				      var colorValueOverall = services["overallStatus"]['value'];
+				      var colorPng = "";/*colorValueOverall + "light.png";*/
+// 				      if (actualTime>(measureTime+deltaTime) || colorValueOverall == "undefined")colorPng="graylight.png";
+				      var allSubRows = ""/*"<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>"*/;
                                                           
 				      $.each(servicesNames, function( index, value ) {
 					if(value != "overallStatus" && value != "FiHealthStatus")
@@ -469,7 +484,7 @@
 						      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
 						      "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 					      "</DIV>"*/);
-				      $("#tableContent").append("<DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 559px; height: 59px;'>"+services["overallStatus"]['description']+"</div></DIV>");
+				      $("#tableContent").append("<DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 561px; height: 59px;'>"+services["overallStatus"]['description']+"</div></DIV>");
 					      
 				      $(".row-message").hide();				  
 				      $('.field-group-expand').click( function()
@@ -508,7 +523,7 @@
 				    },
 				    error: function(xhr, textStatus, errorThrown){
 				    
-				    $("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
+				    $("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
 						      "<!--<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>-->"+
 						      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
 					      "</DIV>");
@@ -542,7 +557,7 @@
 //     				alert('request failed->'+textStatus);
 //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
 
-				$("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
+				$("#"+"<%= @idNode %>").append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-support'>"+
 				"<!--<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>-->"+
 				"<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
 								      "</DIV>");

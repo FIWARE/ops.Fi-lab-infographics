@@ -5,6 +5,10 @@ body {
 	/*background-color: #FCFCFC;*/
 }
 
+.calendar-off table.ui-datepicker-calendar {
+    display:none !important;
+}
+    
 /* [INI] D3 Charts */
 
 svg {

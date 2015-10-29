@@ -440,31 +440,55 @@
 		    constrainInput: false,
 		    dateFormat: 'yy-mm-dd',
 		    maxDate: new Date(),
-		    minDate: new Date(2015,7,11)
+		    minDate: new Date(2015,7,11),
+		    beforeShow : function(input, inst) {
+
+			inst.dpDiv.removeClass('calendar-off');
+		    }
 		    
 		  });
 		  var d=new Date(); // current date
 		  d.setDate(1); // going to 1st of the month
 		  d.setHours(-1); // going to last hour before this date even started.
+// 		  $( "#datepickerHistogramFrom" ).datepicker({
+// 		    constrainInput: false,
+// 		    dateFormat: 'yy-mm-dd',
+// 		    maxDate: d,
+// 		    minDate: new Date(2015,6,1)
+// 		    
+// 		  });
+		  var nowDate = new Date();
+		  
+		  nowDate.setMonth(nowDate.getMonth() - 6);
+		  var nmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
+		  var nday = nowDate.getDate();//if (nday<10)nday="0"+nday;
+		  var nowString = nowDate.getFullYear() + "-" + nmonth;
+		  
+		  
 		  $( "#datepickerHistogramFrom" ).datepicker({
-		    constrainInput: false,
-		    dateFormat: 'yy-mm-dd',
-		    maxDate: d,
-		    minDate: new Date(2015,6,1)
+			dateFormat: "yy-mm",
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: false,
+                        maxDate: d,
+			minDate: new Date(2015,7,1),
+			defaultDate: new Date(nowDate.getFullYear(), nmonth, 1),
+                        onChangeMonthYear: function(year, month, inst) {
+			    if(month != "undefined" && parseInt(month) < 10) month = "0"+month;
+			    $(this).val(year+"-"+month);
+			    $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
+			    
+                        },
+                        beforeShow : function(input, inst) {
+
+                            inst.dpDiv.addClass('calendar-off');
+// 			    $(".ui-datepicker-calendar").hide();
+                        }
 		    
 		  });
 		  
-		  var nowDate = new Date();
-// 		      var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
-// 		      var nday = nowDate.getDate();if (nday<10)nday="0"+nday;
-// 		      var nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
-// 		      $( "#datepickerTo" ).datepicker('setDate', nowString);
-		  
-		  nowDate.setMonth(nowDate.getMonth() - 6);
-		  nmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
-		  nday = nowDate.getDate();//if (nday<10)nday="0"+nday;
-		  nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
-		  $( "#datepickerHistogramFrom" ).datepicker('setDate', nowString);
+		  $( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(nowDate.getFullYear(), nmonth, 1));
+// 		  alert(new Date(nowDate.getFullYear(), nmonth, 1));
 // 		  $( "#datepickerTo" ).datepicker({
 // 		    constrainInput: false,
 // 		    dateFormat: 'yy-mm-dd',
@@ -517,25 +541,13 @@
 		  
 		  $( ".showHistogram" ).button().click(function(){ 
 		      var valFrom = $("#datepickerHistogramFrom").val();
+		      
 		      if(valFrom == null || valFrom == "undefined")
 		      {
 			  alert("From Date is not valid");
 			  return;
 		      }
-		      var dateFrom = Date.parse( valFrom );
 		      
-// 		      var valTo = $("#datepickerTo").val();
-// 		      var dateTo = Date.parse( valTo );
-
-		      if (isNaN(dateFrom) == true) {
-			alert("From Date is not valid")
-		      }
-// 		      else if (isNaN(dateTo) == true) {
-// 			alert("To Date is not valid")
-// 		      }
-// 		      else if (dateFrom > dateTo) {
-// 			alert("To Date must be greater than From Date")
-// 		      }
 		      else {
 // 			var from = $( "#datepickerHistogramFrom" ).datepicker( "getDate" );
 // 			var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
@@ -758,12 +770,13 @@
 				    
 				    var fromString = "";
 				    
-				    var from = $( "#datepickerHistogramFrom" ).datepicker( "getDate" );
-				    if(from != null && from != "undefined" && isNaN(Date.parse( from )) == false)
+				    var from = $( "#datepickerHistogramFrom" ).val();
+				    if(from != null && from != "undefined")
 				    {
-					var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
-					var fday = from.getDate();if (fday<10)fday="0"+fday;
-					fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+// 					var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+// 					var fday = from.getDate();if (fday<10)fday="0"+fday;
+// 					fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+					fromString = from + "-01";
 				    }
 				    else{
 					var nowDate = new Date();
@@ -1022,10 +1035,25 @@
 		  $("#imgServices").show();
 		  $("#imgHistorical").show();
 		
-		  var from = $( "#datepickerHistogramFrom" ).datepicker( "getDate" );
-		  var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
-		  var fday = from.getDate();if (fday<10)fday="0"+fday;
-		  var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+		
+		  var fromString = "";
+				    
+		  var from = $( "#datepickerHistogramFrom" ).val();
+		  if(from != null && from != "undefined")
+		  {
+// 					var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+// 					var fday = from.getDate();if (fday<10)fday="0"+fday;
+// 					fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+		      fromString = from + "-01";
+		  }
+		  else{
+		      var nowDate = new Date();
+    
+		      nowDate.setMonth(nowDate.getMonth() - 6);
+		      var fmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
+		      var fday = nowDate.getDate();//if (nday<10)nday="0"+nday;
+		      fromString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+		  }
 		  var jsonToSend = {
 		      'histogramData' : {
 			  'since' : fromString,

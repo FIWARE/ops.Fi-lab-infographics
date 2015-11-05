@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140828211608) do
+ActiveRecord::Schema.define(version: 20150813193654) do
 
   create_table "fi_lab_app_organizations", force: true do |t|
     t.string   "name"
@@ -46,17 +46,14 @@ ActiveRecord::Schema.define(version: 20140828211608) do
     t.string   "name"
     t.string   "nickname"
     t.integer  "node_id"
-  end
-
-  create_table "fi_lab_infographics_institution_categories", force: true do |t|
-    t.string "name"
-    t.string "logo"
+    t.string   "actorid"
   end
 
   create_table "fi_lab_infographics_institutions", force: true do |t|
-    t.integer "category_id"
-    t.string  "name"
-    t.string  "logo"
+    t.string "name"
+    t.string "logo"
+    t.string "link"
+    t.text   "description"
   end
 
   create_table "fi_lab_infographics_messages", force: true do |t|
@@ -66,11 +63,18 @@ ActiveRecord::Schema.define(version: 20140828211608) do
     t.datetime "created_at"
   end
 
-  create_table "fi_lab_infographics_nodes", force: true do |t|
-    t.string "rid"
+  create_table "fi_lab_infographics_node_categories", force: true do |t|
     t.string "name"
-    t.string "jira_project_url"
-    t.string "jira_project_id"
+    t.string "logo"
+    t.text   "description"
+  end
+
+  create_table "fi_lab_infographics_nodes", force: true do |t|
+    t.string  "rid"
+    t.string  "name"
+    t.string  "jira_project_url"
+    t.string  "jira_project_id"
+    t.integer "category_id"
   end
 
   create_table "fi_lab_infographics_nodes_institutions", id: false, force: true do |t|

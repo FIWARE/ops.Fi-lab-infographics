@@ -2,7 +2,7 @@ require_dependency 'fi_lab_app'
 
 FiLabApp.setup do |config|
 
-  config.account_server = 'https://account.lab.fi-ware.org'
+  config.account_server = 'https://account.lab.fiware.org'
 
   config.client_id = ''
 
@@ -10,7 +10,7 @@ FiLabApp.setup do |config|
 
   # The domain this app in installed at
   #
-  # config.domain    = 'app.lab.fi-ware.org'
+  # config.domain    = 'app.lab.fiware.org'
 
   # The servives available in the portal
   #
@@ -41,7 +41,7 @@ FiLabApp.setup do |config|
 
   # The subdomain of the portal: cloud, store, mashup
   #
-  # config.subdomain = 'lab.fi-ware.org'
+  # config.subdomain = 'lab.fiware.org'
 
   # enable or disable Google Analytics
   # config.ga = 0

@@ -2,7 +2,7 @@
       FIWARE Lab Nodes
     </h3>
     <span>
-      FIWARE Lab is a working instance of FI-WARE available for experimentation. FIWARE Lab is hosted on multiple nodes across Europe. 
+      FIWARE Lab is a working instance of FIWARE available for experimentation. FIWARE Lab is hosted on multiple nodes across Europe. 
     </span>
     <p>
       This page provides a real time infographics of the capacities of FIWARE Lab nodes.
@@ -10,238 +10,129 @@
     <%= render :partial => "topbar" %>
   </section>
 
-<div class="layoutContainer">
+<div id="error" style="display: none; text-align: center;" class="layoutContainer">
+  <span id="errorMessage"></span>
+</div>
+
+<div id="infographics" class="layoutContainer">
 	<div class="row-fluid">
-	  <div class="span6" style="margin: 0 auto;float: none;">
+	    <div class="span12">
+		<div class="map-container">
+		  <div id="world-map-nodes"></div>
+		  <div id="loadingMap" class="aftermap">Loading <span class="regionsNum"></span> Nodes...</div>
+		</div>
+		
+		<div id="mini-tiles">
+		  <div class="tile selected" id="users" onclick="loadMap(this.id);">
+		      <div class="tileListContainer">
+			  <div class="tileList"><span id="usersNum"></span> users</div>
+			  <div class="tileSubList"><span id="basicNum"></span> Basic Users</div>
+			  <div class="tileSubList"><span id="trialNum"></span> Trial Users</div>
+			  <div class="tileSubList"><span id="communityNum"></span> Community Users</div>
+		      </div>
+		  </div>
+		  <div class="tile selected" id="users1" onclick="loadMap(this.id);">
+		      <div class="tileListContainer">	
+			  <div class="tileList"><span class="regionsNum"></span> regions</div>
+			  <div class="tileList"><span id="orgsNum"></span> orgs.</div>
+			  <div class="tileList"><span id="parternCount"></span> insts.</div>
+		      </div>
+		  </div>
+		  <div class="tile" id="cpu" onclick="loadMap(this.id);">
+		      <div class="centerIcon">
+			      <img src="/assets/infographic/iconCpu.png" height="55"/>
+		      </div>
+		      <div class="centerTileDetail">
+			      <span id="coresNum"></span> cores
+		      </div>
+		      <div class="clear"></div>
+		  </div>
+		  <div class="tile" id="ram" onclick="loadMap(this.id);">
+		      <div class="centerIcon">
+			      <img src="/assets/infographic/iconRam.png" height="55"/>
+		      </div>
+		      <div class="centerTileDetail">
+			      <span id="ramNum"></span> GB
+		      </div>
+		      <div class="clear"></div>
+		  </div>
+		  <div class="tile" id="hd" onclick="loadMap(this.id);">
+		      <div class="centerIcon">
+			      <img src="/assets/infographic/iconDisk.png" height="55"/>
+		      </div>
+		      <div class="centerTileDetail">
+			      <span id="hdNum"></span> TB
+		      </div>
+		      <div class="clear"></div>
+		  </div>
+		  <div class="tile" id="ip" onclick="loadMap(this.id);">
+		      <div class="centerIcon">
+			      <img src="/assets/infographic/iconNetwork.png" height="55"/>
+		      </div>
+		      <div class="centerTileDetail">
+			      <span id="ipNum"></span> public IPs
+		      </div>
+		      <div class="clear"></div>
+		  </div>
+		  <div class="tile" id="vm" onclick="loadMap(this.id);">
+		      <div class="centerIcon">
+			      <img src="/assets/infographic/iconVM.png" height="55"/>
+		      </div>
+		      <div class="centerTileDetail">
+			      <span id="vmNum"></span> VM
+		      </div>
+		      <div class="clear"></div>
+		  </div>
+		  <div class="clear"></div>
+		</div>
+	    </div>
+	</div>
+	<div class="row-fluid">
+	    <div class="span12">	
 		<div class="section">
-			<div class="headerSection accordionTitle">
+			<div class="headerSection accordionTitle ">
 				<div class="leftIcon">
-					<img src="/assets/infographic/iconOmino.png" height="55"/>
+					<img src="/assets/infographic/iconInstitution.png" height="55"/>
+					
 				</div>
-				<div class="rightDetail">
-					<span id="usersNum"></span> users
+				<div class="partnerType">
+					FIWARE Lab Capacity is supported by:
 				</div>
+				<!--<div class="rightDetail">
+					<div id="parternCount"></div>
+				</div>-->
 				<div class="clear"></div>
 			</div>
-			<div class="bodySection accordionPanel smallPanel">
-				<div id="biggerMen"></div>
-				<div id="bigMen"></div>
-				<div id="mediumMen"></div>
-				<div id="smallMen"></div>
-			</div>
-		    </div>
-		    
-		    <div class="section">
-			<div class="headerSection accordionTitle">
-				<div class="leftIcon">
-					<img src="/assets/infographic/iconOrg.png" height="55"/>
+			<div class="bodySection accordionPanel bigPanel leaveOpen" id="parternList">
+				<div class="parternList">
+					Loading...
+					<!--<img src="/assets/infographic/loghi/acreo.jpg"/>
+					<img src="/assets/infographic/loghi/atos.jpg"/>
+					<img src="/assets/infographic/loghi/cesnet.png"/>
+					<img src="/assets/infographic/loghi/createnet.gif"/>
+					<img src="/assets/infographic/loghi/eng.png"/>
+					<img src="/assets/infographic/loghi/eurescom.jpg"/>
+					<img src="/assets/infographic/loghi/gowex.jpg"/>
+					<img src="/assets/infographic/loghi/orange.jpg"/>
+					<img src="/assets/infographic/loghi/telecom.jpg"/>
+					<img src="/assets/infographic/loghi/telefonica.jpg"/>
+					<img src="/assets/infographic/loghi/thales.gif"/>
+					<img src="/assets/infographic/loghi/tn.png"/>-->
 				</div>
-				<div class="rightDetail">
-					<span id="orgsNum"></span> organizations
-				</div>
-				<div class="clear"></div>
 			</div>
-			<div class="bodySection accordionPanel smallPanel">
-				<div id="biggerOrg"></div>
-				<div id="bigOrg"></div>
-				<div id="mediumOrg"></div>
-				<div id="smallOrg"></div>
-			</div>
-		    </div>
-
-		    <div class="section">
-			<div class="headerSection accordionTitle">
-				<div class="leftIcon">
-					<img src="/assets/infographic/iconMondo.png" height="55"/>
-				</div>
-				<div class="rightDetail">
-					<span id="regionsNum"></span> regions
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="bodySection accordionPanel bigPanel">
-				<div id="world-map"></div>
-			</div>
-		    </div>
-
-		    <div class="section">
-			<div class="headerSection accordionTitle">
-				<div class="leftIcon">
-					<img src="/assets/infographic/iconCpu.png" height="55"/>
-				</div>
-				<div class="rightDetail">
-					<span id="coresNum"></span> core
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="bodySection accordionPanel bigPanel">
-				<div id="world-map-cpu"></div>
-			</div>
-		    </div>
-
-		    <div class="section">
-			<div class="headerSection accordionTitle">
-				<div class="leftIcon">
-					<img src="/assets/infographic/iconRam.png" height="55"/>
-				</div>
-				<div class="rightDetail">
-					<span id="ramNum"></span> Mb
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="bodySection accordionPanel bigPanel">
-				<div id="world-map-ram"></div>
-			</div>
-		    </div>
-
-		    <div class="section">
-			<div class="headerSection accordionTitle">
-				<div class="leftIcon">
-					<img src="/assets/infographic/iconDisk.png" height="55"/>
-				</div>
-				<div class="rightDetail">
-					<span id="hdNum"></span> Gb
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="bodySection accordionPanel bigPanel">
-				<div id="world-map-disk"></div>
-			</div>
-		    </div>
-
-		    <div class="section">
-			<div class="headerSection accordionTitle">
-				<div class="leftIcon">
-					<img src="/assets/infographic/iconVM.png" height="55"/>
-				</div>
-				<div class="rightDetail">
-					<span id="vmNum"></span> VM
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="bodySection accordionPanel bigPanel">
-				<div id="world-map-vm"></div>
-			</div>
-		    </div>
-
-	  </div>
+		
+			<!--<div class="partnerType">
+				<h3>Institutional</h3><span class="badge">14</span>
+			</div>-->
+			
+		</div>			
+	    </div>
+	</div>
+	
 </div>
         
 
-<!--<section class="infographic">
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconOmino.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="usersNum"></span> users
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel smallPanel">
-		<div id="biggerMen"></div>
-		<div id="bigMen"></div>
-		<div id="mediumMen"></div>
-		<div id="smallMen"></div>
-	</div>
-    </div>
-    
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconOrg.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="orgsNum"></span> organizations
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel smallPanel">
-		<div id="biggerOrg"></div>
-		<div id="bigOrg"></div>
-		<div id="mediumOrg"></div>
-		<div id="smallOrg"></div>
-	</div>
-    </div>
-
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconMondo.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="regionsNum"></span> regions
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel bigPanel">
-		<div id="world-map"></div>
-	</div>
-    </div>
-
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconCpu.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="coresNum"></span> core
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel bigPanel">
-		<div id="world-map-cpu"></div>
-	</div>
-    </div>
-
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconRam.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="ramNum"></span> Mb
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel bigPanel">
-		<div id="world-map-ram"></div>
-	</div>
-    </div>
-
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconDisk.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="hdNum"></span> Gb
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel bigPanel">
-		<div id="world-map-disk"></div>
-	</div>
-    </div>
-
-    <div class="section">
-	<div class="headerSection accordionTitle">
-		<div class="leftIcon">
-			<img src="/assets/infographic/iconVM.png" height="55"/>
-		</div>
-		<div class="rightDetail">
-			<span id="vmNum"></span> VM
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="bodySection accordionPanel bigPanel">
-		<div id="world-map-vm"></div>
-	</div>
-    </div>
-
-    
-</section>
+<!--
 
 <section class="partners">
 	<div class="section">
@@ -328,57 +219,236 @@
 //          $(window).resize(function(){
 //            location.reload();
 //          });
+	  var semaforo = 0;
+	  var map;
+	  var selectedMarkers = [];
+	  var selectedRegions = [];
+	  var selectedRegionsCpu = [];
+	  var selectedMarkersCpu = [];
+	  var selectedRegionsRam = [];
+	  var selectedMarkersRam = [];
+	  var selectedRegionsDisk = [];
+	  var selectedMarkersDisk = [];
+	  var selectedRegionsVm = [];
+	  var selectedMarkersVm = [];
+	  var selectedRegionsIp = [];
+	  var selectedMarkersIp = [];
+	  var tileSelected = "users";
+				
+	   function loadMap(divId) {
+		$('.tile').removeClass('selected');
+		$('.tileRight').removeClass('selected');
+		
+		if(divId == "users" || divId == "users1")
+		{
+		    $('#users').addClass('selected');
+		    $('#users1').addClass('selected');
+		}
+		else
+		  $('#'+divId).addClass('selected');
+		
+		tileSelected = divId;
+		
+		switch (divId) {
+		    case "users": 
+		    case "users1": 
+		    {
+		      if(selectedMarkers!=[] && selectedRegions!=[])
+		      {
+			  map.clearSelectedRegions();
+			  map.setSelectedRegions(selectedRegions);
+				
+			  map.removeAllMarkers();
+			  map.addMarkers(selectedMarkers);
+		      }
+		      break;
+		    }
+		    case "cpu": 
+		    {
+		      if(selectedMarkersCpu!=[] && selectedRegionsCpu!=[])
+		      {
+			  var array_values_cpu = new Array();
+			  for (var key in selectedRegionsCpu) {
+			    array_values_cpu.push(parseInt(selectedRegionsCpu[key]));
+			  }
+			
+			  map.clearSelectedRegions();
+			  map.series.regions[0].clear();		     
+			  var max_of_cpu = Math.max.apply(Math, array_values_cpu);
+			  var min_of_cpu = Math.min.apply(Math, array_values_cpu);
+			  map.series.regions[0].scale['minValue'] = min_of_cpu;
+			  map.series.regions[0].scale['maxValue'] = max_of_cpu;
+			  map.series.regions[0].setValues(selectedRegionsCpu); 
+				
+			  map.removeAllMarkers();
+			  map.addMarkers(selectedMarkersCpu);
+		      }
+		      break;
+		    }
+		    case "hd": 
+		    {
+		      if(selectedMarkersDisk!=[] && selectedRegionsDisk!=[])
+		      {
+			  var array_values_disk = new Array();
+			  for (var key in selectedRegionsDisk) {
+			    array_values_disk.push(parseInt(selectedRegionsDisk[key]));
+			  }
+			  
+			  map.clearSelectedRegions();
+			  map.series.regions[0].clear();
+			  var max_of_disk = Math.max.apply(Math, array_values_disk);
+			  var min_of_disk = Math.min.apply(Math, array_values_disk);
+			  map.series.regions[0].scale['minValue'] = min_of_disk;
+			  map.series.regions[0].scale['maxValue'] = max_of_disk;
+			  map.series.regions[0].setValues(selectedRegionsDisk);
+			  
+			  map.removeAllMarkers();
+			  map.addMarkers(selectedMarkersDisk);
+		      }
+		      break;
+		    }
+		    case "ram": 
+		    {
+		      if(selectedMarkersRam!=[] && selectedRegionsRam!=[])
+		      {
+			  var array_values_ram = new Array();
+			  for (var key in selectedRegionsRam) {
+			    array_values_ram.push(parseInt(selectedRegionsRam[key]));
+			  }
+			  
+			  map.clearSelectedRegions();
+			  map.series.regions[0].clear();
+			  var max_of_ram = Math.max.apply(Math, array_values_ram);
+			  var min_of_ram = Math.min.apply(Math, array_values_ram);
+			  map.series.regions[0].scale['minValue'] = min_of_ram;
+			  map.series.regions[0].scale['maxValue'] = max_of_ram;
+			  map.series.regions[0].setValues(selectedRegionsRam);
+			  
+			  map.removeAllMarkers();
+			  map.addMarkers(selectedMarkersRam);
+		      }
+		      break;
+		    }
+		    case "ip": 
+		    {
+		      if(selectedMarkersIp!=[] && selectedRegionsIp!=[])
+		      {
+			  var array_values_ip = new Array();
+			  for (var key in selectedRegionsIp) {
+			    array_values_ip.push(parseInt(selectedRegionsIp[key]));
+			  }
+
+			  map.clearSelectedRegions();
+			  map.series.regions[0].clear();
+			  var max_of_ip = Math.max.apply(Math, array_values_ip);
+			  var min_of_ip = Math.min.apply(Math, array_values_ip);
+			  map.series.regions[0].scale['minValue'] = min_of_ip;
+			  map.series.regions[0].scale['maxValue'] = max_of_ip;
+			  map.series.regions[0].setValues(selectedRegionsIp);
+			  
+			  map.removeAllMarkers();
+			  map.addMarkers(selectedMarkersIp);
+		      }
+		      break;
+		    }
+		    case "vm": 
+		    {
+		      if(selectedMarkersVm!=[] && selectedRegionsVm!=[])
+		      {
+			  var array_values_vm = new Array();
+			  for (var key in selectedRegionsVm) {
+			    array_values_vm.push(parseInt(selectedRegionsVm[key]));
+			  }
+			  
+			  map.clearSelectedRegions();
+			  map.series.regions[0].clear();
+			  var max_of_vm = Math.max.apply(Math, array_values_vm);
+			  var min_of_vm = Math.min.apply(Math, array_values_vm);
+			  map.series.regions[0].scale['minValue'] = min_of_vm;
+			  map.series.regions[0].scale['maxValue'] = max_of_vm;
+			  map.series.regions[0].setValues(selectedRegionsVm);
+			  map.removeAllMarkers();
+			  map.addMarkers(selectedMarkersVm);
+		      }
+		      break;
+		    }
+		    default:     break;
+		}
+	    };
+	  
 	  $(document).ready(function() 
 	  {
 		  $('.status').removeClass('active');
 		  $('.infographic').addClass('active');
 		  
-  // 		$('#world-map').css('width',$('.section').css("width"));
-		  $('.bigPanel').css('height',(Math.round($('#world-map').width()*366/545))+40);
-		  $('#world-map').css('height',Math.round($('#world-map').width()*366/545));
-		  $('#world-map-cpu').css('height',Math.round($('#world-map-cpu').width()*366/545));
-		  $('#world-map-ram').css('height',Math.round($('#world-map-ram').width()*366/545));
-		  $('#world-map-disk').css('height',Math.round($('#world-map-disk').width()*366/545));
-		  $('#world-map-vm').css('height',Math.round($('#world-map-vm').width()*366/545));
-  // 		$('#world-map-ge').css('height',Math.round($('#world-map-ge').width()*366/545));
+		  
+		  $('#world-map-nodes').css('width',Math.round($('.span12').width()));
+		  $('#world-map-nodes').css('height',Math.round($('.span12').width()*300/545));
+
 		  /** =================================================================
 		  *  Map
 		  **/
-		  var map = new jvm.WorldMap({
+		  map = new jvm.WorldMap({
   // 		var map = $('#world-map').vectorMap({
-		  container: $('#world-map'),
+		  container: $('#world-map-nodes'),
 		  map: 'world_mill_en',
-			  backgroundColor: 'white',
+		  backgroundColor: 'white',
+		  zoomOnScroll: false,
 
-			  regionStyle: {
-							    initial: {
-							      fill: '#999999',
-							      "fill-opacity": 1,
-							      stroke: 'none',
-							      "stroke-width": 0,
-							      "stroke-opacity": 1
-							    },
-							    hover: {
-							      "fill-opacity": 0.8
-							    },
-							    selected: {
-								  fill: '#0071A4'
-							    },
-							    selectedHover: {
-							    }
-						  },
-			  markerStyle: {
-				initial: {
-				  fill: '#ff9900',
-				  stroke: '#383f47'
-				}
-			  }
+		  regionStyle: {
+			initial: {
+			  fill: '#999999',
+			  "fill-opacity": 1,
+			  stroke: 'none',
+			  "stroke-width": 0,
+			  "stroke-opacity": 1
+			},
+			hover: {
+			  "fill-opacity": 0.8
+			},
+			selected: {
+			      fill: '#0071A4'
+			},
+			selectedHover: {
+			}
+		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			},
+			noUp: {
+			  fill: '#ffffff',
+			  stroke: '#000000'
+			}
+
+		  },
+		  series: {
+			    regions: [{
+					    scale: ['#C8EEFF', '#0071A4'],
+					    normalizeFunction: 'linear'
+			    }]
+		  },
+		  onRegionClick: function(event, code) {
+ 
+		     $('#world-map-nodes').vectorMap('set', 'focus', code);
+		      
+		      
+		  },
+		  onMarkerLabelShow: function(event, label, code) {
+		      label.html(label.html().replace(/\n/g,"<br>"));                
+		  }
 
 		  });
 
-		  $('#world-map').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+		  $('#world-map-nodes').vectorMap('set', 'focus', 1.7, 0.4, 0.5);
+		  
+		  $('#world-map-nodes').css('width',"100%");
 
-		  var mapCpu = new jvm.WorldMap({
+		 /* var mapCpu = new jvm.WorldMap({
   // 		$('#world-map-cpu').vectorMap({
 		  container: $('#world-map-cpu'),
 		  map: 'world_mill_en',
@@ -405,8 +475,11 @@
 			  stroke: '#383f47'
 			}
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
 		  series: {
-			    regions: [{/*values: {"IT":20,"DE":90},*/
+			    regions: [{
 			  // attribute:'fill',
 					scale: ['#C8EEFF', '#0071A4'],
   // 					      scale: {
@@ -448,6 +521,9 @@
 			  stroke: '#383f47'
 			}
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
 		  series: {
 			    regions: [{
 					    scale: ['#C8EEFF', '#0071A4'],
@@ -486,6 +562,9 @@
 		      stroke: '#383f47'
 		    }
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
 		  series: {
 			    regions: [{
 					    scale: ['#C8EEFF', '#0071A4'],
@@ -496,6 +575,50 @@
 		  });
 
 		  $('#world-map-disk').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+
+                var mapIp = new jvm.WorldMap({
+  //            $('#world-map-ip').vectorMap({
+                  container: $('#world-map-ip'),
+                  map: 'world_mill_en',
+                  regionStyle: {
+                            initial: {
+                              fill: '#ffffff',
+                              "fill-opacity": 1,
+                              stroke: 'none',
+                              "stroke-width": 0,
+                              "stroke-opacity": 1
+                            },
+                            hover: {
+                              "fill-opacity": 0.8
+                            },
+                            selected: {
+                                  fill: 'orange'
+                            },
+                            selectedHover: {
+                            }
+                  },
+                  markerStyle: {
+                    initial: {
+                      fill: '#ff9900',
+                      stroke: '#383f47'
+                    }
+                  },
+                  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
+                  series: {
+                            regions: [{
+                                            scale: ['#C8EEFF', '#0071A4'],
+                                            normalizeFunction: 'linear'
+                            }]
+                  }
+
+                  });
+
+                  $('#world-map-ip').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+
 
 		  var mapVm = new jvm.WorldMap({
   // 		$('#world-map-vm').vectorMap({
@@ -524,6 +647,9 @@
 			  stroke: '#383f47'
 			}
 		  },
+		  onMarkerClick: function(events, index) {
+		      window.location.href = '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id;	    
+		  },
 		  series: {
 			    regions: [{
 					    scale: ['#C8EEFF', '#0071A4'],
@@ -533,265 +659,323 @@
 
 		  });
 
-		  $('#world-map-vm').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
-
-		  function ajaxFun() { $.ajax (
-			    {
-			      type: "GET",
-			      url: "../api/v1/region",
-			      contentType: "application/json; charset=utf-8",
-			      data: {},
-			      dataType: "json",
-			      cache: false,
-			      success: function(json){
-
-  // 			      var obj = $.parseJSON(json);
-
-				var nUsers = parseInt(json['tot']['total_nb_users']);
-				var nOrganizations = parseInt(json['tot']['total_nb_organizations']);
-				var nCores = parseInt(json['tot']['total_nb_cores']);
-				var nRam = parseInt(json['tot']['total_nb_ram']); 
-				var nHd = parseInt(json['tot']['total_nb_disk']);
-				var nVm = parseInt(json['tot']['total_nb_vm']);
-				var nRegions = parseInt(json['tot']['total_regions_count']);
-
-				var selectedRegions = [];
-				var selectedMarkers = [];
-				var selectedRegionsCpu = [];
-				var selectedMarkersCpu = [];
-				var selectedRegionsRam = [];
-				var selectedMarkersRam = [];
-				var selectedRegionsDisk = [];
-				var selectedMarkersDisk = [];
-				var selectedRegionsVm = [];
-				var selectedMarkersVm = [];
-
-				$.each(json['regions'], function(key, val) {
-  // 				nUsers += parseInt(this['nUser']);
-  // 				nCores += parseInt(this['coreTot']);
-  // 				nRam += parseInt(this['ramTot']);
-  // 				nHd += parseInt(this['hdTot']);
-  // 				nVm += parseInt(this['vmTot']);
-  // 				nRegions += 1;
-
-  // 				selectedRegions = selectedRegions + '\'' + key  + '\'';
-				  selectedRegions.push(this['country']);
-				  selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
-				  selectedRegionsRam[this['country']] = parseInt(this['nb_ram']);
-				  selectedRegionsDisk[this['country']] = parseInt(this['nb_disk']);
-				  selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
-
-				  if(this['latitude'] != "" && this['longitude'] != "")
-				  {
-				      var marker = {};
-				      marker["latLng"] = [];
-				      marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      marker["name"] = this['name'];
-				      selectedMarkers.push(marker);
+		  $('#world-map-vm').vectorMap('set', 'focus', 4.3, 0.5, 0.3);	*/	 
+		  
+		  function ajaxInstitutionsFun() { 
+		      $.ajax (
+				{
+				      type: "POST",
+				      url: "../../api/v1/institution",//to get institutions
+				      contentType: "application/json; charset=utf-8",
+				      data: {},
+				      dataType: "json",
+				      cache: false,
+				      success: function(json){
+					  
+					var institutionsData = json;
+					  
+					if(institutionsData != null && institutionsData != "undefined" )
+					{
+					  $(".parternList").html("");
+					  
+					  var parternCount = institutionsData.length;
+					  $("#parternCount").html(parternCount);//("<span class=\"badge\">"+parternCount+"</span>");
+    // 				      var parternRows = Math.ceil(parternCount/3);
+    // 				      var heightPanel = parternRows*130;
+					  
+					  
+					  
+					  $.each(institutionsData, function( index, institution ){
+					  
+					    if(institution["link"]!= null && institution["link"] != "undefined")
+					      $(".parternList").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+					    else
+					      $(".parternList").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+					    
+    // 					$('#parternList').css('height',$(".parternList").height()+10);
+					    });  
+					    
+					    if(parternCount==0) $(".parternList").html("No institutions found");
+					  
+					}
+    // 				    $("#imgHistoryMessages").hide();  
+				      },
+				      error: function(xhr, textStatus, errorThrown){
+					var errore = "<%= FiLabInfographics.nodata %>";
+					if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+						errore = xhr.responseText;
+	      // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+					$(".parternList").html(errore);
+	      //     				alert('request failed->'+textStatus);
+	  //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+    // 				    $("#imgHistoryMessages").hide();
+				      } 
+			    }
+		      );
+		  };
+		  
+		  function ajaxFun() { 		
+		    if(semaforo > 0) 
+		    {
+		      return;
+		    }
+		    semaforo = 1;
+		 
+		    $.ajax (
+				{
+				      type: "GET",
+				      url: "../api/v1/region/totData",//to know how many regions
+				      contentType: "application/json; charset=utf-8",
+				      data: {},
+				      dataType: "json",
+				      cache: false,
+				      success: function(json){
 				      
-				      var markerCpu = {};
-				      markerCpu["latLng"] = [];
-				      markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerCpu["name"] = this['name'] + " (" + this['nb_cores'] + " core)";
-				      selectedMarkersCpu.push(markerCpu);
+					var totData = json;
+					if(totData == null || totData == "undefined") return;
+					
+					$( "#infographics" ).show();
+					$( "#error" ).hide();
+					
+					var nBasicUsers = parseInt(totData['basicUsers']);
+					var nTrialUsers = parseInt(totData['trialUsers']);
+					var nCommunityUsers = parseInt(totData['communityUsers']);
+					var nUsers = nBasicUsers + nTrialUsers + nCommunityUsers;
+	// 				var nUsers = parseInt(totData['total_nb_users']);
+					if (nUsers == 0)
+					  nUsers = 2026 
+					var nOrganizations = parseInt(totData['totalUserOrganizations']);
+					if (nOrganizations == 0)
+					  nOrganizations = 549
+					var nCores = parseInt(totData['total_nb_cores']);
+					var nRam = Math.round(parseInt(totData['total_nb_ram'])/1024); 
+					var nHd = Math.round(parseInt(totData['total_nb_disk'])/1024);
+					var nVm = parseInt(totData['total_nb_vm']);
+					var nRegions = parseInt(totData['total_regions_count']);
+					var nIp = parseInt(totData['total_ip']);
+					
+					$('#usersNum').html(nUsers);
+				    
+					$('#basicNum').html(nBasicUsers); 
+					$('#trialNum').html(nTrialUsers);  
+					$('#communityNum').html(nCommunityUsers);  
+					
+					$('#orgsNum').html(nOrganizations);
+					$('.regionsNum').html(nRegions);
+					$('#coresNum').html(nCores);
+					$('#ramNum').html(nRam);
+					$('#hdNum').html(nHd);
+					$('#vmNum').html(nVm);
+					$('#ipNum').html(nIp);
+					
+					$.ajax (
+					{
+					  type: "GET",
+					  url: "../api/v1/region",
+					  contentType: "application/json; charset=utf-8",
+					  data: {},
+					  dataType: "json",
+					  cache: false,
+					  success: function(json){
 
-				      var markerRam = {};
-				      markerRam["latLng"] = [];
-				      markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerRam["name"] = this['name'] + " (" + this['nb_ram'] + " Mb)";
-				      selectedMarkersRam.push(markerRam);
+					    semaforo = 0;
+					    $('#loadingMap').removeClass();
+					    $('#loadingMap').addClass('aftermaphide');
+					    selectedMarkers = [];
+					    selectedRegions = [];
+					    selectedRegionsCpu = [];
+					    selectedMarkersCpu = [];
+					    selectedRegionsRam = [];
+					    selectedMarkersRam = [];
+					    selectedRegionsDisk = [];
+					    selectedMarkersDisk = [];
+					    selectedRegionsVm = [];
+					    selectedMarkersVm = [];
+					    selectedRegionsIp = [];
+					    selectedMarkersIp = [];				
+					    
+					    
+					    var actualTime = Math.floor(Date.now() / 1000)
+					    var deltaTime = 10800;
+					    $.each(json['regions'], function(key, val) {
+	      // 				nUsers += parseInt(this['nUser']);
+	      // 				nCores += parseInt(this['coreTot']);
+	      // 				nRam += parseInt(this['ramTot']);
+	      // 				nHd += parseInt(this['hdTot']);
+	      // 				nVm += parseInt(this['vmTot']);
+	      // 				nRegions += 1;
 
-				      var markerDisk = {};
-				      markerDisk["latLng"] = [];
-				      markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerDisk["name"] = this['name'] + " (" + this['nb_disk'] + " Gb)";
-				      selectedMarkersDisk.push(markerDisk);
+	      // 				selectedRegions = selectedRegions + '\'' + key  + '\'';
+					      selectedRegions.push(this['country']);
+					      if (selectedRegionsCpu[this['country']] == null)
+						selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
+					      else 
+						selectedRegionsCpu[this['country']] += parseInt(this['nb_cores']);
+					      if (selectedRegionsRam[this['country']] == null)
+						selectedRegionsRam[this['country']] = parseInt(this['nb_ram'])/1024;
+					      else
+						selectedRegionsRam[this['country']] += parseInt(this['nb_ram'])/1024;
+					      if (selectedRegionsDisk[this['country']] == null)
+						selectedRegionsDisk[this['country']] = parseInt(this['nb_disk'])/1024;
+					      else
+						selectedRegionsDisk[this['country']] += parseInt(this['nb_disk'])/1024;
+					      if (selectedRegionsVm[this['country']] == null)
+						selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
+					      else
+						selectedRegionsVm[this['country']] += parseInt(this['nb_vm']);
+					      if (selectedRegionsIp[this['country']] == null)
+						selectedRegionsIp[this['country']] = parseInt(this['ipTot']);
+					      else 
+						selectedRegionsIp[this['country']] += parseInt(this['ipTot']);
 
-				      var markerVm = {};
-				      markerVm["latLng"] = [];
-				      markerVm["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerVm["name"] = this['name'] + " (" + this['nb_vm'] + " vm)";
-				      selectedMarkersVm.push(markerVm);
-				  }
+					      if(this['latitude'] != "" && this['longitude'] != "")
+					      {
+						  var marker = {};
+						  marker["id"] = this['id'];
+						  marker["latLng"] = [];
+						  marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						  marker["name"] = this['name'];
+						  //console.log(this['timestamp']);
+						  regionTime =( new Date(this['timestamp']).getTime() / 1000)
+						  my_time=new Date(this['timestamp'])
+						  
+						  month=my_time.getMonth()+1;if (month<10)month="0"+month;
+						  day=my_time.getDate();if (day<10)day="0"+day;
+						  hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+						  mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+						  the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+									  
+	    //                                       if (this['name']=="Gent"){
+	    //                                         console.log(this['timestamp'])
+	    //                                         console.log(my_time.getMonth());                                       
+	    //                                         console.log(the_time);
+	    //                                       }
 
+						  if (actualTime>(regionTime+deltaTime)) {
+						    marker["style"]={fill: '#868F98',stroke: '#383f47'};                                        
+						    marker["name"] = this['name']+": Last Update on "+the_time;
+						  }
+						  else{
+						    marker["name"] = this['name']+
+						    "\nCores: "+parseInt(this['nb_cores'])+
+						    ", \nRAM: "+(parseInt(this['nb_ram'])/1024).toFixed(1)+" GB"+
+						    ", \nDisk: "+(parseInt(this['nb_disk'])/1024).toFixed(1) +" TB"+
+						    ", \nIPs: "+parseInt(this['ipTot'])+
+						    ", \nVMs: "+parseInt(this['nb_vm']);
+						  }
+						  //marker["name"] = this['name'];
+						  selectedMarkers.push(marker);
+						  
+						  var markerCpu = {};
+						  freeCpu =  (parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio'])-parseInt(this['nb_cores_used']));
+						  if (freeCpu<0)
+						    freeCpu = 0;
+						  markerCpu["latLng"] = [];
+						  markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 
-				});
+						  if (actualTime>(regionTime+deltaTime)) {
+						    markerCpu["style"]={fill: '#868F98',stroke: '#383f47'};
+						    markerCpu["name"] = this['name']+": Last Update on "+the_time;
+						  }
+						  else{
+						    markerCpu["name"] = this['name'] + " (" + freeCpu + " available virtual cores / " + parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio']) + " total virtual cores / "+parseInt(this['nb_cores']) + " total physical cores)";
+						  }
+						  selectedMarkersCpu.push(markerCpu);
 
+						  var markerRam = {};
+						  freeRam = ((1-parseFloat(this['percRAMUsed']))*(parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024)).toFixed(1);
+						  if (freeRam<0)
+						    freeRam = 0;
+						  markerRam["latLng"] = [];
+						  markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 
-				$('#usersNum').html(nUsers);
-				$('#orgsNum').html(nOrganizations);
-				$('#regionsNum').html(nRegions);
-				$('#coresNum').html(nCores);
-				$('#ramNum').html(nRam);
-				$('#hdNum').html(nHd);
-				$('#vmNum').html(nVm);
+						  if (actualTime>(regionTime+deltaTime)) {
+						    markerRam["style"]={fill: '#868F98',stroke: '#383f47'};
+						    markerRam["name"] = this['name']+": Last Update on "+the_time;
+						  }
+						  else{
+						    markerRam["name"] = this['name'] + " (" + freeRam + " available GB virtual RAM  / " + (parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024).toFixed(1) +" total GB virtual RAM / " + (parseInt(this['nb_ram'])/1024).toFixed(1) + " total GB physical RAM)";
+						  }
+						  selectedMarkersRam.push(markerRam);
 
-				var maxMill = Math.floor(nOrganizations/1000);
-				var i = 0;
-				var biggerOrg = '';
-				while (i < maxMill) {
-				  biggerOrg = biggerOrg + '<img src="/assets/infographic/organization.png" />';
-				  i+= 1;
-				}
-				$('#biggerOrg').html(biggerOrg);
-				
-				var maxCent = Math.floor((nOrganizations - maxMill*1000)/100);
-				var i = 0;
-				var bigOrg = '';
-				while (i < maxCent) {
-				  bigOrg = bigOrg + '<img src="/assets/infographic/organization.png" />';
-				  i+= 1;
-				}
-				$('#bigOrg').html(bigOrg);
+						  var markerDisk = {};
+						  freeDisk = ((1-parseFloat(this['percDiskUsed']))*(parseInt(this['nb_disk'])/1024)).toFixed(1);
+						  if (freeDisk<0)
+						    freeDisk = 0;
+						  markerDisk["latLng"] = [];
+						  markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 
-				var maxDec = Math.floor((nOrganizations - maxMill*1000 - maxCent*100)/10);
-				i = 0;
+						  if (actualTime>(regionTime+deltaTime)) {
+						    markerDisk["style"]={fill: '#868F98',stroke: '#383f47'};
+						    markerDisk["name"] = this['name']+": Last Update on "+the_time;
+						  }
+						  else{
+						    markerDisk["name"] = this['name'] + " (Available " + freeDisk + " / " + (parseInt(this['nb_disk'])/1024).toFixed(1) +"  TB)";
+						  }
+						  selectedMarkersDisk.push(markerDisk);
 
-				var mediumOrg = '';
-				while (i < maxDec) {
-				  mediumOrg = mediumOrg + '<img src="/assets/infographic/organization.png" />';
-				  i+= 1;
-				}
-				$('#mediumOrg').html(mediumOrg);
+						  var markerIp = {};
+						  markerIp["latLng"] = [];
+						  markerIp["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						  if (actualTime>(regionTime+deltaTime)) {
+						    markerIp["style"]={fill: '#868F98',stroke: '#383f47'};
+						    markerIp["name"] = this['name']+": Last Update on "+the_time;
+						  }
+						  else{
+						    markerIp["name"] = this['name'] + " (" + (parseInt(this['ipTot'])-parseInt(this['ipAllocated'])) + " available Public IPs / " + parseInt(this['ipTot']) + " total Public IPs)";
+						  }
+						  selectedMarkersIp.push(markerIp);
 
-				var maxUni = nOrganizations - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
-				i = 0;
-
-				var smallOrg = '';
-				while (i < maxUni) {
-				  smallOrg = smallOrg + '<img src="/assets/infographic/organization.png" />';
-				  i+= 1;
-				}
-				$('#smallOrg').html(smallOrg); 
-				
-				var maxMill = Math.floor(nUsers/1000);
-				var i = 0;
-				var biggerMen = '';
-				while (i < maxMill) {
-				  biggerMen = biggerMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#biggerMen').html(biggerMen);
-				
-				var maxCent = Math.floor((nUsers - maxMill*1000)/100);
-				var i = 0;
-				var bigMen = '';
-				while (i < maxCent) {
-				  bigMen = bigMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#bigMen').html(bigMen);
-
-				var maxDec = Math.floor((nUsers - maxMill*1000 - maxCent*100)/10);
-				i = 0;
-
-				var mediumMen = '';
-				while (i < maxDec) {
-				  mediumMen = mediumMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#mediumMen').html(mediumMen);
-
-				var maxUni = nUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
-				i = 0;
-
-				var smallMen = '';
-				while (i < maxUni) {
-				  smallMen = smallMen + '<img src="/assets/infographic/omino.png" />';
-				  i+= 1;
-				}
-				$('#smallMen').html(smallMen);  
-
-				var array_values_cpu = new Array();
-				for (var key in selectedRegionsCpu) {
-				  array_values_cpu.push(parseInt(selectedRegionsCpu[key]));
-				}
-
-				var array_values_ram = new Array();
-				for (var key in selectedRegionsRam) {
-				  array_values_ram.push(parseInt(selectedRegionsRam[key]));
-				}
-
-				var array_values_disk = new Array();
-				for (var key in selectedRegionsDisk) {
-				  array_values_disk.push(parseInt(selectedRegionsDisk[key]));
-				}
-
-				var array_values_vm = new Array();
-				for (var key in selectedRegionsVm) {
-				  array_values_vm.push(parseInt(selectedRegionsVm[key]));
-				}
-
-				map.clearSelectedRegions();
-				map.setSelectedRegions(selectedRegions);
-				
-				map.removeAllMarkers();
-				map.addMarkers(selectedMarkers);
-
-				mapCpu.series.regions[0].clear();
-  // 			      mapCpux.series.regions[0].params['min'] = 64;
-  // 			      mapCpux.series.regions[0].params['max'] = 84;
-  // 			      mapCpux.series.regions[0].scale['clearMinValue'] = 64;
-  // 			      mapCpux.series.regions[0].scale['clearMaxValue'] = 84;		     
-				var max_of_cpu = Math.max.apply(Math, array_values_cpu);
-				var min_of_cpu = Math.min.apply(Math, array_values_cpu);
-				mapCpu.series.regions[0].scale['minValue'] = min_of_cpu;
-				mapCpu.series.regions[0].scale['maxValue'] = max_of_cpu;
-  // 			      mapCpux.series.regions[0].setScale(['#C8EEFF', '#0071A4']);
-  // 			      mapCpux.series.regions[0].params['values'] = selectedRegionsCpu;
-				mapCpu.series.regions[0].setValues(selectedRegionsCpu); 
-				//console.log(mapCpu.series.regions[0]);			     
-  // 			      mapCpu.series.regions[0].normalizeFunction = 'polynomial';
-				mapCpu.removeAllMarkers();
-				mapCpu.addMarkers(selectedMarkersCpu);
-
-				mapRam.series.regions[0].clear();
-				var max_of_ram = Math.max.apply(Math, array_values_ram);
-				var min_of_ram = Math.min.apply(Math, array_values_ram);
-				mapRam.series.regions[0].scale['minValue'] = min_of_ram;
-				mapRam.series.regions[0].scale['maxValue'] = max_of_ram;
-				mapRam.series.regions[0].setValues(selectedRegionsRam);
-				mapRam.removeAllMarkers();
-				mapRam.addMarkers(selectedMarkersRam);
-
-				mapDisk.series.regions[0].clear();
-				var max_of_disk = Math.max.apply(Math, array_values_disk);
-				var min_of_disk = Math.min.apply(Math, array_values_disk);
-				mapDisk.series.regions[0].scale['minValue'] = min_of_disk;
-				mapDisk.series.regions[0].scale['maxValue'] = max_of_disk;
-				mapDisk.series.regions[0].setValues(selectedRegionsDisk);
-				mapDisk.removeAllMarkers();
-				mapDisk.addMarkers(selectedMarkersDisk);
-
-				mapVm.series.regions[0].clear();
-				var max_of_vm = Math.max.apply(Math, array_values_vm);
-				var min_of_vm = Math.min.apply(Math, array_values_vm);
-				mapVm.series.regions[0].scale['minValue'] = min_of_vm;
-				mapVm.series.regions[0].scale['maxValue'] = max_of_vm;
-				mapVm.series.regions[0].setValues(selectedRegionsVm);
-				mapVm.removeAllMarkers();
-				mapVm.addMarkers(selectedMarkersVm);
+						  var markerVm = {};
+						  markerVm["latLng"] = [];
+						  markerVm["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						  if (actualTime>(regionTime+deltaTime)) {
+						    markerVm["style"]={fill: '#868F98',stroke: '#383f47'};
+						    markerVm["name"] = this['name']+": Last Update on "+the_time; 
+						  }
+						  else{
+						    markerVm["name"] = this['name'] + " (" + this['nb_vm'] + " vm)";
+						  }
+						  selectedMarkersVm.push(markerVm);
+					      }
 
 
-			      },
-			      error: function(xhr, textStatus, errorThrown){
-				  $('#biggerMen').html("&nbsp;");
-				  $('#bigMen').html("&nbsp;");
-				  $('#mediumMen').html("&nbsp;");
-				  $('#biggerOrg').html("&nbsp;");
-				  $('#bigOrg').html("&nbsp;");
-				  $('#mediumOrg').html("&nbsp;");
-  // 				$('#smallMen').html("<%= FiLabInfographics.nodata %>");
-				  var errore = "<%= FiLabInfographics.nodata %>";
-				  if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
-					  errore = xhr.responseText;
-				  $('#smallMen').html(errore);
-				  $('#smallOrg').html(errore);
-  // 				alert('request failed->'+textStatus);
-  // 				console.log(xhr.status + ' çççç'+xhr.responseText+'òòòò' + textStatus + ' ' + errorThrown);
-				  } 
+					    });
+
+
+					    loadMap(tileSelected);
+
+					  },
+					  error: function(xhr, textStatus, errorThrown){
+
+					      semaforo = 0;
+					      $( "#infographics" ).hide();
+					      $( "#error" ).show();
+
+					      var errore = "<%= FiLabInfographics.nodata %>";
+					      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+						      errore = xhr.responseText;
+					      $('#errorMessage').html(errore);
+					      } 
+				      }
+			      );
+			    },
+			    error: function(xhr, textStatus, errorThrown){
+
+				semaforo = 0;
+				$( "#infographics" ).hide();
+				$( "#error" ).show();
+
+				var errore = "<%= FiLabInfographics.nodata %>";
+				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					errore = xhr.responseText;
+				$('#errorMessage').html(errore);
+				} 
 			  }
-		  );
+		  );	
+				    
+		 		  
+		  
 		  }
 
 
@@ -830,55 +1014,10 @@
 
 		  /** ================================================================= **/
 		  //Chiamo il mio ajax la prima volta
+		  ajaxInstitutionsFun();//load only first time
 		  ajaxFun();
 		  //e poi lo richiamo dopo 1 minuto
 		  setInterval(function(){ajaxFun()}, 60000);
-
-  // 		$. ajax (
-  // 			  {
-  // 			    type: "GET",
-  // 			    dataType: 'json',
-  // 			    url: "http://192.168.59.2:1337/region",
-  // 			    data: data,
-  // 			    success: function (data)
-  // 			    {
-  // 				  console.log(data)
-  // 			    }
-  // 			}
-  // 		);
-
-  // 		$.ajax({
-  // 			url: "http://192.168.59.2:1337/region",
-  // 			cache: false
-  // 			})
-  // 			.done(function( html ) {
-  // 			  console.log(html);
-  // 			});
-
-  // 		var request = $.ajax({
-  // 				      url: "http://192.168.59.2:1337/region",
-  // 				      type: "GET",
-  // 				      data: {},
-  // 				      dataType: "json"
-  // 		});
-  // 		
-  // 		request.done(function( msg ) {
-  // 		  console.log("AAAAAAAAAAA");
-  // 		  console.log(msg);
-  // 		});
-  // 		
-  // 		request.fail(function( jqXHR, textStatus ) {
-  // 							    alert( "Request failed: " + textStatus+jqXHR );
-  // 							    });
-
-  // 		$.ajax({
-  // 			dataType: "json",
-  // 			url: url,
-  // 			data: data,
-  // 			success: success
-  // 		});
-
-  // 		setInterval('window.location.reload()', 60000);
       
 	  });
   </script>

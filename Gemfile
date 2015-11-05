@@ -41,6 +41,7 @@ git 'https://github.com/SmartInfrastructures/filab-style-app.git', branch: 'mast
   gem 'fi_lab_app'
 end
 
+gem 'httplog'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -64,3 +65,7 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+# D3
+gem 'underscore-rails', '~> 1.8.3'
+gem 'd3js-rails', '~> 3.1.6'

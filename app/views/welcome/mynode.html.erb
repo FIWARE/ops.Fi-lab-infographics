@@ -1,0 +1,462 @@
+<% if !current_user %>
+<div class="title">Please login</div>
+<% elsif @idUser == nil %>
+<div class="title">No such user</div>
+<% elsif @idNode == nil %>
+<%= render :partial => "fi_lab_app/toolbar/toolbar" %>
+<div id="home">
+  <div class="home" id="homeWidgets"> 
+    <div class="title">You don't own any nodes</div>
+  </div>
+</div>
+<% else %>
+<%= render :partial => "fi_lab_app/toolbar/toolbar" %>
+<div id="home">
+  <div class="home" id="homeWidgets"> 
+    <div id="errorMessage"></div>
+    <div class="services">
+      <header>
+	Jira info for <%= @nameNode%> Node	
+	<a style="cursor:pointer;cursor:hand;" onClick="saveJiraInfo();">Save</a>
+      </header>
+
+      <section class="services-list">
+	Jira Id:&nbsp;&nbsp;<input type="text" name="jiraId" id="jiraId"><br>
+	Jira Url:&nbsp;<input type="text" name="jiraUrl" id="jiraUrl">
+      </section>
+      
+    </div>
+    
+    <div class="services">
+      <header>
+	<%=@nameNode%> Node Messages
+	<!--<a style="cursor:pointer;cursor:hand;" onClick="createMessage();">Create</a>-->
+      </header>
+
+      <section class="services-list">
+	<input type="text" name="message" id="message" style="width:90%;" placeholder="Type here your message"><a style="cursor:pointer;cursor:hand;float:right;" onClick="createMessage();">Create</a><br>
+	<DIV ID="status">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
+		<DIV CLASS='field field-header field-header-node' style="width:150px;">Date</DIV>
+<!-- 		<DIV CLASS='field field-header field-header-overall'>Author</DIV> -->
+		<DIV CLASS='field field-header field-header-service' style="width:360px;">Message</DIV>
+		<DIV CLASS='field field-header field-header-support'>Actions</DIV>
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContent">
+
+	  </DIV>
+	</DIV>
+      </section>
+      
+    </div>
+  
+    <div id="errorMessageInstitutions" class="errorMessage"></div>
+    <div class="services">
+      <header>
+	Institutions <!--<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistoryInfo" style="display:none">-->
+	<a style="cursor:pointer;cursor:hand;" onClick="alert('TODO');">Add</a>
+	<!--<select id="periodinfo" name="periodinfo" onChange="ajaxFunGenInfo(computeDateOfLast(this.value))">
+	  <option value="days">last 2 days</option>
+	  <option value="week" selected="selected">last week</option>
+	  <option value="month">last month</option>
+	  <option value="year">last year</option>
+	</select>-->
+      </header>
+
+      <section class="services-list">
+	<DIV ID="statusInfo" style="width:690px;">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header' style="width:690px;">
+		<DIV CLASS='field field-header field-header-node' style="width:300px;">Name</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Logo</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Description</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Link</DIV>
+		<DIV CLASS='field field-header field-header-overall'>Action</DIV>
+
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContentInfo" style="width:690px;">
+	     
+	  </DIV>
+	</DIV>
+      </section>
+      
+    </div>
+    
+    <div class="clear"></div>
+  </div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+	  var saveJiraInfo, createMessage, deleteMessage, editMessage, saveEditedMessage, cancelEditMessage;
+	  var deleteInstitutionAssociation;
+	   $(document).ready(function() 
+	  {
+// 	      $('.infographic').removeClass('active');
+// 	      $('.status').removeClass('active');
+
+	     ajaxFunJiraInfo = function () { 
+		    $.ajax (
+			    {
+				  type: "GET",
+				  url: "../../api/v1/jira/info/"+"<%= @idNode %>",//to know jira data about node...
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var jiraData = json;
+				    
+				    if(jiraData != null && jiraData != "undefined" )
+				    {
+				      $("input#jiraId").val(jiraData["id"]);
+				      $("input#jiraUrl").val(jiraData["url"]);
+				    }
+				      
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessage').html(errore);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+		      }
+	    )};
+	    
+	    ajaxFunGetMessages = function () { 
+		    $.ajax (
+			    {
+				  type: "GET",
+				  url: "../../api/v1/message/"+"<%= @idNode %>",//to get messages about node...
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var messageData = json;
+				    
+				    if(messageData != null && messageData != "undefined" )
+				    {
+				      $("#tableContent").html("");
+				      
+				      $.each(messageData, function( index, message ){
+				      
+					var icons = "";
+					if(<% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %> && "<%=current_user.id%>" == message["user_id"] )
+					{
+					  icons = "<IMG style='height:16px;cursor:pointer;' alt='Edit' title='Edit' onclick='editMessage("+message["id"]+",\""+message["message"]+"\");' SRC='/assets/infographic/edit.png'><IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteMessage("+message["id"]+");' SRC='/assets/infographic/delete.png'>";
+					}
+				      
+					allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+						  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+					      "</DIV>"+
+					      "<DIV CLASS='field field-service field-service-node' style='line-height:60px;'>"+message["created_at"].replace(/T/g , ' ').replace(/:[0-9]{2}.[0-9]{3}Z/g , '')+"</DIV>"+
+// 					      "<DIV CLASS='field field-service field-service-overall' style='line-height:60px;'>"+message["user_name"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-field' style='width:360px;' id='message-"+message["id"]+"'>"+message["message"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' id='icons-"+message["id"]+"' style='line-height:60px;'>"+ icons +
+					      "</DIV>";
+					      
+					$("#tableContent").append("<DIV CLASS='status-row row-status-service row-status-closed' style='height:60px;' id='"+message["id"]+"'>"+allSubRows+"</DIV>");
+				      });
+				      
+				      
+				    }
+				      
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessage').html(errore);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+		      }
+	    )};
+	    
+	    saveJiraInfo = function () { 
+	      jiraId = $("input#jiraId").val();
+	      jiraUrl = $("input#jiraUrl").val();
+	      
+	      var jsonToSend = {
+			    'jiraId' : jiraId,
+			    'jiraUrl':jiraUrl
+			};
+	      
+	      $.ajax(
+		      { 
+			type: 'POST', 
+			url: "../../api/v1/jira/save/"+"<%= @idNode %>",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(jsonToSend),
+			dataType: "json",
+			cache: false, 
+			success: function(json){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>Jira info successfully saved. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');	    
+			  
+				      
+			  $("#success_message").delay(5000).hide(400);	    
+			  
+			},
+			error: function(xhr, textStatus, errorThrown){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not saved. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+			  $("#error_message").delay(5000).hide(400);	 
+			}
+		     }
+		  );
+	    };
+	    
+	    createMessage = function () { 
+	      message = $("input#message").val();
+	      
+	      var jsonToSend = {
+			    'idNode' : "<%= @idNode %>",
+			    'idUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>,
+			    'message':message
+			};
+	      
+	      $.ajax(
+		      { 
+			type: 'POST', 
+			url: "../../api/v1/message",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(jsonToSend),
+			dataType: "json",
+			cache: false, 
+			success: function(json){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>Message successfully saved. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    
+			  $("input#message").val("");
+			  $("#success_message").delay(5000).hide(400);	
+			  
+			  ajaxFunGetMessages();
+			  
+			},
+			error: function(xhr, textStatus, errorThrown){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not saved. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+			  $("#error_message").delay(5000).hide(400);	 
+			}
+		     }
+		  );
+	    }
+	    
+	    deleteMessage = function (idMessage) { 
+	      
+	      if (confirm("Are you sure?")) 
+	      {      
+		var jsonToSend = {
+			      'idMessage' : idMessage,
+			      'idUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>
+			  };
+		
+		$.ajax(
+			{ 
+			  type: 'DELETE', 
+			  url: "../../api/v1/message",
+			  contentType: "application/json; charset=utf-8",
+			  data: JSON.stringify(jsonToSend),
+			  dataType: "json",
+			  cache: false, 
+			  success: function(json){
+			    $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>Message successfully deleted. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	      
+			    $("#success_message").delay(5000).hide(400);	
+			    
+			    ajaxFunGetMessages();
+			    
+			  },
+			  error: function(xhr, textStatus, errorThrown){
+			    $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not deleted. This window will automatically close in 5 seconds.</p></div></div>');
+		    
+			    $("#error_message").delay(5000).hide(400);	 
+			  }
+		      }
+		    );
+	      }
+	      return false;
+	    }
+	    
+	    editMessage = function (idMessage, message) { 
+	      
+	      $('#icons-'+idMessage).html("<IMG style='height:16px;cursor:pointer;' alt='Save' title='Save' onclick='saveEditedMessage("+idMessage+",\""+message+"\");' SRC='/assets/infographic/save.png'><IMG style='height:16px;cursor:pointer;' alt='Cancel' title='Cancel' onclick='cancelEditMessage("+idMessage+",\""+message+"\");' SRC='/assets/infographic/delete.png'>");
+	      
+	      $('#message-'+idMessage).html("<textarea id='text-"+idMessage+"' style='width:300px;height:59px'>"+message+"</textarea>");
+	    };
+	    
+	    cancelEditMessage = function (idMessage, message) { 
+	      
+	      $('#icons-'+idMessage).html("<IMG style='height:16px;cursor:pointer;' alt='Edit' title='Edit' onclick='editMessage("+idMessage+",\""+message+"\");' SRC='/assets/infographic/edit.png'><IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteMessage("+idMessage+");' SRC='/assets/infographic/delete.png'>");
+	      
+	      $('#message-'+idMessage).html(message);
+	    };
+	    
+	    saveEditedMessage = function (idMessage, oldMessage) { 
+	      
+	      var newMessage = $('#text-'+idMessage).val();
+	      
+	      if(oldMessage == newMessage)
+	      {
+		cancelEditMessage(idMessage,oldMessage);
+		 
+		$( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>Warning: same message. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+		$("#error_message").delay(5000).hide(400);
+		return;
+	      }
+	      
+	      var jsonToSend = {
+			    'idMessage' : idMessage,
+			    'idUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>,
+			    'message' : newMessage,
+			};
+	      
+	      $.ajax(
+		      { 
+			type: 'PUT', 
+			url: "../../api/v1/message",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(jsonToSend),
+			dataType: "json",
+			cache: false, 
+			success: function(json){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>Message successfully edited. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    
+			  $("#success_message").delay(5000).hide(400);	
+			  
+// 			  $('#icons-'+idMessage).html("<IMG style='height:16px;cursor:pointer;' alt='Edit' title='Edit' onclick='editMessage("+idMessage+",\""+message+"\");' SRC='/assets/infographic/edit.png'><IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteMessage("+idMessage+");' SRC='/assets/infographic/delete.png'>");
+			  
+// 			  $('#message-'+idMessage).html(message);
+			  
+			  ajaxFunGetMessages();
+			  
+			},
+			error: function(xhr, textStatus, errorThrown){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not edited. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+			  $("#error_message").delay(5000).hide(400);	
+			  
+			  cancelEditMessage(idMessage,oldMessage);
+			}
+		     }
+		  );
+	    }
+	    
+	    ajaxFunGetInstitutions = function () { 
+	     jsonToSend = {
+			    'idNode' : "<%= @idNode %>"
+			};
+		    $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/institution",//to get institutions
+				  contentType: "application/json; charset=utf-8",
+				  data: JSON.stringify(jsonToSend),
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var institutionsData = json;
+				    if(institutionsData == null || institutionsData == "undefined") 
+				    {
+				      $('#errorMessageInstitutions').html("Empty response");
+				      return;
+				    }
+				    $('#errorMessageInstitutions').html("");
+	  			     
+	  			    $("#tableContentInfo").html("");
+				      
+				      $.each(institutionsData, function( index, institution ){
+				      
+					var description = "";
+					if(institution["description"]) description = institution["description"];
+					var link = "";
+					if(institution["link"]) link = institution["link"];
+					
+					allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+					      "</DIV>"+
+					      "<DIV CLASS='field field-service field-service-node' style='width:280px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+institution["name"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px'><IMG style='max-width:108px;max-height:30px;' alt='"+institution["logo"]+"' title='"+institution["logo"]+"' SRC='/assets/infographic/loghi/"+institution["logo"]+"'></DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+description+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+link+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-overall' style='' id='icons-"+institution["id"]+"'>"+
+					      "<IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteInstitutionAssociation("+institution["id"]+");' SRC='/assets/infographic/delete.png'>"+
+					      "</DIV>";
+					      
+					$("#tableContentInfo").append("<DIV CLASS='status-row row-status-service row-status-closed' style='width:690px;' id='"+institution["id"]+"'>"+allSubRows+"</DIV>");
+					
+// 					console.log(allSubRows);
+				      });
+				    
+				  
+				       
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $("errorMessageInstitutions").html(errore);
+	  //     				alert('request failed->'+textStatus);
+      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// 				    $("#imgHistoryMessages").hide();
+				  } 
+			}
+		      );
+		    };
+	    
+	    deleteInstitutionAssociation = function (idInstitution) { 
+	      
+	      if (confirm("Are you sure?")) 
+	      {      
+		var jsonToSend = {
+			      'idInstitution' : idInstitution,
+			      'idUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>
+			  };
+		
+		$.ajax(
+			{ 
+			  type: 'DELETE', 
+			  url: "../../api/v1/institution/<%=@idNode%>",
+			  contentType: "application/json; charset=utf-8",
+			  data: JSON.stringify(jsonToSend),
+			  dataType: "json",
+			  cache: false, 
+			  success: function(json){
+			    $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>Institution successfully deleted. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	      
+			    $("#success_message").delay(5000).hide(400);	
+			    
+			    ajaxFunGetInstitutions();
+			    
+			  },
+			  error: function(xhr, textStatus, errorThrown){
+			    $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not deleted. This window will automatically close in 5 seconds.</p></div></div>');
+		    
+			    $("#error_message").delay(5000).hide(400);	 
+			  }
+		      }
+		    );
+	      }
+	      return false;
+	    }
+	    
+	    ajaxFunJiraInfo();
+	    ajaxFunGetMessages();
+	    ajaxFunGetInstitutions();
+	  });
+	  
+</script>
+
+<%end %>
+<%end %>

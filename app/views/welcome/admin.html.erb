@@ -1,0 +1,467 @@
+<% if !current_user %>
+<div class="title">Please login</div>
+<% elsif @idUser == nil %>
+<div class="title">No such user</div>
+<% else %>
+<%= render :partial => "fi_lab_app/toolbar/toolbar" %>
+<div id="home">
+  <div class="home" id="homeWidgets"> 
+    <div id="errorMessage"></div>
+    <div class="services">
+      <header>
+	Users <!--<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistoryInfo" style="display:none">-->
+	<!--<select id="periodinfo" name="periodinfo" onChange="ajaxFunGenInfo(computeDateOfLast(this.value))">
+	  <option value="days">last 2 days</option>
+	  <option value="week" selected="selected">last week</option>
+	  <option value="month">last month</option>
+	  <option value="year">last year</option>
+	</select>-->
+      </header>
+
+      <section class="services-list">
+	<DIV ID="statusInfo" style="width:690px;">
+	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header' style="width:690px;">
+		<DIV CLASS='field field-header field-header-node' style="width:300px;">Email</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Name</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Nickname</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Node</DIV>
+		<DIV CLASS='field field-header field-header-overall'>Action</DIV>
+
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContentInfo" style="width:690px;">
+	     
+	  </DIV>
+	</DIV>
+      </section>
+      
+    </div>
+    
+    <div id="errorMessageInstitutions" class = "errorMessage"></div>
+    <div class="services">
+      <header>
+	Institutions <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistoryInfo" style="display:none">
+	<a style="cursor:pointer;cursor:hand;" onClick="alert('TODO');">Create</a>
+	<!--<select id="periodinfo" name="periodinfo" onChange="ajaxFunGenInfo(computeDateOfLast(this.value))">
+	  <option value="days">last 2 days</option>
+	  <option value="week" selected="selected">last week</option>
+	  <option value="month">last month</option>
+	  <option value="year">last year</option>
+	</select>-->
+      </header>
+
+      <section class="services-list">
+	<DIV ID="status" style="width:690px;">
+	  <DIV id="tableHeaderContentInstitutions" CLASS='status-row status-row-header' style="width:690px;">
+		<DIV CLASS='field field-header field-header-node' style="width:300px;">Name</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Logo</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Description</DIV>
+		<DIV CLASS='field field-header field-header-support' style='width:108px'>Link</DIV>
+		<DIV CLASS='field field-header field-header-overall'>Action</DIV>
+
+		<div class="clear"></div>
+	  </DIV>
+	  <DIV id="tableContentInstitutions" style="width:690px;">
+	     
+	  </DIV>
+	</DIV>
+      </section>
+      
+    </div>
+  
+    <div class="clear"></div>
+  </div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+	  var editUser, cancelEditUser, saveEditedUser;
+	  var deleteInstitution, editInstitution, cancelEditInstitution, saveEditedInstitution;
+	  
+	   $(document).ready(function() 
+	  {
+// 	      $('.infographic').removeClass('active');
+// 	      $('.status').removeClass('active');
+	    
+	    ajaxFunGetUsers = function () { 
+	    
+		    var jsonToSend = {
+			    'idUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>
+			};
+			
+		    $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/user",//to get users
+				  contentType: "application/json; charset=utf-8",
+				  data: JSON.stringify(jsonToSend),
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var usersData = json;
+				    
+				    if(usersData != null && usersData != "undefined" )
+				    {
+				      $("#tableContentInfo").html("");
+				      
+				      $.each(usersData, function( index, user ){
+					allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+						  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+					      "</DIV>"+
+					      "<DIV CLASS='field field-service field-service-node' style='width:280px'>"+user["email"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px'>"+user["name"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px'>"+user["nickname"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px' id='node-"+user["id"]+"'>"+user["node_name"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-overall' style='' id='icons-"+user["id"]+"'>"+
+					      "<IMG style='height:16px;cursor:pointer;' alt='Edit Node' title='Edit Node' onclick='editUser(\""+user["id"]+"\",\""+user["node_id"]+"\",\""+user["node_name"]+"\");' SRC='/assets/infographic/edit.png'>"+
+					      "</DIV>";
+					      
+					$("#tableContentInfo").append("<DIV CLASS='status-row row-status-service row-status-closed' style='width:690px;' id='"+user["id"]+"'>"+allSubRows+"</DIV>");
+				      });
+				      
+				      
+				    }
+				      
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessage').html(errore);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+		      }
+	    )};
+	    
+	    editUser = function (idUser, idNode, nameNode) { 
+	      
+	      $('#icons-'+idUser).html("<IMG style='height:16px;cursor:pointer;' alt='Save' title='Save' onclick='saveEditedUser(\""+idUser+"\",\""+idNode+"\",\""+nameNode+"\");' SRC='/assets/infographic/save.png'><IMG style='height:16px;cursor:pointer;' alt='Cancel' title='Cancel' onclick='cancelEditUser(\""+idUser+"\",\""+idNode+"\",\""+nameNode+"\");' SRC='/assets/infographic/delete.png'>");
+	      
+	      $.ajax (
+		      {
+			    type: "GET",
+			    url: "../../api/v1/region/list",
+			    contentType: "application/json; charset=utf-8",
+			    data: {},
+			    dataType: "json",
+			    cache: false,
+			    success: function(json){
+
+				var htmlOptions = "<option value='none'>none</option>";
+		      
+				$.each(json["list"], function( index, value ) {
+				    var selected = "";
+				    if(idNode == value) 
+				    {
+				      selected = "selected='selected'";
+				    }
+				    htmlOptions = htmlOptions + "<option "+selected+" value='"+value+"'>"+json["names"][index]+"</option>";
+				});
+				
+				$('#node-'+idUser).html("<select id='text-"+idUser+"' style='width:108px;height:29px'>"+htmlOptions+"</select>");
+				
+			    },
+			    error: function(xhr, textStatus, errorThrown){
+				var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>Error retriving db nodes:'+errore+'. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+				    $("#error_message").delay(5000).hide(400);
+				    
+				    cancelEditUser(idUser, idNode, nameNode);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+			    }
+		    });
+	    };
+	    
+	    cancelEditUser = function (idUser, idNode, nameNode) { 
+	      
+	      $('#icons-'+idUser).html("<IMG style='height:16px;cursor:pointer;' alt='Edit Node' title='Edit Node' onclick='editUser(\""+idUser+"\",\""+idNode+"\",\""+nameNode+"\");' SRC='/assets/infographic/edit.png'>");
+	      
+	      $('#node-'+idUser).html(nameNode);
+	    };
+	    
+	    saveEditedUser = function (idUser, oldIdNode, oldNameNode) { 
+	      
+	      var newIdNode = $('#text-'+idUser).val();
+	      var newNameNode = $('#text-'+idUser+' option:selected').text();
+	      
+	      if(oldIdNode == newIdNode)
+	      {
+		cancelEditUser(idUser, oldIdNode, oldNameNode);
+		 
+		$( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>Warning: same node. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+		$("#error_message").delay(5000).hide(400);
+		return;
+	      }
+	      
+	      var jsonToSend = {
+			    'idUser' : idUser,
+			    'idAdminUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>,
+			    'idNode' : newIdNode,
+			};
+	      
+	      $.ajax(
+		      { 
+			type: 'PUT', 
+			url: "../../api/v1/user",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(jsonToSend),
+			dataType: "json",
+			cache: false, 
+			success: function(json){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>User successfully assigned to node '+newNameNode+'. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    
+			  $("#success_message").delay(5000).hide(400);	
+			  
+// 			  $('#icons-'+idMessage).html("<IMG style='height:16px;cursor:pointer;' alt='Edit' title='Edit' onclick='editMessage("+idMessage+",\""+message+"\");' SRC='/assets/infographic/edit.png'><IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteMessage("+idMessage+");' SRC='/assets/infographic/delete.png'>");
+			  
+// 			  $('#message-'+idMessage).html(message);
+			  
+			  ajaxFunGetUsers();
+			  
+			},
+			error: function(xhr, textStatus, errorThrown){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not edited. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+			  $("#error_message").delay(5000).hide(400);	
+			  
+			  cancelEditUser(idUser, oldIdNode, oldNameNode);
+			}
+		     }
+		  );
+	    }
+	    
+	    ajaxFunGetInstitutions = function () { 
+	    
+		    $("#imgHistoryMessages").show();
+		    $('#errorMessageInstitutions').html("");
+			
+		    $.ajax (
+			    {
+				  type: "POST",
+				  url: "../../api/v1/institution",//to get institutions
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				      
+				    var institutionsData = json;
+	  			      
+				    if(institutionsData != null && institutionsData != "undefined" )
+				    {
+				      $("#tableContentInstitutions").html("");
+				      
+				      $.each(institutionsData, function( index, institution ){
+				      
+					var description = "";
+					if(institution["description"]) description = institution["description"];
+					var link = "";
+					if(institution["link"]) link = institution["link"];
+					
+					allSubRows = "<DIV CLASS='field field-group field-group-expand'>"+
+						  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='../assets/infographic/blank.gif'>-->"+
+					      "</DIV>"+
+					      "<DIV CLASS='field field-service field-service-node' style='width:280px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+institution["name"]+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px'><IMG style='max-width:108px;max-height:30px;' alt='"+institution["logo"]+"' title='"+institution["logo"]+"' SRC='/assets/infographic/loghi/"+institution["logo"]+"'></DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+description+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-status-support' style='width:108px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+link+"</DIV>"+
+					      "<DIV CLASS='field field-service field-service-overall' style='' id='icons-"+institution["id"]+"'>"+
+					      "<IMG style='height:16px;cursor:pointer;' alt='Edit Institution' title='Edit Institution' onclick='alert(\"TODO\")' SRC='/assets/infographic/edit.png'><IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteInstitution("+institution["id"]+");' SRC='/assets/infographic/delete.png'>"+
+					      "</DIV>";/*'editInstitution(\""+institution["id"]+"\");'*/
+					      
+					$("#tableContentInstitutions").append("<DIV CLASS='status-row row-status-service row-status-closed' style='width:690px;' id='"+institution["id"]+"'>"+allSubRows+"</DIV>");
+				      });
+				      
+				      
+				    }
+				    $("#imgHistoryMessages").hide();  
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $('#errorMessageInstitutions').html(errore);
+	  //     				alert('request failed->'+textStatus);
+      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				    $("#imgHistoryMessages").hide();
+				  } 
+		      }
+	    )};
+	    
+	    deleteInstitution = function (idInstitution) { 
+	      
+	      if (confirm("Are you sure?")) 
+	      {      
+		var jsonToSend = {
+			      'idInstitution' : idInstitution,
+			      'idUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>
+			  };
+		
+		$.ajax(
+			{ 
+			  type: 'DELETE', 
+			  url: "../../api/v1/institution",
+			  contentType: "application/json; charset=utf-8",
+			  data: JSON.stringify(jsonToSend),
+			  dataType: "json",
+			  cache: false, 
+			  success: function(json){
+			    $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>Institution successfully deleted. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	      
+			    $("#success_message").delay(5000).hide(400);	
+			    
+			    ajaxFunGetInstitutions();
+			    
+			  },
+			  error: function(xhr, textStatus, errorThrown){
+			    $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not deleted. This window will automatically close in 5 seconds.</p></div></div>');
+		    
+			    $("#error_message").delay(5000).hide(400);	 
+			  }
+		      }
+		    );
+	      }
+	      return false;
+	    };
+	    
+	    
+	    
+	    
+	    //TODO (now this is a cut and paste)
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    editInstitution = function (idInstitution) { 
+	      
+	      $('#icons-'+idInstitution).html("<IMG style='height:16px;cursor:pointer;' alt='Save' title='Save' onclick='saveEditedInstitution(\""+idInstitution+"\");' SRC='../../assets/infographic/save.png'><IMG style='height:16px;cursor:pointer;' alt='Cancel' title='Cancel' onclick='cancelEditInstitution(\""+idInstitution+"\");' SRC='../../assets/infographic/delete.png'>");
+	      
+	      $.ajax (
+		      {
+			    type: "GET",
+			    url: "../../api/v1/region/list",
+			    contentType: "application/json; charset=utf-8",
+			    data: {},
+			    dataType: "json",
+			    cache: false,
+			    success: function(json){
+
+				var htmlOptions = "<option value='none'>none</option>";
+		      
+				$.each(json["list"], function( index, value ) {
+				    var selected = "";
+				    if(idNode == value) 
+				    {
+				      selected = "selected='selected'";
+				    }
+				    htmlOptions = htmlOptions + "<option "+selected+" value='"+value+"'>"+json["names"][index]+"</option>";
+				});
+				
+				$('#node-'+idInstitution).html("<select id='text-"+idInstitution+"' style='width:108px;height:29px'>"+htmlOptions+"</select>");
+				
+			    },
+			    error: function(xhr, textStatus, errorThrown){
+				var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+    // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				    $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>Error retriving db nodes:'+errore+'. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+				    $("#error_message").delay(5000).hide(400);
+				    
+				    cancelEditInstitution(idInstitution);
+    //     				alert('request failed->'+textStatus);
+    //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+			    }
+		    });
+	    };
+	    
+	    cancelEditInstitution = function (idInstitution) { 
+	      
+	      $('#icons-'+idInstitution).html("<IMG style='height:16px;cursor:pointer;' alt='Edit Institution' title='Edit Institution' onclick='editInstitution(\""+idInstitution+"\");' SRC='/assets/infographic/edit.png'>");
+	      
+	      $('#node-'+idInstitution).html(nameNode);
+	    };
+	    
+	    saveEditedInstitution = function (idInstitution) { 
+	      
+	      var newIdNode = $('#text-'+idInstitution).val();
+	      var newNameNode = $('#text-'+idInstitution+' option:selected').text();
+	      
+	      if(oldIdNode == newIdNode)
+	      {
+		cancelEditInstitution(idInstitution);
+		 
+		$( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>Warning: same node. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+		$("#error_message").delay(5000).hide(400);
+		return;
+	      }
+	      
+	      var jsonToSend = {
+			    'idInstitution' : idInstitution,
+			    'idAdminUser' : <% if (current_user)%> "<%=current_user.id%>" <%else%> null <%end %>
+			};
+	      
+	      $.ajax(
+		      { 
+			type: 'PUT', 
+			url: "../../api/v1/user",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(jsonToSend),
+			dataType: "json",
+			cache: false, 
+			success: function(json){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="success_message" style="margin-bottom:30px;"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>Saved!</strong></p><p>User successfully assigned to node '+newNameNode+'. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    
+			  $("#success_message").delay(5000).hide(400);	
+			  
+// 			  $('#icons-'+idMessage).html("<IMG style='height:16px;cursor:pointer;' alt='Edit' title='Edit' onclick='editMessage("+idMessage+",\""+message+"\");' SRC='/assets/infographic/edit.png'><IMG style='height:16px;cursor:pointer;' alt='Delete' title='Delete' onclick='deleteMessage("+idMessage+");' SRC='/assets/infographic/delete.png'>");
+			  
+// 			  $('#message-'+idMessage).html(message);
+			  
+			  ajaxFunGetInstitutions();
+			  
+			},
+			error: function(xhr, textStatus, errorThrown){
+			  $( "#errorMessage" ).before('<div class="msg-container" id="error_message" style="margin-bottom:30px;"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred: not edited. This window will automatically close in 5 seconds.</p></div></div>');
+		  
+			  $("#error_message").delay(5000).hide(400);	
+			  
+			  cancelEditInstitution(idInstitution);
+			}
+		     }
+		  );
+	    }
+	    
+	    ajaxFunGetInstitutions();	    
+	    ajaxFunGetUsers();
+	  });
+	  
+</script>
+
+<%end %>
+<%end %>

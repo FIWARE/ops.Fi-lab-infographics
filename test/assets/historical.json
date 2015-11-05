@@ -1,0 +1,44 @@
+{
+  "measures": [
+    {
+      "timestamp": "2000-01-01 00.00",
+      "novaServiceStatus": {"value":"green","description":"desc"},
+      "neutronServiceStatus": {"value":"green","description":"desc"},
+      "cinderServiceStatus": {"value":"green","description":"desc"},
+      "glanceServiceStatus": {"value":"green","description":"desc"},
+      "KPServiceStatus": {"value":"green","description":"desc"},
+      "OverallStatus": {"value":"green","description":"desc"},
+      "FiHealthStatus": {"value":"green","description":"desc"}
+    },
+    {
+      "timestamp": "2000-01-02 00.00",
+      "novaServiceStatus": {"value":"gray","description":"desc"},
+      "neutronServiceStatus": {"value":"gray","description":"desc"},
+      "cinderServiceStatus": {"value":"gray","description":"desc"},
+      "glanceServiceStatus": {"value":"gray","description":"desc"},
+      "KPServiceStatus": {"value":"gray","description":"desc"},
+      "OverallStatus": {"value":"gray","description":"desc"},
+      "FiHealthStatus": {"value":"gray","description":"desc"}
+    },
+    {
+      "timestamp": "2000-01-03 00.00",
+      "novaServiceStatus": {"value":"yellow","description":"desc"},
+      "neutronServiceStatus": {"value":"yellow","description":"desc"},
+      "cinderServiceStatus": {"value":"yellow","description":"desc"},
+      "glanceServiceStatus": {"value":"yellow","description":"desc"},
+      "KPServiceStatus": {"value":"yellow","description":"desc"},
+      "OverallStatus": {"value":"yellow","description":"desc"},
+      "FiHealthStatus": {"value":"yellow","description":"desc"}
+    },
+    {
+      "timestamp": "2000-01-04 00.00",
+      "novaServiceStatus": {"value":"red","description":"desc"},
+      "neutronServiceStatus": {"value":"red","description":"desc"},
+      "cinderServiceStatus": {"value":"red","description":"desc"},
+      "glanceServiceStatus": {"value":"red","description":"desc"},
+      "KPServiceStatus": {"value":"red","description":"desc"},
+      "OverallStatus": {"value":"red","description":"desc"},
+      "FiHealthStatus": {"value":"red","description":"desc"}
+    }
+  ]
+}

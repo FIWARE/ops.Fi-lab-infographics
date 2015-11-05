@@ -1,0 +1,34 @@
+<div class="dropdown">
+
+  <%= link_to '#', class: 'dropdown-toggle', "data-toggle" => "dropdown" do %>
+    <i class='icon_navbar-settings'></i>
+  <% end %>
+
+  <ul class="dropdown-menu">
+    <li class="settings-menu">
+      <a href="<%=FiLabApp.account_server%>/settings">Settings</a>
+    </li>
+    <li class="settings-menu">    
+      <a href="<%= FiLabApp.account_server %>/users/<%= current_user.nickname %>">Edit</a>
+    </li>
+    <% if current_user && user_role(current_user,'InfrastructureOwner') %>
+      <li class="settings-menu">    
+	<%= link_to main_app.mynode_path(current_user.id) do %>My Node<% end %>
+      </li>
+    <% end %>
+    <% if current_user && user_role(current_user,'Provider') %>
+      <!--<li class="settings-menu">    
+	<%= link_to main_app.admin_path(current_user.id) do %>My Node<% end %>
+      </li>-->
+      <li class="settings-menu">    
+	<%= link_to main_app.admin_path(current_user.id) do %>Admin<% end %>
+      </li>
+    <% end %>
+    <li class="divider">
+    </li>
+    <li>
+         <%= link_to('Sign Out', fi_lab_app.destroy_user_session_path, :method => :get) %>
+     <!--     <a href="#" onclick="Fiware.signOut('Cloud'); return false">Sign Out</a> -->
+    </li>
+  </ul>
+</div>

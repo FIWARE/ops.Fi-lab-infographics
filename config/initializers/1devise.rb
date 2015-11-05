@@ -233,7 +233,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   
-  config.omniauth :fi_lab, :strategy_class => OmniAuth::Strategies::FiLab
+  config.omniauth :fi_lab, { :strategy_class => OmniAuth::Strategies::FiLab, :provider_ignores_state => true} 
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

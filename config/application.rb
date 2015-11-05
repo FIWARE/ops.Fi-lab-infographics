@@ -7,6 +7,11 @@ require 'rails/all'
 Bundler.require(:default, Rails.env)
 
 require "fi_lab_app"
+require "httplog"
+
+if Rails.env.development? 
+  OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE 
+end
 
 module FiLabInfographics
   class Application < Rails::Application

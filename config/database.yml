@@ -30,8 +30,8 @@ development:
   adapter: mysql2
   database: infographics_development
   encoding: utf8
-  username: debian-sys-maint
-  password: OhrSqYMqx3HkzKzb
+  username: root
+  password:
   socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as 'test' will be erased and
@@ -48,7 +48,7 @@ production:
   adapter: mysql2
   database: infographics_production
   encoding: utf8
-  username: debian-sys-maint
-  password: OhrSqYMqx3HkzKzb
+  username: root
+  password:
   socket: /var/run/mysqld/mysqld.sock
 

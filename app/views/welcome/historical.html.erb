@@ -1,0 +1,410 @@
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<div class="title">Historical</div>
+<div id="world-map-nodes"></div>
+<div id="errorMessage"></div>
+<div id="historical">
+    <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
+    <div id="chart-options" class="chartOptions">
+        Chart type <%= select_tag(:chart_id,
+                options_for_select([
+                    [ "Histogram",          "chart-histogram" ],
+                    [ "Calendar per node",  "chart-calendar"  ]
+                ], "chart-histogram"),
+                :onchange => "onChartChange(this.value)") %>
+    </div>
+    <div id="chart-content">
+        <div id="chart-calendar" class="chartHidden"></div>
+        <div id="chart-histogram" class="chartVisible"></div>
+    </div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+var STATUS_OK  = "<%= STATUS_OK %>",
+    STATUS_NOK = "<%= STATUS_NOK %>",
+    STATUS_POK = "<%= STATUS_POK %>",
+    STATUS_NA = "<%= STATUS_NA %>";
+
+var selected_chart_id = "chart-histogram";
+
+var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
+    chart_content_height = null,
+    chart_content_maxwidth = 960,
+    map_nodes_width = 585;
+
+var color = d3.scale.quantize()
+    .domain([-1, 1])
+    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+
+function ChartCalendar() {
+    var year_ini = new Date().getFullYear() - 1,
+        year_end = year_ini + 1,
+        cellSize = 17,
+        height = 136,
+        width = chart_content_maxwidth;
+
+    var day = d3.time.format("%w"),
+        week = d3.time.format("%U"),
+        format = d3.time.format("%Y-%m-%d"),
+        monthPath = function(t0) {
+            var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+                d0 = +day(t0), w0 = +week(t0),
+                d1 = +day(t1), w1 = +week(t1);
+            return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+                + "H" + w0 * cellSize + "V" + 7 * cellSize
+                + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+                + "H" + (w1 + 1) * cellSize + "V" + 0
+                + "H" + (w0 + 1) * cellSize + "Z";
+        };
+
+    var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
+        .data(d3.range(year_ini, year_end + 1))
+        .enter().append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class", "RdYlGn")
+        .append("g")
+        .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+    svg.append("text")
+        .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+        .style("text-anchor", "middle")
+        .text(function(d) { return d; });
+
+    this.rect = svg.selectAll(".day")
+        .data(function (d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+        .enter().append("rect")
+        .attr("class", "day")
+        .attr("width", cellSize)
+        .attr("height", cellSize)
+        .attr("x", function(d) { return week(d) * cellSize; })
+        .attr("y", function(d) { return day(d) * cellSize; })
+        .datum(format);
+
+    this.rect.append("title")
+        .text(function(d) { return d; });
+
+    svg.selectAll(".month")
+        .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+        .enter().append("path")
+        .attr("class", "month")
+        .attr("d", monthPath);
+
+    chart_content_height = (year_end - year_ini + 1) * height;
+    d3.select($("#chart-content")[0]).style("height", chart_content_height + "px");
+}
+
+ChartCalendar.prototype.numvalue = function(status) {
+    switch (status) {
+
+
+        case STATUS_OK:  return +1;
+        case STATUS_NOK: return -0.8;
+        case STATUS_POK:  return 0.0;
+        default:         return -1;
+    }
+};
+
+ChartCalendar.prototype.caption = function(d) {
+    switch (this.historical_data[d]) {
+        case +1: return d + ": Sanity status OK";
+        case  0: return d + ": Sanity status Partially OK";
+        case -0.8: return d + ": Sanity status not OK";
+        default: return d + ": Sanity status Undefined";
+    }
+};
+
+ChartCalendar.prototype.update = function(idNode, data) {
+    var self = this;
+    var dataset = data.map(function(obj) {
+        return { 'Date': obj.timestamp.substr(0, 10), 'Value': self.numvalue(obj.FiHealthStatus.value) };
+    });
+    self.idNode = idNode;
+    self.historical_data = d3.nest()
+        .key(function(d) { return d.Date; })
+        .rollup(function(d) { return d[0].Value; })
+        .map(dataset);
+    self.rect.filter(function(d) { return d in self.historical_data; })
+        .attr("class", function(d) { return "day " + color(self.historical_data[d]); })
+        .select("title")
+        .text(function(d) { return self.caption(d); });
+};
+
+function ChartHistogram() {
+    var margin = { top: 30, right: 20, bottom: 80, left: 40 };
+
+    this.width = map_nodes_width - margin.left - margin.right;
+    this.height = chart_content_height - margin.top - margin.bottom;
+
+    this.x = d3.scale.ordinal()
+        .rangeRoundBands([0, this.width], .1);
+
+    this.y = d3.scale.linear()
+        .range([this.height, 0]);
+
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
+        .orient("bottom");
+
+    this.yAxis = d3.svg.axis()
+        .scale(this.y)
+        .orient("left")
+        .ticks(10, "%");
+
+    d3.select($("#chart-histogram")[0]).append("svg")
+        .attr("width", this.width + margin.left + margin.right)
+        .attr("height", this.height + margin.top + margin.bottom)
+        .attr("class", "RdYlGn")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .append("text")
+        .attr("y", -10)
+        .attr("dy", ".30em")
+        .style("text-anchor", "end")
+        .style("font-size", "x-small");
+        //.text("Success");
+}
+
+ChartHistogram.prototype.update = function(data) {
+    var self = this;
+    self.x.domain(data.map(function(d) { 
+    var region_name=d.idNode;
+    if (d.idNode=="Lannion2")
+      region_name="Lannion"
+    else if (d.idNode=="Berlin2")
+      region_name="Berlin"
+    else if (d.idNode=="Spain2")
+      region_name="Spain"
+    else if (d.idNode=="Karlskrona2")
+      region_name="Karlskrona"
+    else if (d.idNode=="Budapest2")
+      region_name="Budapest"
+    else if (d.idNode=="Stockholm2")
+      region_name="Stockholm"
+
+    return region_name }));
+    self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
+
+    var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + self.height + ")")
+        .call(self.xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-60)");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(self.yAxis);
+
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", function(d) { return "bar " + color(-1 + d.success * 2.0); })
+        .attr("x", function(d) { 
+          var region_name_in=d.idNode
+          if (d.idNode=="Lannion2")
+            region_name_in="Lannion"
+          else if (d.idNode=="Berlin2")
+            region_name_in="Berlin"
+          else if (d.idNode=="Spain2")
+            region_name_in="Spain"
+          else if (d.idNode=="Karlskrona2")
+            region_name_in="Karlskrona"
+          else if (d.idNode=="Budapest2")
+            region_name_in="Budapest"
+          else if (d.idNode=="Stockholm2")
+            region_name_in="Stockholm"
+         return self.x(region_name_in); 
+         })
+        .attr("width", self.x.rangeBand())
+        .attr("y", function(d) { return self.y(d.success); })
+        .attr("height", function(d) { return self.height - self.y(d.success); });
+};
+
+var calendar  = new ChartCalendar(),
+    histogram = new ChartHistogram();
+
+function onChartChange(id) {
+    var titleSuffix = '',
+        makeVisible = false;
+
+    chart_content.filter('#' + selected_chart_id).attr("class", "chartHidden");
+    switch (selected_chart_id = id) {
+        case 'chart-calendar':
+            if (calendar.idNode) {
+                titleSuffix = ' for ' + calendar.idNode;
+                makeVisible = true;
+            }
+            break;
+        case 'chart-histogram':
+            makeVisible = true;
+            break;
+    }
+    if (makeVisible) chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
+    $('#chart-title').html('FiHealth sanity check status' + titleSuffix);
+}
+
+function updateCalendar(idNode) {
+    $.ajax ({
+        type: "GET",
+        url: "../api/v1/region/historical/" + idNode,
+        contentType: "application/json; charset=utf-8",
+        data: {},
+        dataType: "json",
+        cache: false,
+        success: function(json) {
+            calendar.update(idNode, json['measures']);
+            onChartChange('chart-calendar');
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            var errors = "<%= FiLabInfographics.nodata %>";
+            if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+                errors = xhr.responseText;
+            }
+            $('#errorMessage').html(errors);
+        }
+    });
+}
+
+$(document).ready(function() {
+    $('.historical').addClass('active');
+    $('.infographic').removeClass('active');
+    $('.status').removeClass('active');
+
+    var selectedMarkers = [];
+    var mapNodes = new jvm.WorldMap({
+        container: $('#world-map-nodes'),
+        map: 'world_mill_en',
+        regionStyle: {
+            initial: {
+                fill: '#ffffff',
+                "fill-opacity": 1,
+                stroke: 'none',
+                "stroke-width": 0,
+                "stroke-opacity": 1
+            },
+            hover: {
+                "fill-opacity": 0.8
+            },
+            selected: {
+                fill: 'orange'
+            },
+            selectedHover: {}
+        },
+        markersSelectableOne: true,
+        markerStyle: {
+            initial: {
+                fill: 'lightblue',
+                stroke: '#383f47'
+            },
+            selected: {
+            fill: 'red'
+            },
+            hover: {
+                fill: 'orange'
+            },
+            selectedHover: {
+            fill: 'red'
+            }
+        },
+        onMarkerClick: function(events, index) {
+            switch (selected_chart_id) {
+                case 'chart-calendar':
+                    updateCalendar(selectedMarkers[index].name);
+                    break;
+                case 'chart-histogram':
+                    updateCalendar(selectedMarkers[index].name);
+                    d3.select('#chart_id')[0][0].value = 'chart-calendar';
+                    onChartChange('chart-calendar');
+                    break;
+            }
+        }
+    });
+
+    $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+    function ajaxFun() {
+        $.ajax ({
+            type: "GET",
+            url: "../api/v1/region",
+            contentType: "application/json; charset=utf-8",
+            data: {},
+            dataType: "json",
+            cache: false,
+            success: function(json) {
+                selectedMarkers = [];
+                sanitySuccess = [];
+                var actualTime = Date.now() / 1000
+                var deltaTime = 10800;
+                $.each(json["regions"], function(idRegion, regionAttributes) {
+                    if (idRegion != null && regionAttributes != null) {
+
+                        regionTime =( new Date(this['timestamp']).getTime() / 1000)
+                        my_time=new Date(regionAttributes['timestamp'])
+
+                        var yyyy = my_time.getFullYear().toString();
+                        var mm  = (my_time.getMonth()+1).toString(); // getMonth() is zero-based
+                        var dd  = my_time.getDate().toString();
+                        var hh  = my_time.getHours().toString();
+                        var m_m = my_time.getMinutes().toString();
+                        time2print=yyyy +"-"+ (mm[1]?mm:"0"+mm[0]) +"-"+(dd[1]?dd:"0"+dd[0])+"T"+(hh[1]?hh:"0"+hh[0])+":"+(m_m[1]?m_m:"0"+m_m[0])+":00";
+                        
+                        var markers={}
+                        markers["latLng"] = [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+
+                        //if (actualTime>(regionTime+deltaTime)){
+                        //  statusColor = 'rgba(0,0,0,0.5)';
+                        //  markers["name"]=regionAttributes['name']+": Last Update on "+time2print;
+                        //  markers["style"] = {fill: statusColor, r:5};
+                        //}
+                        //else{ 
+                          if(regionAttributes["sanityLive"]=="red") statusColor = 'rgba(255,0,0,1.0)';
+                          else if(regionAttributes["sanityLive"]=="green") statusColor = 'rgba(0,255,0,1.0)';
+                          else if(regionAttributes["sanityLive"]=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+                          else if(regionAttributes["sanityLive"]=="gray") statusColor = 'rgba(0,0,0,0.5)';
+                          markers["name"]=regionAttributes['name'];
+                          markers["style"] = {fill: statusColor, r:5};
+                        //}
+                        //console.log(regionAttributes["sanityLive"]);
+                        //markers["style"] = {fill: statusColor, r:5};
+                        selectedMarkers.push(markers);
+                        sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
+                    }
+
+                    $('#errorMessage').html("");
+
+                    var height = $('#world-map-nodes').height()+$('#historical').height()+80;
+                    $('.wrapper').css("cssText", "height: "+height+"px !important;");
+                });
+
+                mapNodes.removeAllMarkers();
+                mapNodes.addMarkers(selectedMarkers);
+
+                histogram.update(sanitySuccess);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                var errors = "<%= FiLabInfographics.nodata %>";
+                if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+                    errors = xhr.responseText;
+                }
+                $('#errorMessage').html(errors);
+            }
+        });
+    }
+
+
+    // Call our ajax the first time
+    ajaxFun();
+    // And then every 60 seconds
+    setInterval(function(){ajaxFun()}, 60000);
+});
+</script>
+
+<% end %>

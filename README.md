@@ -26,7 +26,13 @@ The component retrieves existing infrastructure services and regions from the Fe
 ### Release History
 
 - 23/06/2015 Added historical node data visualization.
-- 14/08/2015 Info about Basic Users, Trial Users and Community Users inserted inside main dashboard.
+- 14/08/2015 Added information on the number of different types of users (trial, basic and community).
+- 9/11/2015: 
+  - Layout changes (in particular in the presentation of the map and of the detailed information on RAM, CPU, DISK, IP etc.)
+  - Added list of institutions supporting the FIWARE Lab
+  - Integration of the sanity check results into the Status Page: now for each node the current sanity check status is provided. Moreover an historical view of the sanity check status is provided (average of the values collected from the month specified in the calendar tab) based on an histogram
+  - added information on the historical values of the sanity check for a given node for each day: in the Status Page clicking on a node in the map you will be redirected to a page where the sanity check historical data is presented in a sort of "calendar per day"
+  -added information on the resources of a single node: clicking on a node in the table "FIWARE Service Status" of Status Page, a page showing the detail of that node is presented. Here you can find info about the resources of that node and of its status.
 
 ## Installation
 
@@ -89,6 +95,9 @@ Launch the application:
 ```
 rails server
 ```
+
+### User manual
+In order to use the Infographics tool, please refer to [user guide](doc/user-guide.rst)
 
 Copyright 2015 Create-net.org
 All Rights Reserved.

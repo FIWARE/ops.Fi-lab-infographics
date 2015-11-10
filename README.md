@@ -32,7 +32,7 @@ The component retrieves existing infrastructure services and regions from the Fe
   - Added list of institutions supporting the FIWARE Lab
   - Integration of the sanity check results into the Status Page: now for each node the current sanity check status is provided. Moreover an historical view of the sanity check status is provided (average of the values collected from the month specified in the calendar tab) based on an histogram
   - added information on the historical values of the sanity check for a given node for each day: in the Status Page clicking on a node in the map you will be redirected to a page where the sanity check historical data is presented in a sort of "calendar per day"
-  -added information on the resources of a single node: clicking on a node in the table "FIWARE Service Status" of Status Page, a page showing the detail of that node is presented. Here you can find info about the resources of that node and of its status.
+  - added information on the resources of a single node: clicking on a node in the table "FIWARE Service Status" of Status Page, a page showing the detail of that node is presented. Here you can find info about the resources of that node and of its status.
 
 ## Installation
 

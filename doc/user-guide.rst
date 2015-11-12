@@ -26,7 +26,7 @@ Here a short description about each tab:
 - Public IPs: it is the total number of public IPs. When this tab is selected, hovering the mouse on a node of the map the number available public IPs/total public IPs is shown;
 - VM: it is the total number of VMs. When this tab is selected, hovering the mouse on a node of the map the number of VMs is shown.
 
-When data about a specific node are obsolete, the node in the map is greyed and the user can check the timestamp of its last update by passing the cursor over it.
+When data about a specific node are obsolete, the node in the map is grey and the user can check the timestamp of its last update by passing the cursor over it.
 
 Status Page
 ----------

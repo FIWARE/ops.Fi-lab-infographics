@@ -37,7 +37,7 @@ Status Page
 The Status page is composed of:
 
 - a big map that shows all the nodes and their overall status (green, yellow or red);
-- a table showing the current status of all the FIWARE Lab nodes services together with the Sanity Check status (Sanity Check executes periodically a set of tests on the nodes in order to verify if the basic functionalities are guarantied);
+- a table showing the current status of all the FIWARE Lab nodes services together with the FIHealth Sanity Check status (FIHealth Sanity Check executes periodically a set of tests on the nodes in order to verify if the basic functionalities are guaranteed);
 - an histogram that shows the average on the last selected months of the Sanity Check status for each node.
 
 Note that a gray colour for the status means that the there is no up to date data for that service/node.

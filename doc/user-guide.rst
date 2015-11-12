@@ -40,6 +40,8 @@ The Status page is composed of:
 - a table showing the current status of all the FIWARE Lab nodes services together with the Sanity Check status (Sanity Check executes periodically a set of tests on the noedes in order to verify if the basic functionalities are guarantied);
 - an histogram that shows the average on the last selected months of the Sanity Check status for each node.
 
+Note that a gray colour for the status means that the there is no up to date data for that service/node.
+
 By clicking on a specific node in the map, the user can check the FIWARE services status for that node and a calendar graph of the Sanity Check status for the last selected months.
 
 .. image:: _static/status2.jpg
@@ -48,15 +50,15 @@ By clicking on a specific node in the map, the user can check the FIWARE service
 Node Page
 ----------
 
-By clicking on a specific node in the map in the Main Page or by clicking on the nodes' names inside table in the Status Page, all data about the specific node are displayed.
+By clicking on a specific node in the map of the Infographics Page or by clicking on the node name inside table in the Status Page, data about the specific node is displayed.
 
 .. image:: _static/node.jpg
    :alt: Node Page
    
-The Node page is composed by:
+The Node page is composed of:
 
 - a map that shows node location and its overall status (green, yellow or red);
 - CPU, RAM and Disk and their used percentage;
 - a table with all services status;
-- a table with all computing hosts;
+- a table with info on all the computing hosts;
 - the list of node supporters;

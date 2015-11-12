@@ -9,7 +9,6 @@
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes')
 # 	Node.delete_all
 	Node.create([{rid: 'Trento', name: 'Trento', jira_project_url: 'http://jira.fi-ware.org/browse/TREN', jira_project_id: 'TREN'},
-	             {rid: 'Berlin2', name: 'Berlin', jira_project_url: 'http://jira.fi-ware.org/browse/BEAR', jira_project_id: 'BEAR'},
 	             {rid: 'Lannion2', name: 'Lannion', jira_project_url: 'http://jira.fi-ware.org/browse/LAN', jira_project_id: 'LAN'},
 	             {rid: 'Prague', name: 'Prague', jira_project_url: 'http://jira.fi-ware.org/browse/PRAG', jira_project_id: 'PRAG'},
 	             {rid: 'Waterford', name: 'Waterford', jira_project_url: 'http://jira.fi-ware.org/browse/WAT', jira_project_id: 'WAT'},
@@ -51,17 +50,17 @@
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
-	ActiveRecord::Base.connection.execute('INSERT INTO fi_lab_infographics_nodes_institutions VALUES(11,1),
-	                                      (4,2),
-					      (3,3),
-					      (16,4),
-					      (7,5),
-					      (8,6),
-					      (10,7),
-					      (13,8),
+	ActiveRecord::Base.connection.execute('INSERT INTO fi_lab_infographics_nodes_institutions VALUES(10,1),
+	                                      (3,2),
+					      (2,3),
+					      (15,4),
+					      (6,5),
+					      (7,6),
+					      (9,7),
+					      (12,8),
 					      (1,9),
-					      (12,10),
-					      (6,11),
-					      (9,12),
-					      (14,13),
-					      (18,14)')
+					      (11,10),
+					      (5,11),
+					      (8,12),
+					      (13,13),
+					      (17,14)')

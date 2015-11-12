@@ -18,12 +18,12 @@ It is composed by:
 The user can click on each tab in order to display more details on the map.
 Here a short description about each tab:
 
-- Users: is the total number of users. It is the sum of Basic Users, Trial Users and Community;
-- Regions, Organizations, Institutions: is the total number of nodes, organizations and institutions;
-- CPU (Cores): is the total number of physical cores. When the tab is selected, the map shows virtual and physical cores for each node. Moreover the amount of available cores is displayed;
-- RAM (GB): is the total number of physical ram. When the tab is selected, the map shows virtual and physical ram for each node. Moreover the amount of available RAM is displayed;
-- Disk (TB): is the total number of disk. When the tab is selected, the map shows available disk/total disk for each node. Moreover the amount of available Disk is displayed;
-- Public IPs: is the total number of public IPs. When the tab is selected, the map shows available public IPs/total public IPs for each node;
+- Users: it is the total number of users. It is the sum of Basic Users, Trial Users and Community Users;
+- Regions, Organizations, Institutions: it is the total number of nodes, organizations and institutions;
+- CPU (Cores): it is the total number of physical cores. When this tab is selected, hovering the mouse on a node of the map, the number of virtual and physical cores is shown. Moreover the amount of available cores is displayed;
+- RAM (GB): it is the total size of physical RAM. When this tab is selected, hovering the mouse on a node of the map, the size of virtual and physical RAM is shown. Moreover the amount of available RAM is displayed;
+- Disk (TB): it is the total size of disk.  When this tab is selected, hovering the mouse on a node of the map, the size available disk/total disk is shown;
+- Public IPs: it is the total number of public IPs. When the tab is selected, the map shows available public IPs/total public IPs for each node;
 - VM: is the total number of VMs. When the tab is selected, the map shows the number of VMs for each node;
 
 When data about a specific node are obsolete, the node in the map is grey and the user can check time of its last update by passing the cursor over it.

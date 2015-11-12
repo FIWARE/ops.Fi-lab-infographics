@@ -34,13 +34,13 @@ Status Page
 .. image:: _static/status.jpg
    :alt: Status Page
    
-The Status page is composed by:
+The Status page is composed of:
 
-- a big map that shows all nodes and their overall status (green, yellow or red);
-- a table with all FIWARE Lab nodes services status;
-- an histogram that shows the average on the last selected months of the sanity check status for each node.
+- a big map that shows all the nodes and their overall status (green, yellow or red);
+- a table showing the current status of all the FIWARE Lab nodes services together with the Sanity Check status (Sanity Check executes periodically a set of tests on the noedes in order to verify if the basic functionalities are guarantied);
+- an histogram that shows the average on the last selected months of the Sanity Check status for each node.
 
-By clicking on a specific node in the map, the user can check FIWARE services status for a given node and a calendar graph that shows its sanity check status of the last selected months.
+By clicking on a specific node in the map, the user can check the FIWARE services status for that node and a calendar graph of the Sanity Check status for the last selected months.
 
 .. image:: _static/status2.jpg
    :alt: Status of a given node

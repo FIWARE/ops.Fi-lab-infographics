@@ -18,8 +18,10 @@ svg {
 .chartTitle {
   font-weight: bold;
   padding: 17px 0 0;
-  color: rgb(0, 45, 103);
   font-family: "NeoTech-Regular";
+  color: #60c1cf;
+  font-size: 24px;
+  line-height: 40px;
 }
 
 .chartOptions {
@@ -103,11 +105,82 @@ footer {
 	margin-top: 10px;
 }
 
+#map-users-top-container {
+  color: #002D67;
+  margin-top:20px;
+/*   height: 147px; */
+  background-color: #e2e2e2;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  padding: 6px 6px 0px 6px;
+  text-align:center;
+/*   height: 160px; */
+  
+}
+
+#map-users-top-left {
+        margin: 0px;
+        min-width: 140px;
+	width: 12.4%;
+	height: 160px;
+	/*margin-left: 0.16%;
+	margin-bottom: 2px;*/
+/*         display: inline-block; */
+	/*float:left;*/
+	display: inline-block;
+	vertical-align:top;
+	background-color: #e2e2e2;
+/* 	border: 1px solid gray;	 */
+}
+
+#map-users-top-right {
+        margin: 0px;
+        min-width: 140px;
+	width: 87.2%;
+	height: 160px;
+	/*margin-left: 0.16%;
+	margin-bottom: 2px;*/
+/*         display: inline-block; */
+	/*float:left;*/
+	display: inline-block;
+	background-color: #e2e2e2;
+/* 	border: 1px solid gray;	 */
+}
+
+#map-users-top-percentage-container {
+	height: 160px;
+}
+
+#community, #trial, #basic {
+	float: left;
+	height: 160px;
+	color: #fff;
+	min-width: 4%;
+	width: 33.3%;
+}
+
+#community {
+	background-color: #ff3566;
+}
+
+#trial {
+	background-color: #002759;
+}
+
+#basic {
+	background-color: #00d3de;
+}
+
 #mini-tiles {
   color: #002D67;
   margin-bottom:20px;
 /*   height: 147px; */
-  background-color: gray;
+  background-color: #e2e2e2;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  padding: 6px;
+  text-align:center;
+  
 }
 
 #mini-tiles .selected {
@@ -118,12 +191,13 @@ footer {
 .tile {
         margin: 0px;
         min-width: 140px;
-	width: 14.1%;
+	width: 16.3%;
 	height: 145px;
-	margin-left: 0.16%;
-	margin-bottom: 2px;
+	/*margin-left: 0.16%;
+	margin-bottom: 2px;*/
 /*         display: inline-block; */
-	float:left;
+	/*float:left;*/
+	display: inline-block;
 	background-color: #e2e2e2;
 /* 	border: 1px solid gray;	 */
 }
@@ -136,14 +210,15 @@ footer {
 }
 
 .tileRight {
-        margin-left: 0.23%;
-	margin-bottom: 2px;
+       /* margin-left: 0.23%;
+	margin-bottom: 2px;*/
 /* 	margin-right: 0px; */
         min-width: 140px;
-	width: 16.5%;
+	width: 16.3%;
 	height: 145px;
 /*         display: inline-block; */
-	float:left;
+/* 	float:left; */
+	display: inline-block;
 	background-color: #e2e2e2;
 /* 	border: 1px solid gray; */
 }
@@ -518,6 +593,61 @@ padding-bottom: 10px;
 }
 
 /*status page*/
+#map-users-top-container-status {
+  color: #333;
+  margin-top:20px;
+/*   height: 147px; */
+  background-color: #e2e2e2;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  padding: 10px 25px;
+  text-align:left;
+  font-size: 12px;
+/*   height: 160px; */
+  
+}
+
+#map-users-top-container-status .media-heading {
+    color: #60c1cf;
+    font-family: "NeoTech-Regular";
+    margin: 0 0 5px;
+}
+
+#buttonShowAll {
+    cursor:pointer;
+    cursor:hand;
+    position:relative;
+    bottom:20px;
+    left:0;
+    background-color:white;
+    margin-bottom:-20px;
+    width:260px;
+    color: #002d67;
+}
+
+#buttonShowAll:hover {
+    color: #60c1cf;
+}
+
+.roundBottomBorder {
+    background-color: #e2e2e2;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+/*     padding: 6px; */
+}
+
+.containerWithMargin {
+    margin: 0px 0px 17px 17px;
+}
+
+.statusLink {
+  margin: 40px 17px 17px 17px;
+/*   float: right; */
+/*  position: relative;
+  bottom: 17px;
+  right: 17px;*/
+}
+
 .status img
 {
 	height: 22px;
@@ -987,6 +1117,22 @@ div.home #regionGauges header select {
   color: #ccc;
   font-family: "NeoTech-Regular";
   font-size:19px;
+}
+
+.generalInfoContainer {
+    background-color: #e2e2e2;
+    border-radius: 6px;
+}
+
+.generalInfosection {
+    font-size: 16px;
+    height: 111px;
+    min-width: 310px;
+    padding: 20px 0 0;
+}
+
+.generalInfosection:hover {
+     background-color: #f3f3f3;
 }
 
 div.home div.applications, div.home div.organizations, div.home div.members, div.home div.services, div.home #regionGauges {

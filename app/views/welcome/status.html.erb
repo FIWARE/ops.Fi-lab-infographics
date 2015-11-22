@@ -1,4 +1,6 @@
+<% content_for :headers do %>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<%end %>
 <!--
 <div class="title">Federation Services <span class="status"><img src="/assets/infographic/graylight.png" height="22"/></span></div>
 
@@ -53,42 +55,57 @@
 <div class="layoutContainer">
 <div class="row-fluid">
     <div class="span12">
-	<div class="map-container">		
+	<div id="map-users-top-container-status">
+	  <h3 class="media-heading">
+	    Map of FIWARE Node Status
+	  </h3>
+	   <span>
+	    This map provides a real time status of FIWARE Lab nodes (represented by a green, yellow, red or gray marker). Note that a gray colour for the marker means that there is no up to date data for that node or its services.<br>
+	    if you click on a specific node in the map, you can check the FIWARE services status for that node and a calendar graph of the Sanity Check status for the last selected months.
+	  </spanp>
+	</div>
+	<div class="map-container" style="margin-top:0px;">		
 	    <div id="world-map-nodes"></div>
 	    <div id="loadingMap" class="aftermap">Loading <span id="regionsNum"></span> Nodes...</div>
+	    <DIV id="buttonShowAll" CLASS="collapsed" style="" onclick="$('.containerWithMargin').removeAttr('style');$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');$('#chart-cal').addClass('chartHidden');$('#chart-hist').show();$('#nodeLink').hide();">
+	      Show all FIWARE Lab Nodes Status
+	    </DIV>
 	</div>
-	<DIV id="buttonShowAll" CLASS="collapsed" style="cursor:pointer;cursor:hand;float:left;" onclick="$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');$('#chart-cal').addClass('chartHidden');$('#chart-hist').show();">
-	  Show All
-	</DIV>	
+		
     </div>
 </div>
-<div class="row-fluid">
+<div class="row-fluid roundBottomBorder">
     <div class="span6 myspan">	
 <!-- 	<div id="errorMessage"></div> -->
-	<div id="table-title" class="chartTitle">FiWARE services status <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgServices" style="display:none"></div>
-	<DIV ID="status">
-			  
-		<DIV id="tableHeaderContent" CLASS='status-row-min status-row-header'>
-			<DIV CLASS='field field-header field-header-node-min'>Node</DIV>
-<!-- 			<DIV CLASS='field field-header field-header-overall'>Overall</DIV>z -->
-			<DIV CLASS='field field-header field-header-service'>Nova</DIV>
-			<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
-			<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
-			<DIV CLASS='field field-header field-header-service'>Glance</DIV>
-			<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
-			<DIV CLASS='field field-header field-header-service'>Sanity</DIV>
-			<!-- <DIV CLASS='field field-header field-header-support'>Support</DIV>-->
-		</DIV>
+	<div class="containerWithMargin">
+	    <div id="table-title" class="chartTitle"><img src="/assets/infographic/iconStatus.png" title="Services Status" alt="Services Status" id="imgStatus" style="width:40px;">FIWARE Lab Nodes Services status <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgServices" style="display:none"></div>
+	    <DIV ID="status">
+			      
+		    <DIV id="tableHeaderContent" CLASS='status-row-min status-row-header'>
+			    <DIV CLASS='field field-header field-header-node-min'>Node</DIV>
+    <!-- 			<DIV CLASS='field field-header field-header-overall'>Overall</DIV>z -->
+			    <DIV CLASS='field field-header field-header-service'>Nova</DIV>
+			    <DIV CLASS='field field-header field-header-service'>Neutron</DIV>
+			    <DIV CLASS='field field-header field-header-service'>Cinder</DIV>
+			    <DIV CLASS='field field-header field-header-service'>Glance</DIV>
+			    <DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
+			    <DIV CLASS='field field-header field-header-service'>Sanity</DIV>
+			    <!-- <DIV CLASS='field field-header field-header-support'>Support</DIV>-->
+		    </DIV>
 
-		
-		<DIV id="tableContent">
-			
-		</DIV>			  
-	</DIV>
+		    
+		    <DIV id="tableContent" style="width:509px;background-color:white;">
+			    
+		    </DIV>			  
+	    </DIV>	    
+	</div>	
+	<div class="statusLink" id="nodeLink" style="display:none;">
+	  <a href="#" target="_blank">Go to Node Details</a>
+	</div>
     </div>
     <div class="span6 myspan">
-	<div id="historical">
-	    <div class="chartTitle"><span id="chart-title">FiHealth sanity check status </span><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
+	<div id="historical" class="containerWithMargin">
+	    <div class="chartTitle"><img src="/assets/infographic/iconHealth.png" title="Services Sanity" alt="Services Sanity" id="imgSanity" style="width:40px;"><span id="chart-title">FIWARE Lab Nodes Sanity checks </span><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
 	      <div id="chart-hist">
 		<div class="floatLeft datePickerField">
 		  From: <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
@@ -122,7 +139,10 @@
 	    <div id="chart-content">
 		<div id="chart-calendar" class="chartHidden"></div>
 		<div id="chart-histogram" class="chartVisible"></div>
-	    </div>
+	    </div>	    
+	</div>
+	<div class="statusLink">
+	  <a href="https://fi-health.lab.fiware.org/" target="_blank">Go to Sanity Checks</a>
 	</div>
     </div>
 </div>
@@ -386,15 +406,19 @@
 		    
 			titleSuffix = ' for ' + region;// + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 			makeVisible = true;
+			$("#chart-content").css("height", 100+"px");			
+			$(".containerWithMargin").animate({height:200+"px"}, 500);
 		    }
 		    break;
 		case 'chart-histogram':
 // 		    titleSuffix = ' <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
+
+		    $("#chart-content").css("height", chart_content_height+"px");
 		    makeVisible = true;
 		    break;
 	    }
 	    if (makeVisible) chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
-	    $('#chart-title').html('FiHealth sanity check status' + titleSuffix);
+	    $('#chart-title').html('FIWARE Lab Nodes Sanity checks' + titleSuffix);
 	}
 
 	function updateCalendar(idNode,from,to) {
@@ -570,28 +594,30 @@
 		  $( ".showHistogram" ).button().attr('disabled', true);
 		  
 		  var selectedMarkers = [];
+		  var selectedRegions = [];
 		  var sanitySuccess = [];
 		  
 		  var mapNodes = new jvm.WorldMap({
 		  container: $('#world-map-nodes'),
 		  map: 'world_mill_en',
+		  backgroundColor: "white",
 		  zoomOnScroll: false,
 		  regionStyle: {
-			    initial: {
-			      fill: '#ffffff',
-			      "fill-opacity": 1,
-			      stroke: 'none',
-			      "stroke-width": 0,
-			      "stroke-opacity": 1
-			    },
-			    hover: {
-			      "fill-opacity": 0.8
-			    },
-			    selected: {
-				  fill: 'orange'
-			    },
-			    selectedHover: {
-			    }
+			initial: {
+			  fill: '#999999',
+			  "fill-opacity": 1,
+			  stroke: 'none',
+			  "stroke-width": 0,
+			  "stroke-opacity": 1
+			},
+			hover: {
+			  "fill-opacity": 0.8
+			},
+			selected: {
+			      fill: '#002d67'
+			},
+			selectedHover: {
+			}
 		  },
 		  markerStyle: {
 			initial: {
@@ -620,6 +646,8 @@
 		      onChartChange('chart-calendar');
 		      selected_node_id = selectedMarkers[index].id;
 		      $('#buttonShowAll').removeClass('collapsed');
+		      $('#nodeLink a').attr("href", '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id)
+		      $('#nodeLink').show();
 		      
 		      var nowDate = new Date();
 // 		      var nmonth = nowDate.getMonth()+1;if (nmonth<10)nmonth="0"+nmonth;
@@ -711,6 +739,7 @@
 				    if(totData == null || totData == "undefined") return;
 				    
 				    selectedMarkers = [];
+				    selectedRegions = [];
 				    var markers = {};
 				    
 				    var idRegions = totData["total_regions_ids"];
@@ -837,10 +866,13 @@
 								markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
 							      else markersData["name"] = dataRegion['name'];
 							      
-							      markersData["style"] = 'rgba(0,0,0,0.5)';							      
+							      markersData["style"] = 'rgba(150,150,150,1)';							      
 							      
 							      
 							      markers[regionId] = markersData; 
+							      selectedRegions.push(dataRegion['country']);
+							      mapNodes.clearSelectedRegions();
+							      mapNodes.setSelectedRegions(selectedRegions);
 							      
 							      $.ajax (
 							      {
@@ -869,7 +901,7 @@
 								        
 								      var statusColor;
 								      if (actualTime>(regionTime+deltaTime)){
-									statusColor = 'rgba(0,0,0,0.5)';
+									statusColor = 'rgba(150,150,150,1)';
 								      }
 								      else{
 									if(services['FiHealthStatus']!=null && 
@@ -880,7 +912,7 @@
 										  case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
 										  case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
 										  case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
-										  default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+										  default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
 									    }
 									}
 									else if(services['FiHealthStatus']!=null && 
@@ -890,10 +922,10 @@
 										  case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
 										  case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
 										  case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
-										  default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+										  default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
 									    }
 									}
-									else statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+									else statusColor = 'rgba(150,150,150,1)';     /*gray*/
 								      }
 								      markers[regionId]["style"] = {fill: statusColor, r:5};
 								      
@@ -962,7 +994,7 @@
 										      "<!--<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href =jira_url;\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>-->"+
 									      "</DIV>-->");
 								    
-								    var statusColor = 'rgba(0,0,0,0.5)';							  
+								    var statusColor = 'rgba(150,150,150,1)';							  
 								    markers[regionId]["style"] = {fill: statusColor, r:5};
 								    
 	    // 							selectedMarkers = $.map(markers, function(val, key) { return val; });
@@ -1084,6 +1116,7 @@
 					  var allRows = "";
 					  var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
 					  selectedMarkers = [];
+					  selectedRegions = [];
 					  sanitySuccess = [];
 				          var actualTime = Date.now() / 1000
                                           var deltaTime = 10800;	  
@@ -1092,7 +1125,8 @@
 						  {
 							  //for histogram chart
 							  sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
-                                                          //var my_time=new Date(regionAttributes['timestamp'])                                                         
+                                                          //var my_time=new Date(regionAttributes['timestamp'])   
+                                                          selectedRegions.push(regionAttributes['country']);							      
 							  var markers = {};
 							  markers["id"] =  idRegion;
 							  markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
@@ -1111,7 +1145,7 @@
 							  else markers["name"]=regionAttributes['name'];
                                                           var statusColor;
                                                           if (actualTime>(regionTime+deltaTime)){
-                                                            statusColor = 'rgba(0,0,0,0.5)';
+                                                            statusColor = 'rgba(150,150,150,1)';
                                                           }
 							  {
 							    if(regionAttributes['services']['FiHealthStatus']!=null && 
@@ -1122,7 +1156,7 @@
 								      case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
 								      case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
 								      case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
-								      default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+								      default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
 								}
 							    }
 							    else if(regionAttributes['services']['FiHealthStatus']!=null && 
@@ -1132,10 +1166,10 @@
 								      case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
 								      case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
 								      case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
-								      default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+								      default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
 								}
 							    }
-							    else statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+							    else statusColor = 'rgba(150,150,150,1)';     /*gray*/
 							  }
 							  markers["style"] = {fill: statusColor, r:5};
 							  selectedMarkers.push(markers);
@@ -1225,6 +1259,8 @@
 						  
 					  });
 					  
+					  mapNodes.clearSelectedRegions();
+					  mapNodes.setSelectedRegions(selectedRegions);
 					  mapNodes.removeAllMarkers();
 					  mapNodes.addMarkers(selectedMarkers);					  
 					  histogram.update(sanitySuccess);

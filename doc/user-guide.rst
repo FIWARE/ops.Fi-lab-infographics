@@ -60,5 +60,6 @@ The Node page is composed of:
 - a map that shows node location and its overall status (green, yellow or red);
 - CPU, RAM and Disk and their used percentage;
 - a table with all services status;
+- a sanity checks calendar;
 - a table with info on all the computing hosts;
 - the list of node supporters;

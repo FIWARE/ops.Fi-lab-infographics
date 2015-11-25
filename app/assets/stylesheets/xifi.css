@@ -105,7 +105,7 @@ footer {
 	margin-top: 10px;
 }
 
-#map-users-top-container {
+#map-users-top {
   color: #002D67;
   margin-top:20px;
 /*   height: 147px; */
@@ -118,45 +118,62 @@ footer {
   
 }
 
-#map-users-top-left {
+#map-users-top-container {
+  text-align:center;
+  
+}
+
+.map-users-top-tile {
         margin: 0px;
-        min-width: 140px;
-	width: 12.4%;
-	height: 160px;
+        min-width: 220px;
+	width: 24.6%;
+	height: 145px;
 	/*margin-left: 0.16%;
 	margin-bottom: 2px;*/
 /*         display: inline-block; */
 	/*float:left;*/
+	display: inline-block;
+	background-color: #e2e2e2;
+	vertical-align:top;
+/* 	border: 1px solid gray;	 */
+}
+
+.map-users-top-percentage-container {
+	position: relative;
+	height: 100px;
+	width: 50px;
+	background-color: #f3f3f3;
+}
+
+/*.map-users-top-percentage-container-complementar {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	background-color: #e2e2e2;
+	top:0;
+}*/
+
+.leftBar {
 	display: inline-block;
 	vertical-align:top;
-	background-color: #e2e2e2;
-/* 	border: 1px solid gray;	 */
 }
 
-#map-users-top-right {
-        margin: 0px;
-        min-width: 140px;
-	width: 87.2%;
-	height: 160px;
-	/*margin-left: 0.16%;
-	margin-bottom: 2px;*/
-/*         display: inline-block; */
-	/*float:left;*/
-	display: inline-block;
-	background-color: #e2e2e2;
-/* 	border: 1px solid gray;	 */
-}
-
-#map-users-top-percentage-container {
-	height: 160px;
+.usersType {
+    color: rgb(0, 45, 103);
+    display: inline-block;
+    vertical-align:top;
+    font-family: "NeoTech-Regular";
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 52px;
+    margin-left: 15px;
 }
 
 #community, #trial, #basic {
-	float: left;
-	height: 160px;
-	color: #fff;
-	min-width: 4%;
-	width: 33.3%;
+	height: 0%;
+	width: 100%;
+	position: absolute;
+	bottom:0;
 }
 
 #community {

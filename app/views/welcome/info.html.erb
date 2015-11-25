@@ -17,44 +17,53 @@
 <div id="infographics" class="layoutContainer">
 	<div class="row-fluid">
 	    <div class="span12">
-		<div id="map-users-top-container">
-		  <div id="map-users-top-left">
-		    <div class="centerIcon">
-			    <img src="/assets/infographic/iconOmino.png" height="55"/>
+		<div id="map-users-top">
+		    <div id="map-users-top-container">
+		      <div class="map-users-top-tile">
+			<div class="centerIcon">
+				<img src="/assets/infographic/iconOmino.png" height="55"/>
+			</div>
+			<div class="centerTileDetail">
+				<span id="usersNum"></span> users
+			</div>
+		      </div>
+		       <div class="map-users-top-tile">
+			    <div class="leftBar">
+				<div class="map-users-top-percentage-container">				    
+				    <div class="map-users-top-percentage-container-complementar"></div> 
+				    <div id="community"></div> 
+				</div> 
+				<img src="/assets/infographic/iconMedal1.png" style="height:40px"/>
+			    </div>
+			    <div class="usersType">
+				    <span id="communityNum"></span><br>community users
+			    </div>
+		      </div>
+		      <div class="map-users-top-tile">
+			    <div class="leftBar">
+				<div class="map-users-top-percentage-container">				    
+				    <div class="map-users-top-percentage-container-complementar"></div> 
+				    <div id="trial"></div> 
+				</div> 
+				<img src="/assets/infographic/iconMedal2.png" style="height:40px"/>
+			    </div>
+			    <div class="usersType">
+				    <span id="trialNum"></span><br>trial users
+			    </div>
+		      </div>
+		      <div class="map-users-top-tile">
+			    <div class="leftBar">
+				<div class="map-users-top-percentage-container">				    
+				    <div class="map-users-top-percentage-container-complementar"></div> 
+				    <div id="basic"></div> 
+				</div> 
+				<img src="/assets/infographic/iconMedal3.png" style="height:40px"/>
+			    </div>
+			    <div class="usersType">
+				    <span id="basicNum"></span><br>basic users
+			    </div>
+		      </div>		     
 		    </div>
-		    <div class="centerTileDetail">
-			    <span id="usersNum"></span> users
-		    </div>
-		  </div>
-		  <div id="map-users-top-right">
-		    <div id="map-users-top-percentage-container">
-			  <div id="community">
-			      <div class="centerIcon">
-				      <img src="/assets/infographic/iconMedal1.png" height="55"/>
-			      </div>
-			      <div class="centerTileDetail">
-				      <span id="communityNum"></span> community users
-			      </div>
-			  </div>
-			  <div id="trial">
-			      <div class="centerIcon">
-				      <img src="/assets/infographic/iconMedal2.png" height="55"/>
-			      </div>
-			      <div class="centerTileDetail">
-				      <span id="trialNum"></span> trial users
-			      </div>			      
-			  </div>
-			  <div id="basic">
-			      <div class="centerIcon">
-				      <img src="/assets/infographic/iconMedal3.png" height="55"/>
-			      </div>
-			      <div class="centerTileDetail">
-				      <span id="basicNum"></span> basic users
-			      </div>			      
-			  </div>
-			  <div class="clear"></div>
-		    </div>
-		  </div>
 		</div>
 		<div class="map-container" style="margin-top:0px;">
 		  <div id="world-map-nodes"></div>
@@ -815,22 +824,15 @@
 					$('#communityNum').html(nCommunityUsers);  
 					
 					
-					var widthOfContainer = 100;//$('#map-users-top-percentage-container').width();
-// 					alert(widthOfContainer);
-					var communityWidth = 4;
-					var trialWidth = 4;
-					var basicWidth = 4;
+					var heightOfContainer = 100;
+// 					alert(heightOfContainer);
+					var communityHeight = Math.round(heightOfContainer*nCommunityUsers/nUsers);
+					var trialHeight = Math.round(heightOfContainer*nTrialUsers/nUsers);
+					var basicHeight = heightOfContainer-communityHeight-trialHeight;
 					
-					var i = Math.round(widthOfContainer*nCommunityUsers/nUsers);
-					if (i  >= 4) communityWidth = i;
-					var y = Math.round(widthOfContainer*nTrialUsers/nUsers);
-					if (y  >= 4) trialWidth = y;
-					var z = widthOfContainer-communityWidth-trialWidth;
-					basicWidth = z;
-					
-					$("#community").animate({width:communityWidth+"%"}, 500);
-					$("#trial").animate({width:trialWidth+"%"}, 500);
-					$("#basic").animate({width:basicWidth+"%"}, 500);
+					$("#community").animate({height:communityHeight+"%"}, 500);
+					$("#trial").animate({height:trialHeight+"%"}, 500);
+					$("#basic").animate({height:basicHeight+"%"}, 500);
 					
 // 					$('#community').css('width',communityWidth+"%");
 // 					$('#trial').css('width',trialWidth+"%");

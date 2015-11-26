@@ -114,24 +114,24 @@
 
       <section class="services-list">
 	<DIV ID="status">
-	  <DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
-		<DIV CLASS='field field-header field-header-node'>Node</DIV>
+	  <DIV id="tableHeaderContent" CLASS='status-row-min status-row-header-min'>
+		<DIV CLASS='field field-header field-header-node-min field-header-service-node'>Node</DIV>
 		<!--<DIV CLASS='field field-header field-header-overall'>Overall</DIV>-->
-		<DIV CLASS='field field-header field-header-service'>Nova</DIV>
-		<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
-		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
-		<DIV CLASS='field field-header field-header-service'>Glance</DIV>
-		<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
-		<DIV CLASS='field field-header field-header-service'>Sanity</DIV>
+		<DIV CLASS='field field-header field-header-service field-header-service-name'>Nova</DIV>
+		<DIV CLASS='field field-header field-header-service field-header-service-name'>Neutron</DIV>
+		<DIV CLASS='field field-header field-header-service field-header-service-name'>Cinder</DIV>
+		<DIV CLASS='field field-header field-header-service field-header-service-name'>Glance</DIV>
+		<DIV CLASS='field field-header field-header-service field-header-service-name'>Keystone P.</DIV>
+		<DIV CLASS='field field-header field-header-service field-header-service-name'>Sanity</DIV>
 <!-- 		<DIV CLASS='field field-header field-header-support'>Support</DIV> -->
 		<div class="clear"></div>
 	  </DIV>
 	  <DIV id="tableContent">
-	      <DIV CLASS='status-row row-status-service row-status-closed' id='<%= @idNode %>'>
+	      <DIV CLASS='status-row-min row-status-service row-status-closed' id='<%= @idNode %>'>
 		  <DIV CLASS='field field-group field-group-expand'>
 			  <IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>
 		  </DIV>
-		  <DIV CLASS='field field-service field-service-node <%= @idNode %>'><%= @nameNode %></DIV>	
+		  <DIV CLASS='field field-service field-service-node-min <%= @idNode %>'><%= @nameNode %></DIV>	
 	      </DIV>
 	  </DIV>
 	</DIV>
@@ -715,9 +715,9 @@
 						      "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+"<%= @idNode %>"+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
 						      "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 					      "</DIV>"*/);
-				      $("#tableContent").append("<DIV CLASS='row-message'><div style='overflow-y:auto; height:400px;width: 561px; height: 59px;'>"+services["overallStatus"]['description']+"</div></DIV>");
+				      $("#tableContent").append("<DIV CLASS='row-messageMin'><div style='overflow-y:auto; height:400px;height: 59px;'>"+services["overallStatus"]['description']+"</div></DIV>");
 					      
-				      $(".row-message").hide();				  
+				      $(".row-messageMin").hide();				  
 				      $('.field-group-expand').click( function()
 				      {
 					      var $image = $(this).children();
@@ -733,7 +733,7 @@
 					      }
 					      var $parent = $(this).parent();
 					      
-					      var $message = $parent.next(".row-message");
+					      var $message = $parent.next(".row-messageMin");
 					      $message.slideToggle(function()
 					      {
 						      if( $parent.hasClass('row-status-closed' ) )
@@ -875,8 +875,8 @@
 
 				    "<section class=\"services-list\">"+
 				      "<DIV ID=\"statusHost\">"+
-					"<DIV id=\"tableHeaderContent\" CLASS='status-row status-row-header'>"+
-					      "<DIV CLASS='field field-header field-header-node'>Host ID</DIV>"+
+					"<DIV id=\"tableHeaderContent\" CLASS='status-row-gauge status-row-header'>"+
+					      "<DIV CLASS='field field-header field-header-node-gauge'>Host ID</DIV>"+
 					      "<DIV CLASS='field field-header field-header-field' style=\"width: 107px;margin:0\">% CPU load</DIV>"+
 					      "<DIV CLASS='field field-header field-header-field'style=\"width: 107px;margin:0\">% RAM used</DIV>"+
 					      "<DIV CLASS='field field-header field-header-field'style=\"width: 107px;margin:0\">% Disk used</DIV>"+
@@ -893,10 +893,10 @@
 			      for (var i=0;i<idHostsCount;i++)
 			      {
 				  var theHostId = hosts[i]["id"];
-				  var allRows ="<DIV CLASS='status-row row-status-service row-status-closed' id='"+theHostId+"' style='height:98px;'>"+
+				  var allRows ="<DIV CLASS='status-row-gauge row-status-service row-status-closed' id='"+theHostId+"' style='height:98px;'>"+
 						    "<DIV CLASS=\"field field-group field-group-expand\"></DIV>"+
 						    "<a name=\""+theHostId+"\"></a>"+
-						    "<DIV CLASS=\"field field-service field-service-node "+theHostId+"\" style='line-height:95px;'>"+theHostId+"</DIV>"+
+						    "<DIV CLASS=\"field field-service field-service-node-gauge "+theHostId+"\" style='line-height:95px;'>"+theHostId+"</DIV>"+
 						    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_cpu_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
 					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_ram_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
 					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_disk_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+

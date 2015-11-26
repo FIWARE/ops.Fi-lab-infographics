@@ -712,7 +712,7 @@ padding-bottom: 10px;
 }
 
 /* {{{ rows */
-.status-row
+.status-row, .status-row-gauge
 {
 /* 	width:800px; */
 	width:585px;
@@ -726,7 +726,7 @@ padding-bottom: 10px;
 	height:30px;
 	line-height:30px;
 }
-.status-row-header
+.status-row-header, .status-row-header-min
 {
 	border:1px solid #CFCFCF;
 	background-color:#ECEFF2;
@@ -735,6 +735,7 @@ padding-bottom: 10px;
 {
 	border:1px solid #CFCFCF;
 	border-top-style:none;
+	background-color: white;
 }
 .row-status-opened
 {
@@ -764,7 +765,7 @@ padding-bottom: 10px;
 	border-right:1px solid #CFCFCF;
 	border-bottom:1px solid #CFCFCF;
 }
-.field-header-node
+.field-header-node, .field-header-node-gauge
 {
 	width:150px;
 	text-align:center;
@@ -794,7 +795,7 @@ padding-bottom: 10px;
 	padding-top:3px;
 	height:24px;
 }
-.field-service-node
+.field-service-node, .field-service-node-gauge
 {
 	margin-left:4px;
 	width:126px;
@@ -1183,7 +1184,12 @@ div.home div.services input {
     width:509px;
     background-color:white;
 }
-    
+   
+div.home div.services section.services-list #status, div.home div.services section.services-list #statusInfo, div.home div.services section.services-list #statusMessages, div.home div.services section.services-list #statusVm, div.home div.services section.services-list #statusHost{
+    margin: 0 auto;
+    width: 587px;
+}
+
 @media (max-width: 767px){
     #home #errorMessage {
 	width: 95%;
@@ -1206,7 +1212,7 @@ div.home div.services input {
       width: 95%;
     }
     
-    .status-row-header{
+    .status-row-header-min{
       height: 65px;
       width: 353px;
     }
@@ -1248,6 +1254,26 @@ div.home div.services input {
     .row-messageMin {    
       width: 329px;
     }
+    
+    .field-header-node-gauge
+    {
+	    width:99px;
+    }
+    .field-service-node-gauge
+    {
+	    width:75px;
+    }
+    .status-row-gauge {
+      width: 420px; 
+    }    
+    div.home div.services section.services-list #statusHost{
+	margin: 0 auto;
+	width: 422px;
+    }    
+    div.home div.services section.services-list #status{
+	margin: 0 auto;
+	width: 355px;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 979px){
@@ -1277,6 +1303,69 @@ div.home div.services input {
     width: 72% !important;
     *width: 71.95238%
   }
+  
+  .status-row-header-min{
+      height: 65px;
+      width: 353px;
+    }
+    
+    .status-row-min {
+      width: 353px; 
+    }
+    
+    #tableContent {
+      width: 353px; 
+    }
+    
+    .field-header-service-name{
+      /* Safari */
+      -webkit-transform: rotate(-90deg);
+      /* Firefox */
+      -moz-transform: rotate(-90deg);
+      /* IE */
+      -ms-transform: rotate(-90deg);
+      /* Opera */
+      -o-transform: rotate(-90deg);
+      /* Internet Explorer */
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);      
+      height: 32px;
+      margin-top: 22px;
+      white-space: nowrap;
+      width: 35px;
+    }
+    
+    .field-header-service-node{
+      height: 45px;
+      margin-top: 20px;
+    }
+    
+    .field-service-status-field{
+      width: 35px;
+    }
+    
+    .row-messageMin {    
+      width: 329px;
+    }
+    
+    .field-header-node-gauge
+    {
+	    width:99px;
+    }
+    .field-service-node-gauge
+    {
+	    width:75px;
+    }
+    .status-row-gauge {
+      width: 420px; 
+    }    
+    div.home div.services section.services-list #statusHost{
+	margin: 0 auto;
+	width: 422px;
+    }    
+    div.home div.services section.services-list #status{
+	margin: 0 auto;
+	width: 355px;
+    }
 }
 
 @media (min-width: 979px) and (max-width: 1174px) {
@@ -1315,10 +1404,6 @@ div.services header{
     color: #888
 }
 
-div.home div.services section.services-list #status, div.home div.services section.services-list #statusInfo, div.home div.services section.services-list #statusMessages, div.home div.services section.services-list #statusVm, div.home div.services section.services-list #statusHost{
-    margin: 0 auto;
-    width: 587px;
-}
 /*header.navbar nav.navbar-inner .brand {
     margin: 0 0 0 -8px !important;
     padding: 0 !important;

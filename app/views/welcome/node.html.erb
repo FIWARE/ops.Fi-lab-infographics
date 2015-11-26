@@ -2,6 +2,7 @@
 <div class="title">No such node</div>
 <% else %>
 <% content_for :headers do %>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script type='text/javascript' src="https://www.google.com/jsapi"></script>
 <script>
   google.load('visualization', '1', {packages:['gauge','corechart']});
@@ -13,7 +14,7 @@
   <div class="home" id="homeWidgets">     
     <div class="applications">
       <header>
-	Map <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgMap" style="display:none">
+	Map <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgMap" style="height:25px;display:none">
       </header>
 
       <section class="site_clients_list" id="world-map-nodes" style="padding:0px;">
@@ -25,7 +26,7 @@
     
     <div class="organizations" id="regionGauges">
       <header>
-	General Info <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgGenInfo" style="display:none">
+	General Info <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgGenInfo" style="height:25px;display:none">
       </header>
 
       <!--<section class="organizations-list" id="generalInfo">
@@ -46,50 +47,52 @@
 	</ul>
       </section>-->
       
-      <div class="section">
-	  <div class="headerSection accordionTitle">
-		  <div class="leftIcon">
-			  <img src="/assets/infographic/iconCpu.png" height="35"/>
-		  </div>
-		  <div class="leftDetail">
-			  <span id="core"></span> cores
-		  </div>
-		  <div class="rightDetail" id="coreGauge" style="margin-top:3px;">
-		  </div>
-		  <div class="clear"></div>
+      <section class="generalInfoContainer">
+	  <div class="generalInfosection">
+	      <div class="">
+		      <div class="leftIcon">
+			      <img src="/assets/infographic/iconCpu.png" height="35"/>
+		      </div>
+		      <div class="leftDetail">
+			      <span id="core"></span> cores
+		      </div>
+		      <div class="rightDetail" id="coreGauge" style="margin-top:3px;">
+		      </div>
+		      <div class="clear"></div>
+	      </div>
 	  </div>
-      </div>
 
-      <div class="section">
-	  <div class="headerSection accordionTitle">
-		  <div class="leftIcon">
-			  <img src="/assets/infographic/iconRam.png" height="35"/>			  
-		  </div>
-		  <div class="leftDetail">
-			<span id="ram"></span> GB  
-		  </div>
-		  <div class="rightDetail" id="ramGauge" style="margin-top:3px;">
-			 
-		  </div>
-		  <div class="clear"></div>
+	  <div class="generalInfosection">
+	      <div class="">
+		      <div class="leftIcon">
+			      <img src="/assets/infographic/iconRam.png" height="35"/>			  
+		      </div>
+		      <div class="leftDetail">
+			    <span id="ram"></span> GB  
+		      </div>
+		      <div class="rightDetail" id="ramGauge" style="margin-top:3px;">
+			    
+		      </div>
+		      <div class="clear"></div>
+	      </div>
 	  </div>
-      </div>
 
-      <div class="section">
-	  <div class="headerSection accordionTitle">
-		  <div class="leftIcon">
-			  <img src="/assets/infographic/iconDisk.png" height="35"/>
-		  </div>
-		  <div class="leftDetail">
-			  <span id="disk"></span> TB
-		  </div>
-		  <div class="rightDetail" id="diskGauge" style="margin-top:3px;">
-		  </div>
-		  <div class="clear"></div>
+	  <div class="generalInfosection">
+	      <div class="">
+		      <div class="leftIcon">
+			      <img src="/assets/infographic/iconDisk.png" height="35"/>
+		      </div>
+		      <div class="leftDetail">
+			      <span id="disk"></span> TB
+		      </div>
+		      <div class="rightDetail" id="diskGauge" style="margin-top:3px;">
+		      </div>
+		      <div class="clear"></div>
+	      </div>
 	  </div>
-      </div>
+      </section>
       
-      <div class="section">
+      <!--<div class="section">
 	  <div class="headerSection accordionTitle">
 		  <div class="leftIcon">
 			  <img src="/assets/infographic/iconBattery.png" height="35"/>
@@ -99,14 +102,14 @@
 		  </div>
 		  <div class="clear"></div>
 	  </div>
-      </div>
+      </div>-->
     </div>
     
     <div id="errorMessageServices" class="errorMessage"></div>
     
     <div class="services">
       <header>
-	Services <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgServices" style="display:none">
+	Services <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgServices" style="height:25px;display:none">
       </header>
 
       <section class="services-list">
@@ -131,6 +134,36 @@
 		  <DIV CLASS='field field-service field-service-node <%= @idNode %>'><%= @nameNode %></DIV>	
 	      </DIV>
 	  </DIV>
+	</DIV>
+      </section>
+    </div>
+    
+    <div id="errorMessageCalendar" class="errorMessage"></div>
+    
+    <div class="services">
+      <header>
+	Sanity Checks <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgSanity" style="height:25px;display:none">
+      </header>
+
+      <section class="services-list">
+	<DIV ID="sanity">
+	
+	      <div id="chart-cal" style="width:430px;margin:auto;">
+		<div class="datePickerField floatLeft">
+		  From: <input type="text" id="datepickerFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
+		</div>
+		<!--<div class="floatLeft datePickerField">
+		  To: <input type="text" id="datepickerTo" readonly="readonly" style="background:white;cursor:pointer;"/> 
+		</div>-->
+		<div class="floatLeft">
+		  <button class="showCalendar">Show</button>
+		</div>
+		<div class="clear"></div>
+	      </div>
+	      
+	      <div id="chart-content" style="width:585px;margin:auto;">
+		<div id="chart-calendar" class="chartVisible"></div>
+	      </div>
 	</DIV>
       </section>
     </div>
@@ -180,10 +213,208 @@
 	  var YELLOW = STATUS_POK;
 	  var GRAY   = STATUS_NA;
 	  
+	  var chart_content_height = null,
+	      chart_content_maxwidth = Math.round($('#sanity').width())/*585*//*960,*/;
+	  
+	  var color = d3.scale.quantize()
+	    .domain([-1, 1])
+	    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+
+	  function ChartCalendar() {
+	      var year_ini = new Date().getFullYear() - 1,
+		  year_end = year_ini + 1,
+		  cellSize = 9,/*17,*/
+		  height = 100,/*136,*/
+		  width = 585;/*chart_content_maxwidth-(0.025641*Math.round($('#sanity').width()));*/
+
+	      var day = d3.time.format("%w"),
+		  week = d3.time.format("%U"),
+		  format = d3.time.format("%Y-%m-%d"),
+		  monthPath = function(t0) {
+		      var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+			  d0 = +day(t0), w0 = +week(t0),
+			  d1 = +day(t1), w1 = +week(t1);
+		      return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+			  + "H" + w0 * cellSize + "V" + 7 * cellSize
+			  + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+			  + "H" + (w1 + 1) * cellSize + "V" + 0
+			  + "H" + (w0 + 1) * cellSize + "Z";
+		  };
+
+	      var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
+		  .data(d3.range(year_end, year_end + 1))//.data(d3.range(year_ini, year_end + 1))
+		  .enter().append("svg")
+		  .attr("width", width)
+		  .attr("height", height)
+		  .attr("class", "RdYlGn")
+		  .append("g")
+		  .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+	      svg.append("text")
+		  .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+		  .style("text-anchor", "middle")
+		  .text(function(d) { return d; });
+
+	      this.rect = svg.selectAll(".day")
+		  .data(function (d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		  .enter().append("rect")
+		  .attr("class", "day")
+		  .attr("width", cellSize)
+		  .attr("height", cellSize)
+		  .attr("x", function(d) { return week(d) * cellSize; })
+		  .attr("y", function(d) { return day(d) * cellSize; })
+		  .datum(format);
+
+	      this.rect.append("title")
+		  .text(function(d) { return d; });
+
+	      svg.selectAll(".month")
+		  .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		  .enter().append("path")
+		  .attr("class", "month")
+		  .attr("d", monthPath);
+
+	      chart_content_height = 120/*(year_end - year_ini + 1) * height*/;
+	      d3.select($("#chart-content")[0]).style("height", chart_content_height + "px");
+	  }
+	
+	  ChartCalendar.prototype.numvalue = function(status) {
+	    switch (status) {
+
+
+		case STATUS_OK:  return +1;
+		case STATUS_NOK: return -0.8;
+		case STATUS_POK:  return 0.0;
+		default:         return -1;
+	    }
+	};
+
+	ChartCalendar.prototype.caption = function(d) {
+	    switch (this.historical_data[d]) {
+		case +1: return d + ": Sanity status OK";
+		case  0: return d + ": Sanity status Partially OK";
+		case -0.8: return d + ": Sanity status not OK";
+		default: return d + ": Sanity status Undefined";
+	    }
+	};
+
+	ChartCalendar.prototype.update = function(idNode, data) {
+	    var self = this;
+	    var dataset = data.map(function(obj) {
+		return { 'Date': obj.timestamp.substr(0, 10), 'Value': self.numvalue(obj.FiHealthStatus.value) };
+	    });
+	    self.idNode = idNode;
+	    self.historical_data = d3.nest()
+		.key(function(d) { return d.Date; })
+		.rollup(function(d) { return d[0].Value; })
+		.map(dataset);
+		
+// 	    clear previous data
+	    self.rect.attr("class", "day");
+	    self.rect.select("title").text(function(d) { return d; });
+// 	    end clear
+	    
+	    self.rect.filter(function(d) { return d in self.historical_data; })
+		.attr("class", function(d) { return "day " + color(self.historical_data[d]); })
+		.select("title")
+		.text(function(d) { return self.caption(d); });
+	};
+	
+	var calendar  = new ChartCalendar();
+	
+	function updateCalendar(idNode,from,to) {
+	    $("#imgSanity").show();
+	    $( ".showCalendar" ).button().attr('disabled', true);
+	    var url = "../api/v1/region/historical/" + idNode;
+	    if(from != null && to != null) url += "/from/" + from + "/to/" + to
+	    $.ajax ({
+		type: "GET",
+		url: url,
+		contentType: "application/json; charset=utf-8",
+		data: {},
+		dataType: "json",
+		cache: false,
+		success: function(json) {
+		    calendar.update(idNode, json['measures']);
+		    $( ".showCalendar" ).button().attr('disabled', false);
+		    $("#imgSanity").hide();
+		},
+		error: function(xhr, textStatus, errorThrown) {
+		    var errors = "<%= FiLabInfographics.nodata %>";
+		    if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+			errors = xhr.responseText;
+		    }
+		    $('#errorMessageCalendar').html(errors);
+		    $( ".showCalendar" ).button().attr('disabled', false);
+		    $("#imgSanity").hide();
+		}
+	    });
+	}
+	
 	  $(document).ready(function() 
 	  {
 // 	      $('.infographic').removeClass('active');
 // 	      $('.status').removeClass('active');
+	      $( "#datepickerFrom" ).datepicker({
+			constrainInput: false,
+			dateFormat: 'yy-mm-dd',
+			maxDate: new Date(),
+			minDate: new Date(2015,7,11)
+			
+	      });
+	      
+	      var nowDate = new Date();
+	      
+	      nowDate.setMonth(nowDate.getMonth() - 3);
+	      nmonth = nowDate.getMonth()+1;//if (nmonth<10)nmonth="0"+nmonth;
+	      nday = nowDate.getDate();//if (nday<10)nday="0"+nday;
+	      nowString = nowDate.getFullYear() + "-" + nmonth + "-" + nday;
+	      $( "#datepickerFrom" ).datepicker('setDate', nowString);
+		      
+	      $( ".showCalendar" ).button().click(function(){ 
+		      var valFrom = $("#datepickerFrom").val();
+		      if(valFrom == null || valFrom == "undefined")
+		      {
+			  alert("From Date is not valid");
+			  return;
+		      }
+		      var dateFrom = Date.parse( valFrom );
+		      
+// 		      var valTo = $("#datepickerTo").val();
+// 		      var dateTo = Date.parse( valTo );
+
+		      if (isNaN(dateFrom) == true) {
+			alert("From Date is not valid");
+		      }
+// 		      else if (isNaN(dateTo) == true) {
+// 			alert("To Date is not valid")
+// 		      }
+// 		      else if (dateFrom > dateTo) {
+// 			alert("To Date must be greater than From Date")
+// 		      }
+		      else {
+			var from = $( "#datepickerFrom" ).datepicker( "getDate" );
+			var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+			var fday = from.getDate();if (fday<10)fday="0"+fday;
+			var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+// 			var to = $( "#datepickerTo" ).datepicker( "getDate" );
+			var to = new Date();
+			var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
+			var tday = to.getDate();if (day<10)day="0"+day;
+			var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
+		      
+// 			alert(fromString+" "+toString);
+			
+			updateCalendar("<%= @idNode %>", fromString, toString);
+		      }
+				      
+		      
+	      });
+	      
+	      $( ".showCalendar" ).button().attr('disabled', true);
+	      
+	      updateCalendar("<%= @idNode %>", null, null);
+		  
 
 	      var selectedMarkers = [];
 	      var selectedRegions = [];
@@ -416,7 +647,7 @@
 	                              var statusColor;
 				      if (actualTime>(measureTime+deltaTime))
 				      {
-					statusColor = 'rgba(0,0,0,0.5)';
+					statusColor = 'rgba(150,150,150,1)';
 				      }
 				      else
 				      {
@@ -428,7 +659,7 @@
 						    case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
 						    case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
 						    case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
-						    default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+						    default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
 					      }
 					  }
 					  else if(services['FiHealthStatus']!=null && 
@@ -438,10 +669,10 @@
 						    case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
 						    case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
 						    case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
-						    default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+						    default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
 					      }
 					  }
-					  else statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+					  else statusColor = 'rgba(150,150,150,1)';     /*gray*/
 				      }
 				      markersData["style"] = {fill: statusColor, r:5};
 				      selectedMarkers = [];
@@ -720,11 +951,11 @@
 					  
 					  +"<\/script>"+
 						"</DIV>";
-						console.log(allRows);
+// 						console.log(allRows);
 				  $('#tableContentHost').append(allRows);
 // 				  console.log(totData["total_hosts_ids"]);
-				  console.log(i);
-				  console.log(theHostId);
+// 				  console.log(i);
+// 				  console.log(theHostId);
 				  
 			      }
 			      

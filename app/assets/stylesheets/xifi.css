@@ -1179,6 +1179,11 @@ div.home div.services input {
     margin: 0 auto 20px;
 }
 
+#tableContent {
+    width:509px;
+    background-color:white;
+}
+    
 @media (max-width: 767px){
     #home #errorMessage {
 	width: 95%;
@@ -1199,6 +1204,49 @@ div.home div.services input {
       float: none;
       margin: 20px auto;
       width: 95%;
+    }
+    
+    .status-row-header{
+      height: 65px;
+      width: 353px;
+    }
+    
+    .status-row-min {
+      width: 353px; 
+    }
+    
+    #tableContent {
+      width: 353px; 
+    }
+    
+    .field-header-service-name{
+      /* Safari */
+      -webkit-transform: rotate(-90deg);
+      /* Firefox */
+      -moz-transform: rotate(-90deg);
+      /* IE */
+      -ms-transform: rotate(-90deg);
+      /* Opera */
+      -o-transform: rotate(-90deg);
+      /* Internet Explorer */
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);      
+      height: 32px;
+      margin-top: 22px;
+      white-space: nowrap;
+      width: 35px;
+    }
+    
+    .field-header-service-node{
+      height: 45px;
+      margin-top: 20px;
+    }
+    
+    .field-service-status-field{
+      width: 35px;
+    }
+    
+    .row-messageMin {    
+      width: 329px;
     }
 }
 

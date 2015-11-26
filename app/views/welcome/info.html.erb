@@ -30,13 +30,13 @@
 		       <div class="map-users-top-tile">
 			    <div class="leftBar">
 				<div class="map-users-top-percentage-container">				    
-				    <div class="map-users-top-percentage-container-complementar"></div> 
+				    <div class="map-users-top-percentage-container-complementar"></div> 				    
 				    <div id="community"></div> 
-				</div> 
-				<img src="/assets/infographic/iconMedal1.png" style="height:40px"/>
+				    <img src="/assets/infographic/iconMedal1.png" style="height:40px;left: 8px;position: absolute;top: 46.5px;"/>
+				</div> 				
 			    </div>
 			    <div class="usersType">
-				    <span id="communityNum"></span><br>community users
+				    <span id="communityNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span><br>community users
 			    </div>
 		      </div>
 		      <div class="map-users-top-tile">
@@ -44,11 +44,11 @@
 				<div class="map-users-top-percentage-container">				    
 				    <div class="map-users-top-percentage-container-complementar"></div> 
 				    <div id="trial"></div> 
-				</div> 
-				<img src="/assets/infographic/iconMedal2.png" style="height:40px"/>
+				    <img src="/assets/infographic/iconMedal2.png" style="height:40px;left: 8px;position: absolute;top: 46.5px;"/>
+				</div> 				
 			    </div>
 			    <div class="usersType">
-				    <span id="trialNum"></span><br>trial users
+				    <span id="trialNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span><br>trial users
 			    </div>
 		      </div>
 		      <div class="map-users-top-tile">
@@ -56,11 +56,11 @@
 				<div class="map-users-top-percentage-container">				    
 				    <div class="map-users-top-percentage-container-complementar"></div> 
 				    <div id="basic"></div> 
-				</div> 
-				<img src="/assets/infographic/iconMedal3.png" style="height:40px"/>
+				    <img src="/assets/infographic/iconMedal3.png" style="height:40px;left: 8px;position: absolute;top: 46.5px;"/>
+				</div> 				
 			    </div>
 			    <div class="usersType">
-				    <span id="basicNum"></span><br>basic users
+				    <span id="basicNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span><br>basic users
 			    </div>
 		      </div>		     
 		    </div>
@@ -91,7 +91,7 @@
 			      <img src="/assets/infographic/iconMap.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
-			      <span class="regionsNum"></span> regions
+			      <span class="regionsNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> regions
 		      </div>
 		      <div class="clear"></div>
 		  </div>
@@ -100,7 +100,7 @@
 			      <img src="/assets/infographic/iconCpu.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
-			      <span id="coresNum"></span> cores
+			      <span id="coresNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> cores
 		      </div>
 		      <div class="clear"></div>
 		  </div>
@@ -109,7 +109,7 @@
 			      <img src="/assets/infographic/iconRam.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
-			      <span id="ramNum"></span> GB
+			      <span id="ramNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> GB
 		      </div>
 		      <div class="clear"></div>
 		  </div>
@@ -118,7 +118,7 @@
 			      <img src="/assets/infographic/iconDisk.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
-			      <span id="hdNum"></span> TB
+			      <span id="hdNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> TB
 		      </div>
 		      <div class="clear"></div>
 		  </div>
@@ -127,7 +127,7 @@
 			      <img src="/assets/infographic/iconNetwork.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
-			      <span id="ipNum"></span> public IPs
+			      <span id="ipNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> public IPs
 		      </div>
 		      <div class="clear"></div>
 		  </div>
@@ -136,7 +136,7 @@
 			      <img src="/assets/infographic/iconVM.png" height="55"/>
 		      </div>
 		      <div class="centerTileDetail">
-			      <span id="vmNum"></span> VM
+			      <span id="vmNum"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> VM
 		      </div>
 		      <div class="clear"></div>
 		  </div>
@@ -149,10 +149,10 @@
 		
 		  <section class="media-1">
 		    <h3 class="media-heading">
-		      FIWARE Lab Capacity is supported by <span id="parternCount"></span> institutions
+		      FIWARE Lab Capacity is supported by <span id="parternCount"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> institutions
 		    </h3>
 		    <div class="parternList">
-			    Loading...
+			    <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"> Loading...
 			    <!--<img src="/assets/infographic/loghi/acreo.jpg"/>
 			    <img src="/assets/infographic/loghi/atos.jpg"/>
 			    <img src="/assets/infographic/loghi/cesnet.png"/>
@@ -850,6 +850,8 @@
 					$('#hdNum').html(nHd);
 					$('#vmNum').html(nVm);
 					$('#ipNum').html(nIp);
+					
+// 					$('.spinner').hide();
 					
 					$.ajax (
 					{

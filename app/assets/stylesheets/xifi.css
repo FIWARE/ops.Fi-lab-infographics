@@ -1304,49 +1304,6 @@ div.home div.services section.services-list #status, div.home div.services secti
     *width: 71.95238%
   }
   
-  .status-row-header-min{
-      height: 65px;
-      width: 353px;
-    }
-    
-    .status-row-min {
-      width: 353px; 
-    }
-    
-    #tableContent {
-      width: 353px; 
-    }
-    
-    .field-header-service-name{
-      /* Safari */
-      -webkit-transform: rotate(-90deg);
-      /* Firefox */
-      -moz-transform: rotate(-90deg);
-      /* IE */
-      -ms-transform: rotate(-90deg);
-      /* Opera */
-      -o-transform: rotate(-90deg);
-      /* Internet Explorer */
-      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);      
-      height: 32px;
-      margin-top: 22px;
-      white-space: nowrap;
-      width: 35px;
-    }
-    
-    .field-header-service-node{
-      height: 45px;
-      margin-top: 20px;
-    }
-    
-    .field-service-status-field{
-      width: 35px;
-    }
-    
-    .row-messageMin {    
-      width: 329px;
-    }
-    
     .field-header-node-gauge
     {
 	    width:99px;
@@ -1361,10 +1318,6 @@ div.home div.services section.services-list #status, div.home div.services secti
     div.home div.services section.services-list #statusHost{
 	margin: 0 auto;
 	width: 422px;
-    }    
-    div.home div.services section.services-list #status{
-	margin: 0 auto;
-	width: 355px;
     }
 }
 

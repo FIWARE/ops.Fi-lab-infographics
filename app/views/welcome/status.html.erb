@@ -196,7 +196,7 @@
 		};
 
 	    var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
-		.data(d3.range(year_end, year_end + 1))//.data(d3.range(year_ini, year_end + 1))
+		.data(d3.range(year_ini, year_end + 1))//.data(d3.range(year_ini, year_end + 1))
 		.enter().append("svg")
 		.attr("width", width)
 		.attr("height", height)
@@ -405,8 +405,8 @@
 		    
 			titleSuffix = ' for ' + region;// + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 			makeVisible = true;
-			$("#chart-content").css("height", 100+"px");			
-			$(".containerWithMargin").animate({height:200+"px"}, 500);
+			$("#chart-content").css("height", 200+"px");			
+			$(".containerWithMargin").animate({height:300+"px"}, 500);
 		    }
 		    break;
 		case 'chart-histogram':

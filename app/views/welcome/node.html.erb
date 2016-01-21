@@ -242,7 +242,7 @@
 		  };
 
 	      var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
-		  .data(d3.range(year_end, year_end + 1))//.data(d3.range(year_ini, year_end + 1))
+		  .data(d3.range(year_ini, year_end + 1))//.data(d3.range(year_ini, year_end + 1))
 		  .enter().append("svg")
 		  .attr("width", width)
 		  .attr("height", height)
@@ -274,7 +274,7 @@
 		  .attr("class", "month")
 		  .attr("d", monthPath);
 
-	      chart_content_height = 120/*(year_end - year_ini + 1) * height*/;
+	      chart_content_height = 220/*(year_end - year_ini + 1) * height*/;
 	      d3.select($("#chart-content")[0]).style("height", chart_content_height + "px");
 	  }
 	

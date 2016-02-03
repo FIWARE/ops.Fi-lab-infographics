@@ -268,6 +268,20 @@
 	      this.rect.append("title")
 		  .text(function(d) { return d; });
 
+	      var month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+	    
+	      var legend = svg.selectAll(".legend")
+		.data(month)
+		.enter().append("g")
+		.attr("class", "legend")
+		.attr("transform", function(d, i) { return "translate(" + (((i+1) * 39)+0) + ",0)"; });	    
+
+	      legend.append("text")
+		.attr("class", function(d,i){ return month[i]+" legend-month" })
+		.style("text-anchor", "end")
+		.attr("dy", "-.25em")
+		.text(function(d,i){ return month[i] });
+	      
 	      svg.selectAll(".month")
 		  .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
 		  .enter().append("path")

@@ -891,139 +891,141 @@
 	      // 				nRegions += 1;
 
 	      // 				selectedRegions = selectedRegions + '\'' + key  + '\'';
-					      selectedRegions.push(this['country']);
-					      if (selectedRegionsCpu[this['country']] == null)
-						selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
-					      else 
-						selectedRegionsCpu[this['country']] += parseInt(this['nb_cores']);
-					      if (selectedRegionsRam[this['country']] == null)
-						selectedRegionsRam[this['country']] = parseInt(this['nb_ram'])/1024;
-					      else
-						selectedRegionsRam[this['country']] += parseInt(this['nb_ram'])/1024;
-					      if (selectedRegionsDisk[this['country']] == null)
-						selectedRegionsDisk[this['country']] = parseInt(this['nb_disk'])/1024;
-					      else
-						selectedRegionsDisk[this['country']] += parseInt(this['nb_disk'])/1024;
-					      if (selectedRegionsVm[this['country']] == null)
-						selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
-					      else
-						selectedRegionsVm[this['country']] += parseInt(this['nb_vm']);
-					      if (selectedRegionsIp[this['country']] == null)
-						selectedRegionsIp[this['country']] = parseInt(this['ipTot']);
-					      else 
-						selectedRegionsIp[this['country']] += parseInt(this['ipTot']);
-
-					      if(this['latitude'] != "" && this['longitude'] != "")
+					      if(this['country'] != "")
 					      {
-						  var marker = {};
-						  marker["id"] = this['id'];
-						  marker["latLng"] = [];
-						  marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-						  marker["name"] = this['name'];
-						  //console.log(this['timestamp']);
-						  regionTime =( new Date(this['timestamp']).getTime() / 1000)
-						  my_time=new Date(this['timestamp'])
-						  
-						  month=my_time.getMonth()+1;if (month<10)month="0"+month;
-						  day=my_time.getDate();if (day<10)day="0"+day;
-						  hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
-						  mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
-						  the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
-									  
-	    //                                       if (this['name']=="Gent"){
-	    //                                         console.log(this['timestamp'])
-	    //                                         console.log(my_time.getMonth());                                       
-	    //                                         console.log(the_time);
-	    //                                       }
+						  selectedRegions.push(this['country']);
+						if (selectedRegionsCpu[this['country']] == null)
+						  selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
+						else 
+						  selectedRegionsCpu[this['country']] += parseInt(this['nb_cores']);
+						if (selectedRegionsRam[this['country']] == null)
+						  selectedRegionsRam[this['country']] = parseInt(this['nb_ram'])/1024;
+						else
+						  selectedRegionsRam[this['country']] += parseInt(this['nb_ram'])/1024;
+						if (selectedRegionsDisk[this['country']] == null)
+						  selectedRegionsDisk[this['country']] = parseInt(this['nb_disk'])/1024;
+						else
+						  selectedRegionsDisk[this['country']] += parseInt(this['nb_disk'])/1024;
+						if (selectedRegionsVm[this['country']] == null)
+						  selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
+						else
+						  selectedRegionsVm[this['country']] += parseInt(this['nb_vm']);
+						if (selectedRegionsIp[this['country']] == null)
+						  selectedRegionsIp[this['country']] = parseInt(this['ipTot']);
+						else 
+						  selectedRegionsIp[this['country']] += parseInt(this['ipTot']);
 
-						  if (actualTime>(regionTime+deltaTime)) {
-						    marker["style"]={fill: '#868F98',stroke: '#383f47'};                                        
-						    marker["name"] = this['name']+": Last Update on "+the_time;
-						  }
-						  else{
-						    marker["name"] = this['name']+
-						    "\nCores: "+parseInt(this['nb_cores'])+
-						    ", \nRAM: "+(parseInt(this['nb_ram'])/1024).toFixed(1)+" GB"+
-						    ", \nDisk: "+(parseInt(this['nb_disk'])/1024).toFixed(1) +" TB"+
-						    ", \nIPs: "+parseInt(this['ipTot'])+
-						    ", \nVMs: "+parseInt(this['nb_vm']);
-						  }
-						  //marker["name"] = this['name'];
-						  selectedMarkers.push(marker);
-						  
-						  var markerCpu = {};
-						  freeCpu =  (parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio'])-parseInt(this['nb_cores_used']));
-						  if (freeCpu<0)
-						    freeCpu = 0;
-						  markerCpu["latLng"] = [];
-						  markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						if(this['latitude'] != "" && this['longitude'] != "")
+						{
+						    var marker = {};
+						    marker["id"] = this['id'];
+						    marker["latLng"] = [];
+						    marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						    marker["name"] = this['name'];
+						    //console.log(this['timestamp']);
+						    regionTime =( new Date(this['timestamp']).getTime() / 1000)
+						    my_time=new Date(this['timestamp'])
+						    
+						    month=my_time.getMonth()+1;if (month<10)month="0"+month;
+						    day=my_time.getDate();if (day<10)day="0"+day;
+						    hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+						    mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+						    the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+									    
+	      //                                       if (this['name']=="Gent"){
+	      //                                         console.log(this['timestamp'])
+	      //                                         console.log(my_time.getMonth());                                       
+	      //                                         console.log(the_time);
+	      //                                       }
 
-						  if (actualTime>(regionTime+deltaTime)) {
-						    markerCpu["style"]={fill: '#868F98',stroke: '#383f47'};
-						    markerCpu["name"] = this['name']+": Last Update on "+the_time;
-						  }
-						  else{
-						    markerCpu["name"] = this['name'] + " (" + freeCpu + " available virtual cores / " + parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio']) + " total virtual cores / "+parseInt(this['nb_cores']) + " total physical cores)";
-						  }
-						  selectedMarkersCpu.push(markerCpu);
+						    if (actualTime>(regionTime+deltaTime)) {
+						      marker["style"]={fill: '#868F98',stroke: '#383f47'};                                        
+						      marker["name"] = this['name']+": Last Update on "+the_time;
+						    }
+						    else{
+						      marker["name"] = this['name']+
+						      "\nCores: "+parseInt(this['nb_cores'])+
+						      ", \nRAM: "+(parseInt(this['nb_ram'])/1024).toFixed(1)+" GB"+
+						      ", \nDisk: "+(parseInt(this['nb_disk'])/1024).toFixed(1) +" TB"+
+						      ", \nIPs: "+parseInt(this['ipTot'])+
+						      ", \nVMs: "+parseInt(this['nb_vm']);
+						    }
+						    //marker["name"] = this['name'];
+						    selectedMarkers.push(marker);
+						    
+						    var markerCpu = {};
+						    freeCpu =  (parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio'])-parseInt(this['nb_cores_used']));
+						    if (freeCpu<0)
+						      freeCpu = 0;
+						    markerCpu["latLng"] = [];
+						    markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 
-						  var markerRam = {};
-						  freeRam = ((1-parseFloat(this['percRAMUsed']))*(parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024)).toFixed(1);
-						  if (freeRam<0)
-						    freeRam = 0;
-						  markerRam["latLng"] = [];
-						  markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						    if (actualTime>(regionTime+deltaTime)) {
+						      markerCpu["style"]={fill: '#868F98',stroke: '#383f47'};
+						      markerCpu["name"] = this['name']+": Last Update on "+the_time;
+						    }
+						    else{
+						      markerCpu["name"] = this['name'] + " (" + freeCpu + " available virtual cores / " + parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio']) + " total virtual cores / "+parseInt(this['nb_cores']) + " total physical cores)";
+						    }
+						    selectedMarkersCpu.push(markerCpu);
 
-						  if (actualTime>(regionTime+deltaTime)) {
-						    markerRam["style"]={fill: '#868F98',stroke: '#383f47'};
-						    markerRam["name"] = this['name']+": Last Update on "+the_time;
-						  }
-						  else{
-						    markerRam["name"] = this['name'] + " (" + freeRam + " available GB virtual RAM  / " + (parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024).toFixed(1) +" total GB virtual RAM / " + (parseInt(this['nb_ram'])/1024).toFixed(1) + " total GB physical RAM)";
-						  }
-						  selectedMarkersRam.push(markerRam);
+						    var markerRam = {};
+						    freeRam = ((1-parseFloat(this['percRAMUsed']))*(parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024)).toFixed(1);
+						    if (freeRam<0)
+						      freeRam = 0;
+						    markerRam["latLng"] = [];
+						    markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 
-						  var markerDisk = {};
-						  freeDisk = ((1-parseFloat(this['percDiskUsed']))*(parseInt(this['nb_disk'])/1024)).toFixed(1);
-						  if (freeDisk<0)
-						    freeDisk = 0;
-						  markerDisk["latLng"] = [];
-						  markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						    if (actualTime>(regionTime+deltaTime)) {
+						      markerRam["style"]={fill: '#868F98',stroke: '#383f47'};
+						      markerRam["name"] = this['name']+": Last Update on "+the_time;
+						    }
+						    else{
+						      markerRam["name"] = this['name'] + " (" + freeRam + " available GB virtual RAM  / " + (parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024).toFixed(1) +" total GB virtual RAM / " + (parseInt(this['nb_ram'])/1024).toFixed(1) + " total GB physical RAM)";
+						    }
+						    selectedMarkersRam.push(markerRam);
 
-						  if (actualTime>(regionTime+deltaTime)) {
-						    markerDisk["style"]={fill: '#868F98',stroke: '#383f47'};
-						    markerDisk["name"] = this['name']+": Last Update on "+the_time;
-						  }
-						  else{
-						    markerDisk["name"] = this['name'] + " (Available " + freeDisk + " / " + (parseInt(this['nb_disk'])/1024).toFixed(1) +"  TB)";
-						  }
-						  selectedMarkersDisk.push(markerDisk);
+						    var markerDisk = {};
+						    freeDisk = ((1-parseFloat(this['percDiskUsed']))*(parseInt(this['nb_disk'])/1024)).toFixed(1);
+						    if (freeDisk<0)
+						      freeDisk = 0;
+						    markerDisk["latLng"] = [];
+						    markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
 
-						  var markerIp = {};
-						  markerIp["latLng"] = [];
-						  markerIp["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-						  if (actualTime>(regionTime+deltaTime)) {
-						    markerIp["style"]={fill: '#868F98',stroke: '#383f47'};
-						    markerIp["name"] = this['name']+": Last Update on "+the_time;
-						  }
-						  else{
-						    markerIp["name"] = this['name'] + " (" + (parseInt(this['ipTot'])-parseInt(this['ipAllocated'])) + " available Public IPs / " + parseInt(this['ipTot']) + " total Public IPs)";
-						  }
-						  selectedMarkersIp.push(markerIp);
+						    if (actualTime>(regionTime+deltaTime)) {
+						      markerDisk["style"]={fill: '#868F98',stroke: '#383f47'};
+						      markerDisk["name"] = this['name']+": Last Update on "+the_time;
+						    }
+						    else{
+						      markerDisk["name"] = this['name'] + " (Available " + freeDisk + " / " + (parseInt(this['nb_disk'])/1024).toFixed(1) +"  TB)";
+						    }
+						    selectedMarkersDisk.push(markerDisk);
 
-						  var markerVm = {};
-						  markerVm["latLng"] = [];
-						  markerVm["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-						  if (actualTime>(regionTime+deltaTime)) {
-						    markerVm["style"]={fill: '#868F98',stroke: '#383f47'};
-						    markerVm["name"] = this['name']+": Last Update on "+the_time; 
-						  }
-						  else{
-						    markerVm["name"] = this['name'] + " (" + this['nb_vm'] + " vm)";
-						  }
-						  selectedMarkersVm.push(markerVm);
+						    var markerIp = {};
+						    markerIp["latLng"] = [];
+						    markerIp["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						    if (actualTime>(regionTime+deltaTime)) {
+						      markerIp["style"]={fill: '#868F98',stroke: '#383f47'};
+						      markerIp["name"] = this['name']+": Last Update on "+the_time;
+						    }
+						    else{
+						      markerIp["name"] = this['name'] + " (" + (parseInt(this['ipTot'])-parseInt(this['ipAllocated'])) + " available Public IPs / " + parseInt(this['ipTot']) + " total Public IPs)";
+						    }
+						    selectedMarkersIp.push(markerIp);
+
+						    var markerVm = {};
+						    markerVm["latLng"] = [];
+						    markerVm["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+						    if (actualTime>(regionTime+deltaTime)) {
+						      markerVm["style"]={fill: '#868F98',stroke: '#383f47'};
+						      markerVm["name"] = this['name']+": Last Update on "+the_time; 
+						    }
+						    else{
+						      markerVm["name"] = this['name'] + " (" + this['nb_vm'] + " vm)";
+						    }
+						    selectedMarkersVm.push(markerVm);
+						}
 					      }
-
 
 					    });
 

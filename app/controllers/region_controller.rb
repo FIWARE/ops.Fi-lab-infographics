@@ -300,7 +300,8 @@ class RegionController < ApplicationController
       
       if regionsData["_embedded"] != nil && regionsData["_embedded"]["regions"] != nil
 	regionsData["_embedded"]["regions"].each do |region|
-                  if (region["id"]!='Berlin' and region["id"]!='Karlskrona' and region["id"]!='Budapest' and region["id"]!='Lannion' and region["id"]!='Spain' and region["id"]!='Stockholm')
+		  dbNode = Node.where(:rid => region["id"]).first
+		  if (dbNode)
 		    idRegions.push(region["id"])
                   end 
 	end

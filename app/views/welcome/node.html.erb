@@ -329,7 +329,7 @@
 // 	    end clear
 	    
 	    self.rect.filter(function(d) { return d in self.historical_data; })
-		.attr("class", function(d) { return "day " + color(self.historical_data[d]); })
+		.attr("class", function(d) { var colorme=color(self.historical_data[d]);if(colorme=="q10-11") return "day q11-11"; else return "day " + colorme; })
 		.select("title")
 		.text(function(d) { return self.caption(d); });
 	};

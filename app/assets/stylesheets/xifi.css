@@ -62,7 +62,8 @@ svg {
 .RdYlGn .q7-11{fill:rgb(166,217,106)}
 .RdYlGn .q8-11{fill:rgb(102,189,99)}
 .RdYlGn .q9-11{fill:rgb(26,152,80)}
-.RdYlGn .q10-11{fill:rgb(0,255,0)} /*rgb(0,104,55)*/
+.RdYlGn .q10-11{fill:rgb(0,104,55)} /*rgb(0,255,0)*/
+.RdYlGn .q11-11{fill:rgb(0,255,0)}
 
 /* Bar */
 .bar {

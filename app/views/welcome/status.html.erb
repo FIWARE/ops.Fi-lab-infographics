@@ -283,7 +283,7 @@
 // 	    end clear
 	    
 	    self.rect.filter(function(d) { return d in self.historical_data; })
-		.attr("class", function(d) { return "day " + color(self.historical_data[d]); })
+		.attr("class", function(d) { var colorme=color(self.historical_data[d]);if(colorme=="q10-11") return "day q11-11"; else return "day " + colorme; })
 		.select("title")
 		.text(function(d) { return self.caption(d); });
 	};
@@ -473,6 +473,13 @@
 		  
 		  $('#world-map-nodes').css('width',Math.round($('.span12').width()));
 		  $('#world-map-nodes').css('height',Math.round($('.span12').width()*300/545));
+		  
+		  $("#chart-histogram").hover(function() {
+		      $(this).css('cursor','auto').attr('title', 'This histogram displays nodes sanity success percentage, from the selected date to now.');
+		  }, function() {
+		      $(this).css('cursor','auto');
+		  }); 
+		  
 		  $( "#datepickerFrom" ).datepicker({
 		    constrainInput: false,
 		    dateFormat: 'yy-mm-dd',

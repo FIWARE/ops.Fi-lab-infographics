@@ -561,10 +561,20 @@
 		      
 	// 			      $('#country').html(dataRegion['country']);
 	// 			      $('#users').html(dataRegion['nb_users']);
-		      $('#core').html(parseInt(dataRegion['nb_cores']));
+		      if(dataRegion['nb_cores']!= null && dataRegion['nb_cores'] != "undefined" &&  dataRegion['nb_cores'] != "")
+		      {
+			$('#core').html(parseInt(dataRegion['nb_cores']));
+		      }
 	// 			      $('#coreen').html(parseInt(dataRegion['nb_cores_enabled']));
-		      $('#ram').html((parseInt(dataRegion['nb_ram'])/1024).toFixed(1));
-		      $('#disk').html((parseInt(dataRegion['nb_disk'])/1024).toFixed(1));
+	
+		      if(dataRegion['nb_ram']!= null && dataRegion['nb_ram'] != "undefined" &&  dataRegion['nb_ram'] != "")
+		      {
+			$('#ram').html((parseInt(dataRegion['nb_ram'])/1024).toFixed(1));
+		      }
+		      if(dataRegion['nb_disk']!= null && dataRegion['nb_disk'] != "undefined" &&  dataRegion['nb_disk'] != "")
+		      {
+			$('#disk').html((parseInt(dataRegion['nb_disk'])/1024).toFixed(1));
+		      }
 	// 			      $('#vm').html(parseInt(dataRegion['nb_vm']));
 		      var power_consumption = 0;
 		      if (dataRegion['power_consumption']) power_consumption = parseFloat(dataRegion['power_consumption']).toFixed(2);

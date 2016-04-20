@@ -875,31 +875,38 @@
 							      //write regionName in each raw and put region data into array hash
 							      $('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+dataRegion["name"]+"</a>");	
 // 							      console.log(dataRegion[name]);
-							      var markersData = {};
-							      markersData["id"] =  regionId;
-							      markersData["latLng"] =  [parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude'])];
+							      markers[regionId] = null;
+							      if(dataRegion['latitude']!= null && dataRegion['latitude'] != "undefined" &&  dataRegion['latitude'] != "" && dataRegion['longitude']!= null && dataRegion['longitude'] != "undefined" &&  dataRegion['longitude'] != "")
+							      {
+								var markersData = {};
+								markersData["id"] =  regionId;
+								markersData["latLng"] =  [parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude'])];
+								
+								var actualTime = Math.floor(Date.now() / 1000)
+								var deltaTime = 10800;
+								
+								var regionTime =( new Date(dataRegion['timestamp']).getTime() / 1000)
+  // 							      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
+								my_time=new Date(dataRegion['timestamp'])
+								month=my_time.getMonth()+1;if (month<10)month="0"+month;
+								day=my_time.getDate();if (day<10)day="0"+day;
+								hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+								mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+								the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;					      
+								
+								if (actualTime>(regionTime+deltaTime))
+								  markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
+								else markersData["name"] = dataRegion['name'];
+								
+								markersData["style"] = 'rgba(150,150,150,1)';	
+								markers[regionId] = markersData; 
+							      }						      
 							      
-							      var actualTime = Math.floor(Date.now() / 1000)
-							      var deltaTime = 10800;
 							      
-							      var regionTime =( new Date(dataRegion['timestamp']).getTime() / 1000)
-// 							      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
-							      my_time=new Date(dataRegion['timestamp'])
-							      month=my_time.getMonth()+1;if (month<10)month="0"+month;
-							      day=my_time.getDate();if (day<10)day="0"+day;
-							      hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
-							      mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
-							      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;					      
-							      
-							      if (actualTime>(regionTime+deltaTime))
-								markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
-							      else markersData["name"] = dataRegion['name'];
-							      
-							      markersData["style"] = 'rgba(150,150,150,1)';							      
-							      
-							      
-							      markers[regionId] = markersData; 
-							      selectedRegions.push(dataRegion['country']);
+							      if(dataRegion['country']!= null && dataRegion['country'] != "undefined" &&  dataRegion['country'] != "")
+							      {
+								selectedRegions.push(dataRegion['country']);
+							      }
 							      mapNodes.clearSelectedRegions();
 							      mapNodes.setSelectedRegions(selectedRegions);
 							      
@@ -956,10 +963,16 @@
 									}
 									else statusColor = 'rgba(150,150,150,1)';     /*gray*/
 								      }
-								      markers[regionId]["style"] = {fill: statusColor, r:5};
+								      if(markers[regionId] != null)
+								      {
+									markers[regionId]["style"] = {fill: statusColor, r:5};
+								      }
 								      
 	    // 							  selectedMarkers = $.map(markers, function(val, key) { return val; });
-								      selectedMarkers.push(markers[regionId]);
+								      if(markers[regionId] != null)
+								      {
+									selectedMarkers.push(markers[regionId]);
+								      }
 								      if(regionId == "PiraeusN")
 								      {
 									selectedMarkers = checkLatLong(selectedMarkers);
@@ -1024,10 +1037,14 @@
 									      "</DIV>-->");
 								    
 								    var statusColor = 'rgba(150,150,150,1)';							  
-								    markers[regionId]["style"] = {fill: statusColor, r:5};
+								    if(markers[regionId] != null)
+								    {
+									markers[regionId]["style"] = {fill: statusColor, r:5};
+									selectedMarkers = $.map(markers, function(val, key) { return val; });
+									selectedMarkers.push(markers[regionId]);
+								    }
 								    
-	    // 							selectedMarkers = $.map(markers, function(val, key) { return val; });
-								    selectedMarkers.push(markers[regionId]);
+	    // 							
 								    if(regionId == "PiraeusN")
 								    {
 								      selectedMarkers = checkLatLong(selectedMarkers);
@@ -1155,53 +1172,61 @@
 							  //for histogram chart
 							  sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
                                                           //var my_time=new Date(regionAttributes['timestamp'])   
-                                                          selectedRegions.push(regionAttributes['country']);							      
-							  var markers = {};
-							  markers["id"] =  idRegion;
-							  markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
-							  regionTime =( new Date(regionAttributes['timestamp']).getTime() / 1000)
-
-                                                          //markers["name"] = idRegion;							  
-                                                          my_time=new Date(regionAttributes['timestamp']);                                                          
-                                                          month=my_time.getMonth()+1;if (month<10)month="0"+month;
-                                                          day=my_time.getDate();if (day<10)day="0"+day;
-                                                          hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
-                                                          mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
-                                                          the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
-                                                          //markers["name"]=regionAttributes['name'];
-                                                          if (actualTime>(regionTime+deltaTime))
-                                                            markers["name"]=regionAttributes['name']+": Last Update on "+the_time;
-							  else markers["name"]=regionAttributes['name'];
-                                                          var statusColor;
-                                                          if (actualTime>(regionTime+deltaTime)){
-                                                            statusColor = 'rgba(150,150,150,1)';
+                                                          if(regionAttributes['country']!= null && regionAttributes['country'] != "undefined" &&  regionAttributes['country'] != "")
+							  {
+							      selectedRegions.push(regionAttributes['country']);	
                                                           }
-							  else{
-							    if(regionAttributes['services']['FiHealthStatus']!=null && 
-							    regionAttributes['services']['FiHealthStatus']!="undefined" &&
-							    regionAttributes['services']['FiHealthStatus']['value'] == 1)
-							    {
-								switch (regionAttributes['services']['overallStatus']['value']) {
-								      case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
-								      case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
-								      case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
-								      default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
+                                                          
+                                                          if(regionAttributes['latitude']!= null && regionAttributes['latitude'] != "undefined" &&  regionAttributes['latitude'] != "" && regionAttributes['longitude']!= null && regionAttributes['longitude'] != "undefined" &&  regionAttributes['longitude'] != "")
+							  {
+								
+							      var markers = {};
+							      markers["id"] =  idRegion;
+							      markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+							      regionTime =( new Date(regionAttributes['timestamp']).getTime() / 1000)
+
+							      //markers["name"] = idRegion;							  
+							      my_time=new Date(regionAttributes['timestamp']);                                                          
+							      month=my_time.getMonth()+1;if (month<10)month="0"+month;
+							      day=my_time.getDate();if (day<10)day="0"+day;
+							      hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+							      mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+							      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+							      //markers["name"]=regionAttributes['name'];
+							      if (actualTime>(regionTime+deltaTime))
+								markers["name"]=regionAttributes['name']+": Last Update on "+the_time;
+							      else markers["name"]=regionAttributes['name'];
+							      var statusColor;
+							      if (actualTime>(regionTime+deltaTime)){
+								statusColor = 'rgba(150,150,150,1)';
+							      }
+							      else{
+								if(regionAttributes['services']['FiHealthStatus']!=null && 
+								regionAttributes['services']['FiHealthStatus']!="undefined" &&
+								regionAttributes['services']['FiHealthStatus']['value'] == 1)
+								{
+								    switch (regionAttributes['services']['overallStatus']['value']) {
+									  case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
+									  case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
+									  case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
+									  default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
+								    }
 								}
-							    }
-							    else if(regionAttributes['services']['FiHealthStatus']!=null && 
-							    regionAttributes['services']['FiHealthStatus']!="undefined")
-							    {
-								switch (regionAttributes['services']['FiHealthStatus']['value']) {
-								      case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
-								      case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
-								      case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
-								      default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
+								else if(regionAttributes['services']['FiHealthStatus']!=null && 
+								regionAttributes['services']['FiHealthStatus']!="undefined")
+								{
+								    switch (regionAttributes['services']['FiHealthStatus']['value']) {
+									  case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
+									  case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
+									  case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
+									  default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
+								    }
 								}
-							    }
-							    else statusColor = 'rgba(150,150,150,1)';     /*gray*/
+								else statusColor = 'rgba(150,150,150,1)';     /*gray*/
+							      }
+							      markers["style"] = {fill: statusColor, r:5};
+							      selectedMarkers.push(markers);
 							  }
-							  markers["style"] = {fill: statusColor, r:5};
-							  selectedMarkers.push(markers);
 							  
 							  
 							  var allSubRows = "";

@@ -386,6 +386,8 @@ class RegionController < ApplicationController
          attributesRegion["name"] = 'Budapest'
       elsif(regionsData["id"]=='Stockholm2')
          attributesRegion["name"] = 'Stockholm'
+      elsif(regionsData["id"]=='Trento2')
+         attributesRegion["name"] = 'Trento'
       else 
         attributesRegion["name"] = regionsData["name"]
       end
@@ -1247,6 +1249,8 @@ class RegionController < ApplicationController
       idNode="Budapest2"
     elsif idNode=="Stockholm"
       idNode="Stockholm2"
+    elsif idNode=="Trento"
+      idNode="Trento2"
     end
 
     begin
@@ -1323,6 +1327,8 @@ class RegionController < ApplicationController
       idNode="Budapest2"
     elsif idNode=="Stockholm"
       idNode="Stockholm2"
+    elsif idNode=="Trento"
+      idNode="Trento2"
     end
 
     begin

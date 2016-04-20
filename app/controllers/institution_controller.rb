@@ -35,8 +35,8 @@ class InstitutionController < ApplicationController
 #       else	    
 # 	dbInstitutions = Institution.includes(:nodes).where("fi_lab_infographics_nodes_institutions.node_id = ?", dbNode.id).where("fi_lab_infographics_nodes.category_id = ?", dbCategory.id).order(name: :asc).distinct
 #       end
-    else#take all institutions
-      if dbCategory == nil#take all institutions of node
+    elsif idNode == nil #take all institutions
+      if dbCategory == nil #take all institutions of node
 	dbInstitutions = Institution.order(name: :asc)
       else	    
 	dbInstitutions = Institution.includes(:nodes).where("fi_lab_infographics_nodes.category_id = ?", dbCategory.id).order(name: :asc).distinct

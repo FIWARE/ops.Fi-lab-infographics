@@ -23,7 +23,8 @@
 	             {rid: 'SpainTenerife', name: 'SpainTenerife'},
 	             {rid: 'Vicenza', name: 'Vicenza'},
 	             {rid: 'Brittany', name: 'Brittany'},
-	            {rid: 'ZurichS', name: 'ZurichS'}])
+		     {rid: 'ZurichS', name: 'ZurichS'},
+	             {rid: 'Trento2', name: 'Trento'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
 # 	Category.delete_all
@@ -58,4 +59,5 @@
 					      (4,9),
 					      (9,10),
 					      (12,11),
-	                                      (11,12)')
+	                                      (11,12),
+					      (17,7)')

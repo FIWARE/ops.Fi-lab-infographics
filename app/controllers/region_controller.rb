@@ -1249,8 +1249,8 @@ class RegionController < ApplicationController
       idNode="Budapest2"
     elsif idNode=="Stockholm"
       idNode="Stockholm2"
-    elsif idNode=="Trento"
-      idNode="Trento2"
+#     elsif idNode=="Trento"
+#       idNode="Trento2"
     end
 
     begin
@@ -1327,8 +1327,8 @@ class RegionController < ApplicationController
       idNode="Budapest2"
     elsif idNode=="Stockholm"
       idNode="Stockholm2"
-    elsif idNode=="Trento"
-      idNode="Trento2"
+#     elsif idNode=="Trento"
+#       idNode="Trento2"
     end
 
     begin

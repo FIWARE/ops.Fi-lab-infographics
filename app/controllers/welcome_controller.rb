@@ -120,6 +120,8 @@ class WelcomeController < FiLabApp::ApplicationController
          attributesRegion["name"] = 'Budapest'
       elsif(regionsData["id"]=='Stockholm2')
          attributesRegion["name"] = 'Stockholm'
+      elsif(regionsData["id"]=='Trento2')
+         attributesRegion["name"] = 'Trento'
       else 
         attributesRegion["name"] = regionsData["name"]
       end

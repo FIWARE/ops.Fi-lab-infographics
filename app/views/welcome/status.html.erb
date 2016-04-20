@@ -347,6 +347,8 @@
 	      region_name="Budapest"
 	    else if (d.idNode=="Stockholm2")
 	      region_name="Stockholm"
+	    else if (d.idNode=="Trento2")
+	      region_name="Trento"
 
 	    return region_name }));
 	    self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
@@ -385,6 +387,8 @@
 		    region_name_in="Budapest"
 		  else if (d.idNode=="Stockholm2")
 		    region_name_in="Stockholm"
+		  else if (d.idNode=="Trento2")
+		    region_name_in="Trento"
 		return self.x(region_name_in); 
 		})
 		.attr("width", self.x.rangeBand())
@@ -416,6 +420,8 @@
 			  region="Budapest"
 			else if (region=="Stockholm2")
 			  region="Stockholm"
+			else if (region=="Trento2")
+			  region="Trento"
 		    
 			titleSuffix = ' for ' + region;// + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 			makeVisible = true;

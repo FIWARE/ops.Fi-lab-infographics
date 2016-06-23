@@ -23,7 +23,7 @@
 	             {rid: 'SpainTenerife', name: 'SpainTenerife'},
 	             {rid: 'Vicenza', name: 'Vicenza'},
 	             {rid: 'Brittany', name: 'Brittany'},
-		     {rid: 'ZurichS', name: 'ZurichS'},
+				 {rid: 'ZurichS', name: 'ZurichS'},
 	             {rid: 'Trento2', name: 'Trento'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
@@ -44,7 +44,8 @@
 	                    {name: 'Entidad Pública Empresarial Red.es/RedIRIS', logo: 'P16-red-es.png', link:'http://www.rediris.es/'},
 	                    {name: 'Zurich University of Applied Sciences (ZHAW)', logo: 'P25-ZHAW.jpg', link:'http://www.zhaw.ch/en/zurich-university-of-applied-sciences.html'},
 	                    {name: 'Technical University of Crete', logo: 'Technical-University-of-Crete-TUC.jpg', link:'http://www.tuc.gr/3324.html'},
-	                    {name: 'University of São Paulo', logo: 'Logo_USP.png', link:'http://www5.usp.br/'}
+	                    {name: 'University of São Paulo', logo: 'Logo_USP.png', link:'http://www5.usp.br/'},
+	                    {name: 'Engineering', logo: 'logo_eng.jpg', link:'http://www.eng.it/'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
@@ -59,5 +60,6 @@
 					      (4,9),
 					      (9,10),
 					      (12,11),
-	                                      (11,12),
-					      (17,7)')
+	                      (11,12),
+					      (17,7),
+	                      (14,13)')

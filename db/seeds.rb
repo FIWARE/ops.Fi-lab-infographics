@@ -16,7 +16,7 @@
 	             {rid: 'Volos', name: 'Volos', jira_project_url: 'http://jira.fi-ware.org/browse/UTH', jira_project_id: 'UTH'},
 	             {rid: 'Poznan', name: 'Poznan', jira_project_url: 'http://jira.fi-ware.org/browse/PSNC', jira_project_id: 'PSNC'},
 	             {rid: 'Budapest2', name: 'Budapest', jira_project_url: 'http://jira.fi-ware.org/browse/WIG', jira_project_id: 'WIG'},
-	             {rid: 'Zurich', name: 'Zurich', jira_project_url: 'http://jira.fi-ware.org/browse/ZHAW', jira_project_id: 'ZHAW'},
+	             {rid: 'Zurich2', name: 'Zurich', jira_project_url: 'http://jira.fi-ware.org/browse/ZHAW', jira_project_id: 'ZHAW'},
 	             {rid: 'SophiaAntipolis', name: 'SophiaAntipolis', jira_project_url: 'http://jira.fi-ware.org/browse/COM', jira_project_id: 'COM'},
 	             {rid: 'SaoPaulo', name: 'SaoPaulo'},
 	             {rid: 'Crete', name: 'Crete'},

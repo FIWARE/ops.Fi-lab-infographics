@@ -45,7 +45,8 @@
 	                    {name: 'Zurich University of Applied Sciences (ZHAW)', logo: 'P25-ZHAW.jpg', link:'http://www.zhaw.ch/en/zurich-university-of-applied-sciences.html'},
 	                    {name: 'Technical University of Crete', logo: 'Technical-University-of-Crete-TUC.jpg', link:'http://www.tuc.gr/3324.html'},
 	                    {name: 'University of São Paulo', logo: 'Logo_USP.png', link:'http://www5.usp.br/'},
-	                    {name: 'Engineering', logo: 'logo_eng.jpg', link:'http://www.eng.it/'}
+	                    {name: 'Engineering', logo: 'logo_eng.jpg', link:'http://www.eng.it/'},
+	                    {name: 'Atos', logo: 'Atos.jpg', link:'http://www.atos.net/'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
@@ -62,4 +63,5 @@
 					      (12,11),
 	                      (11,12),
 					      (17,7),
-	                      (14,13)')
+	                      (14,13),
+	                      (13,14)')

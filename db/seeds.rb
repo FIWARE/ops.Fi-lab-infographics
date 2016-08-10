@@ -24,7 +24,8 @@
 	             {rid: 'Vicenza', name: 'Vicenza'},
 	             {rid: 'Brittany', name: 'Brittany'},
 				 {rid: 'ZurichS', name: 'ZurichS'},
-	             {rid: 'Trento2', name: 'Trento'}])
+	             {rid: 'Trento2', name: 'Trento'},
+	             {rid: 'Hannover', name: 'Hannover'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
 # 	Category.delete_all
@@ -46,7 +47,9 @@
 	                    {name: 'Technical University of Crete', logo: 'Technical-University-of-Crete-TUC.jpg', link:'http://www.tuc.gr/3324.html'},
 	                    {name: 'University of São Paulo', logo: 'Logo_USP.png', link:'http://www5.usp.br/'},
 	                    {name: 'Engineering', logo: 'logo_eng.jpg', link:'http://www.eng.it/'},
-	                    {name: 'Atos', logo: 'Atos.jpg', link:'http://www.atos.net/'}
+	                    {name: 'Atos', logo: 'Atos.jpg', link:'http://www.atos.net/'},
+	                    {name: 'SWITCH', logo: 'switch-logo.gif', link:'https://www.switch.ch/'},
+	                    {name: 'Netzlink', logo: 'logo-netzlink.png', link:'https://www.netzlink.com/'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
@@ -64,4 +67,6 @@
 	                      (11,12),
 					      (17,7),
 	                      (14,13),
-	                      (13,14)')
+	                      (13,14),
+	                      (16,15),
+	                      (18,16)')

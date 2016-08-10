@@ -188,10 +188,10 @@ class RegionController < ApplicationController
       points['PiraeusN']["longitude"] = points['PiraeusN']["longitude"].to_f-1
     end
       
-	if(points['ZurichS'] != nil && points['ZurichS']["latitude"] != nil)
-      points['ZurichS']["latitude"] = points['ZurichS']["latitude"].to_f-0.5
-      points['ZurichS']["longitude"] = points['ZurichS']["longitude"].to_f-0.5
-    end
+# 	if(points['ZurichS'] != nil && points['ZurichS']["latitude"] != nil)
+#       points['ZurichS']["latitude"] = points['ZurichS']["latitude"].to_f-0.5
+#       points['ZurichS']["longitude"] = points['ZurichS']["longitude"].to_f-0.5
+#     end
 #     points.each do |regionToCheckKey,regionToCheck|
 #       points.each do |regionKey,region|
 # 	if regionToCheck["id"] != region["id"]

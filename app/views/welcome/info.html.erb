@@ -817,6 +817,8 @@
 					var nRegions = parseInt(totData['total_regions_count']);
 					var nIp = parseInt(totData['total_ip']);
 					
+					if(nIp > 1000000000) nIp = "more than 1 billion"
+					
 					$('#usersNum').html(nUsers);
 				    
 					$('#basicNum').html(nBasicUsers); 

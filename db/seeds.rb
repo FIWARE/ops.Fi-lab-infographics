@@ -50,7 +50,7 @@
 	                    {name: 'Atos', logo: 'Atos.jpg', link:'http://www.atos.net/'},
 	                    {name: 'SWITCH', logo: 'switch-logo.gif', link:'https://www.switch.ch/'},
 	                    {name: 'Netzlink', logo: 'logo-netzlink.png', link:'https://www.netzlink.com/'},
-	                    {name: 'Consorzio Nazionale Interuniversitario per le Telecomunicazioni (CNIT)', logo: 'Logo-CNIT.png', link:'http://www.cnit.it/node/100'},
+	                    {name: 'Consorzio Nazionale Interuniversitario per le Telecomunicazioni (CNIT)', logo: 'Logo-CNIT-REVIEW.png', link:'http://www.cnit.it/node/100'},
 	                    {name: 'Tasgroup', logo: 'tasgroup.png', link:'https://www.tasfrance.com/'}
 	                    ])
 	

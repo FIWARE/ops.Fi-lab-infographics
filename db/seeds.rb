@@ -23,9 +23,10 @@
 	             {rid: 'SpainTenerife', name: 'SpainTenerife'},
 	             {rid: 'Vicenza', name: 'Vicenza'},
 	             {rid: 'Brittany', name: 'Brittany'},
-				 {rid: 'ZurichS', name: 'ZurichS'},
+	             {rid: 'ZurichS', name: 'ZurichS'},
 	             {rid: 'Trento2', name: 'Trento'},
-	             {rid: 'Hannover', name: 'Hannover'}])
+	             {rid: 'Hannover', name: 'Hannover'},
+	             {rid: 'Genoa', name: 'Genoa'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
 # 	Category.delete_all
@@ -49,13 +50,16 @@
 	                    {name: 'Engineering', logo: 'logo_eng.jpg', link:'http://www.eng.it/'},
 	                    {name: 'Atos', logo: 'Atos.jpg', link:'http://www.atos.net/'},
 	                    {name: 'SWITCH', logo: 'switch-logo.gif', link:'https://www.switch.ch/'},
-	                    {name: 'Netzlink', logo: 'logo-netzlink.png', link:'https://www.netzlink.com/'}
+	                    {name: 'Netzlink', logo: 'logo-netzlink.png', link:'https://www.netzlink.com/'},
+	                    {name: 'Consorzio Nazionale Interuniversitario per le Telecomunicazioni (CNIT)', logo: 'Logo-CNIT.png', link:'http://www.cnit.it/node/100'},
+	                    {name: 'Tasgroup', logo: 'tasgroup.png', link:'https://www.tasfrance.com/'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
 	ActiveRecord::Base.connection.execute('INSERT INTO fi_lab_infographics_nodes_institutions VALUES(3,1),
 					      (2,2),
 					      (10,3),
+					      (10,18),
 					      (5,4),
 					      (6,5),
 					      (8,6),
@@ -64,9 +68,10 @@
 					      (4,9),
 					      (9,10),
 					      (12,11),
-	                      (11,12),
+					      (11,12),
 					      (17,7),
-	                      (14,13),
-	                      (13,14),
-	                      (16,15),
-	                      (18,16)')
+					      (14,13),
+					      (13,14),
+					      (16,15),
+					      (18,16),
+					      (19,17)')

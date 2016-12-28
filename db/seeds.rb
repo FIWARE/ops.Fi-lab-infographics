@@ -26,7 +26,8 @@
 	             {rid: 'Trento2', name: 'Trento'},
 	             {rid: 'Hannover', name: 'Hannover'},
 	             {rid: 'Genoa', name: 'Genoa'},
-		     {rid: 'Mexico', name: 'Mexico'}])
+		     {rid: 'Mexico', name: 'Mexico'},
+		     {rid: 'Brittany', name: 'Brittany'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
 # 	Category.delete_all
@@ -53,7 +54,8 @@
 	                    {name: 'Netzlink', logo: 'logo-netzlink.png', link:'https://www.netzlink.com/'},
 	                    {name: 'Consorzio Nazionale Interuniversitario per le Telecomunicazioni (CNIT)', logo: 'Logo-CNIT-REVIEW.png', link:'http://www.cnit.it/node/100'},
 	                    {name: 'Tasgroup', logo: 'tasgroup.png', link:'https://www.tasfrance.com/'},
-			    {name: 'INFOTEC', logo: 'logo_infotec.png', link:'http://lanif.infotec.mx/'}
+			    {name: 'INFOTEC', logo: 'logo_infotec.png', link:'http://lanif.infotec.mx/'},
+			    {name: 'Orange', logo: 'logo-orange.jpg', link:'http://www.orange.com'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
@@ -75,4 +77,5 @@
 					      (15,15),
 					      (17,16),
 					      (18,17),
-					      (19,19)')
+					      (19,19),
+					      (20,20)')

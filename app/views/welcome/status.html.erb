@@ -107,11 +107,11 @@
 	    <div class="chartTitle"><img src="/assets/infographic/iconHealth.png" title="Services Sanity" alt="Services Sanity" id="imgSanity" style="width:40px;"><span id="chart-title">FIWARE Lab Nodes Sanity checks </span><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
 	      <div id="chart-hist">
 		<div class="floatLeft datePickerField">
-		  From: <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
+		  Data from September 2015. <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;display:none" disabled/>
 		</div>
-		<div class="floatLeft">
+<!--		<div class="floatLeft">
 		  <button class="showHistogram">Show</button>
-		</div>
+		</div>-->
 		<div class="clear"></div>
 	      </div>
 	      
@@ -528,25 +528,26 @@
 		  }  
 		  
 		  $( "#datepickerHistogramFrom" ).datepicker({
-			dateFormat: "yy-mm",
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: false,
-                        maxDate: d,
-			minDate: new Date(2015,7,1),
-			defaultDate: new Date(nowDate.getFullYear(), nmonth, 1),
-                        onChangeMonthYear: function(year, month, inst) {
-			    updateDatepicker($(this));    
-                        },
-                        beforeShow : function(input, inst) {
+				dateFormat: "yy-mm",
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: false,
+                maxDate: d,
+				minDate: new Date(2015,7,1),
+				defaultDate: new Date(nowDate.getFullYear(), nmonth, 1),
+                onChangeMonthYear: function(year, month, inst) {
+					updateDatepicker($(this));    
+                },
+                beforeShow : function(input, inst) {
 
-                            inst.dpDiv.addClass('calendar-off');
+                    inst.dpDiv.addClass('calendar-off');
 // 			    $(".ui-datepicker-calendar").hide();
-                        }
-		    
+                }		    
 		  });
 		  
-		  $( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(nowDate.getFullYear(), nmonth, 1));
+// 		  $( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(nowDate.getFullYear(), nmonth, 1));
+		$( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(2015, 8, 1));
+// 		$( "#datepickerHistogramFrom" ).datepicker( "option", "disabled", true );
 // 		  alert(new Date(nowDate.getFullYear(), nmonth, 1));
 // 		  $( "#datepickerTo" ).datepicker({
 // 		    constrainInput: false,

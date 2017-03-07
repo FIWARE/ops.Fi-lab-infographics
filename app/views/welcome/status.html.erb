@@ -158,12 +158,13 @@
 	    STATUS_NA = "<%= STATUS_NA %>";
 	    
 	var GREEN  = STATUS_OK ;
-        var RED    = STATUS_NOK;
+    var RED    = STATUS_NOK;
 	var YELLOW = STATUS_POK;
 	var GRAY   = 'gray';
 
 	var selected_chart_id = "chart-histogram";
 	var selected_node_id = null;
+	var selected_node_name = null;
 
 	var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
 	    chart_content_height = null,
@@ -266,12 +267,13 @@
 	    }
 	};
 
-	ChartCalendar.prototype.update = function(idNode, data) {
+	ChartCalendar.prototype.update = function(idNode, nameNode, data) {
 	    var self = this;
 	    var dataset = data.map(function(obj) {
 		return { 'Date': obj.timestamp.substr(0, 10), 'Value': self.numvalue(obj.FiHealthStatus.value) };
 	    });
 	    self.idNode = idNode;
+	    self.nameNode = nameNode;
 	    self.historical_data = d3.nest()
 		.key(function(d) { return d.Date; })
 		.rollup(function(d) { return d[0].Value; })
@@ -334,23 +336,25 @@
 	    
 	    var self = this;
 	    self.x.domain(data.map(function(d) { 
-	    var region_name=d.idNode;
-	    if (d.idNode=="Lannion2")
-	      region_name="Lannion"
-	    else if (d.idNode=="Berlin2")
-	      region_name="Berlin"
-	    else if (d.idNode=="Spain2")
-	      region_name="Spain"
-	    else if (d.idNode=="Karlskrona2")
-	      region_name="Karlskrona"
-	    else if (d.idNode=="Budapest2")
-	      region_name="Budapest"
-	    else if (d.idNode=="Stockholm2")
-	      region_name="Stockholm"
-	    else if (d.idNode=="Trento2")
-	      region_name="Trento"
+			return d.nameNode;
+// 	    var region_name=d.nameNode;
+// 	    if (d.idNode=="Lannion2")
+// 	      region_name="Lannion"
+// 	    else if (d.idNode=="Berlin2")
+// 	      region_name="Berlin"
+// 	    else if (d.idNode=="Spain2")
+// 	      region_name="Spain"
+// 	    else if (d.idNode=="Karlskrona2")
+// 	      region_name="Karlskrona"
+// 	    else if (d.idNode=="Budapest2")
+// 	      region_name="Budapest"
+// 	    else if (d.idNode=="Stockholm2")
+// 	      region_name="Stockholm"
+// 	    else if (d.idNode=="Trento2")
+// 	      region_name="Trento"
 
-	    return region_name }));
+// 	    return region_name 
+		}));
 	    self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
 
 	    var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
@@ -374,22 +378,23 @@
 		.enter().append("rect")
 		.attr("class", function(d) { return "bar " + color(-1 + d.success * 2.0); })
 		.attr("x", function(d) { 
-		  var region_name_in=d.idNode
-		  if (d.idNode=="Lannion2")
-		    region_name_in="Lannion"
-		  else if (d.idNode=="Berlin2")
-		    region_name_in="Berlin"
-		  else if (d.idNode=="Spain2")
-		    region_name_in="Spain"
-		  else if (d.idNode=="Karlskrona2")
-		    region_name_in="Karlskrona"
-		  else if (d.idNode=="Budapest2")
-		    region_name_in="Budapest"
-		  else if (d.idNode=="Stockholm2")
-		    region_name_in="Stockholm"
-		  else if (d.idNode=="Trento2")
-		    region_name_in="Trento"
-		return self.x(region_name_in); 
+// 		  var region_name_in=d.idNode
+// 		  if (d.idNode=="Lannion2")
+// 		    region_name_in="Lannion"
+// 		  else if (d.idNode=="Berlin2")
+// 		    region_name_in="Berlin"
+// 		  else if (d.idNode=="Spain2")
+// 		    region_name_in="Spain"
+// 		  else if (d.idNode=="Karlskrona2")
+// 		    region_name_in="Karlskrona"
+// 		  else if (d.idNode=="Budapest2")
+// 		    region_name_in="Budapest"
+// 		  else if (d.idNode=="Stockholm2")
+// 		    region_name_in="Stockholm"
+// 		  else if (d.idNode=="Trento2")
+// 		    region_name_in="Trento"
+// 		return self.x(region_name_in); 
+		return self.x(d.nameNode)
 		})
 		.attr("width", self.x.rangeBand())
 		.attr("y", function(d) { return self.y(d.success); })
@@ -406,22 +411,22 @@
 	    chart_content.filter('#' + selected_chart_id).attr("class", "chartHidden");
 	    switch (selected_chart_id = id) {
 		case 'chart-calendar':
-		    if (calendar.idNode) {
-			var region = calendar.idNode;
-			if (region=="Lannion2")
-			  region="Lannion"
-			else if (region=="Berlin2")
-			  region="Berlin"
-			else if (region=="Spain2")
-			  region="Spain"
-			else if (region=="Karlskrona2")
-			  region="Karlskrona"
-			else if (region=="Budapest2")
-			  region="Budapest"
-			else if (region=="Stockholm2")
-			  region="Stockholm"
-			else if (region=="Trento2")
-			  region="Trento"
+		    if (calendar.nameNode) {
+			var region = calendar.nameNode;
+// 			if (region=="Lannion2")
+// 			  region="Lannion"
+// 			else if (region=="Berlin2")
+// 			  region="Berlin"
+// 			else if (region=="Spain2")
+// 			  region="Spain"
+// 			else if (region=="Karlskrona2")
+// 			  region="Karlskrona"
+// 			else if (region=="Budapest2")
+// 			  region="Budapest"
+// 			else if (region=="Stockholm2")
+// 			  region="Stockholm"
+// 			else if (region=="Trento2")
+// 			  region="Trento"
 		    
 			titleSuffix = ' for ' + region;// + '<img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical">';
 			makeVisible = true;
@@ -440,7 +445,7 @@
 	    $('#chart-title').html('FIWARE Lab Nodes Sanity checks' + titleSuffix);
 	}
 
-	function updateCalendar(idNode,from,to) {
+	function updateCalendar(idNode, nameNode, from, to) {
 	    $("#imgHistorical").show();
 	    $( ".showCalendar" ).button().attr('disabled', true);
 	    var url = "../api/v1/region/historical/" + idNode;
@@ -453,7 +458,7 @@
 		dataType: "json",
 		cache: false,
 		success: function(json) {
-		    calendar.update(idNode, json['measures']);
+		    calendar.update(idNode, nameNode, json['measures']);
 		    onChartChange('chart-calendar');
 		    $( ".showCalendar" ).button().attr('disabled', false);
 		    $("#imgHistorical").hide();
@@ -561,8 +566,8 @@
 		      var valFrom = $("#datepickerFrom").val();
 		      if(valFrom == null || valFrom == "undefined")
 		      {
-			  alert("From Date is not valid");
-			  return;
+				alert("From Date is not valid");
+				return;
 		      }
 		      var dateFrom = Date.parse( valFrom );
 		      
@@ -570,7 +575,7 @@
 // 		      var dateTo = Date.parse( valTo );
 
 		      if (isNaN(dateFrom) == true) {
-			alert("From Date is not valid");
+				alert("From Date is not valid");
 		      }
 // 		      else if (isNaN(dateTo) == true) {
 // 			alert("To Date is not valid")
@@ -579,19 +584,19 @@
 // 			alert("To Date must be greater than From Date")
 // 		      }
 		      else {
-			var from = $( "#datepickerFrom" ).datepicker( "getDate" );
-			var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
-			var fday = from.getDate();if (fday<10)fday="0"+fday;
-			var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
-// 			var to = $( "#datepickerTo" ).datepicker( "getDate" );
-			var to = new Date();
-			var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
-			var tday = to.getDate();if (day<10)day="0"+day;
-			var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
-		      
-// 			alert(fromString+" "+toString);
-			
-			updateCalendar(selected_node_id, fromString, toString);
+				var from = $( "#datepickerFrom" ).datepicker( "getDate" );
+				var fmonth = from.getMonth()+1;if (fmonth<10)fmonth="0"+fmonth;
+				var fday = from.getDate();if (fday<10)fday="0"+fday;
+				var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
+	// 			var to = $( "#datepickerTo" ).datepicker( "getDate" );
+				var to = new Date();
+				var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
+				var tday = to.getDate();if (day<10)day="0"+day;
+				var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
+				
+	// 			alert(fromString+" "+toString);
+				
+				updateCalendar(selected_node_id, selected_node_name, fromString, toString);
 		      }
 				      
 		      
@@ -678,9 +683,10 @@
 		      $('#chart-cal').removeClass('chartHidden');
 		      $('#chart-hist').hide();
 		      $( ".showCalendar" ).button().attr('disabled', true);
-		      updateCalendar(selectedMarkers[index].id, null, null);
+		      updateCalendar(selectedMarkers[index].id, selectedMarkers[index].real_name, null, null);
 		      onChartChange('chart-calendar');
 		      selected_node_id = selectedMarkers[index].id;
+		      selected_node_name = selectedMarkers[index].real_name;
 		      $('#buttonShowAll').removeClass('collapsed');
 		      $('#nodeLink a').attr("href", '<%= root_url(subdomain: "status.lab")%>'+"node/"+selectedMarkers[index].id)
 		      $('#nodeLink').show();
@@ -872,7 +878,7 @@
 							      var dataRegion = json;
 // 							      
 							      //for histogram chart
-							      sanitySuccess.push({idNode: regionId, success: dataRegion['percSanitySuccess']});
+							      sanitySuccess.push({idNode: regionId, nameNode: dataRegion['name'], success: dataRegion['percSanitySuccess']});
 // 							      var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
 // 							      svg.selectAll(".bar").remove();
 // 							      svg.selectAll("text").remove();
@@ -905,6 +911,7 @@
 								  markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
 								else markersData["name"] = dataRegion['name'];
 								
+								markersData["real_name"] = dataRegion['name'];
 								markersData["style"] = 'rgba(150,150,150,1)';	
 								markers[regionId] = markersData; 
 							      }						      
@@ -912,7 +919,7 @@
 							      
 							      if(dataRegion['country']!= null && dataRegion['country'] != "undefined" &&  dataRegion['country'] != "")
 							      {
-								selectedRegions.push(dataRegion['country']);
+									selectedRegions.push(dataRegion['country']);
 							      }
 							      mapNodes.clearSelectedRegions();
 							      mapNodes.setSelectedRegions(selectedRegions);
@@ -972,17 +979,17 @@
 								      }
 								      if(markers[regionId] != null)
 								      {
-									markers[regionId]["style"] = {fill: statusColor, r:5};
+										markers[regionId]["style"] = {fill: statusColor, r:5};
 								      }
 								      
 	    // 							  selectedMarkers = $.map(markers, function(val, key) { return val; });
 								      if(markers[regionId] != null)
 								      {
-									selectedMarkers.push(markers[regionId]);
+										selectedMarkers.push(markers[regionId]);
 								      }
 								      if(regionId == "PiraeusN")
 								      {
-									selectedMarkers = checkLatLong(selectedMarkers);
+										selectedMarkers = checkLatLong(selectedMarkers);
 								      }
 	    // 							  console.log(selectedMarkers);
 								      mapNodes.removeAllMarkers();
@@ -1177,7 +1184,7 @@
 						  if(idRegion != null && regionAttributes != null)
 						  {
 							  //for histogram chart
-							  sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
+							  sanitySuccess.push({idNode: idRegion, nameNode: regionAttributes['name'], success: regionAttributes['percSanitySuccess']});
                                                           //var my_time=new Date(regionAttributes['timestamp'])   
                                                           if(regionAttributes['country']!= null && regionAttributes['country'] != "undefined" &&  regionAttributes['country'] != "")
 							  {
@@ -1201,8 +1208,9 @@
 							      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
 							      //markers["name"]=regionAttributes['name'];
 							      if (actualTime>(regionTime+deltaTime))
-								markers["name"]=regionAttributes['name']+": Last Update on "+the_time;
+									markers["name"]=regionAttributes['name']+": Last Update on "+the_time;
 							      else markers["name"]=regionAttributes['name'];
+							      markers["real_name"]=regionAttributes['name'];
 							      var statusColor;
 							      if (actualTime>(regionTime+deltaTime)){
 								statusColor = 'rgba(150,150,150,1)';

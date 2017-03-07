@@ -108,24 +108,26 @@ class WelcomeController < FiLabApp::ApplicationController
             
       attributesRegion = Hash.new
       attributesRegion["id"] = regionsData["id"]
-      if(regionsData["id"]=='Berlin2')
-         attributesRegion["name"] = 'Berlin'
-      elsif(regionsData["id"]=='Spain2')
-         attributesRegion["name"] = 'Spain'
-      elsif(regionsData["id"]=='Lannion2')
-         attributesRegion["name"] = 'Lannion'
-      elsif(regionsData["id"]=='Karlskrona2')
-         attributesRegion["name"] = 'Karlskrona'
-      elsif(regionsData["id"]=='Budapest2')
-         attributesRegion["name"] = 'Budapest'
-      elsif(regionsData["id"]=='Stockholm2')
-         attributesRegion["name"] = 'Stockholm'
-      elsif(regionsData["id"]=='Trento2')
-         attributesRegion["name"] = 'Trento'
-      else 
-        attributesRegion["name"] = regionsData["name"]
-      end
+#       if(regionsData["id"]=='Berlin2')
+#          attributesRegion["name"] = 'Berlin'
+#       elsif(regionsData["id"]=='Spain2')
+#          attributesRegion["name"] = 'Spain'
+#       elsif(regionsData["id"]=='Lannion2')
+#          attributesRegion["name"] = 'Lannion'
+#       elsif(regionsData["id"]=='Karlskrona2')
+#          attributesRegion["name"] = 'Karlskrona'
+#       elsif(regionsData["id"]=='Budapest2')
+#          attributesRegion["name"] = 'Budapest'
+#       elsif(regionsData["id"]=='Stockholm2')
+#          attributesRegion["name"] = 'Stockholm'
+#       elsif(regionsData["id"]=='Trento2')
+#          attributesRegion["name"] = 'Trento'
+#       else 
+#         attributesRegion["name"] = regionsData["name"]
+#       end
 
+	  attributesRegion["name"] = regionsData["name"]
+	  
       attributesRegion["country"] = regionsData["country"]
       attributesRegion["latitude"] = regionsData["latitude"]
       attributesRegion["longitude"] = regionsData["longitude"]

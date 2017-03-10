@@ -37,7 +37,7 @@ class InstitutionController < ApplicationController
 #       end
     elsif idNode == nil #take all institutions
       if dbCategory == nil #take all institutions of node
-	dbInstitutions = Institution.order(name: :asc)
+	dbInstitutions = Institution.includes(:nodes).order(name: :asc)
       else	    
 	dbInstitutions = Institution.includes(:nodes).where("fi_lab_infographics_nodes.category_id = ?", dbCategory.id).order(name: :asc).distinct
       end
@@ -55,6 +55,7 @@ class InstitutionController < ApplicationController
 	institution["logo"] = dbInstitution["logo"]
 	institution["description"] = dbInstitution["description"]
 	institution["link"] = dbInstitution["link"]
+	institution["node"] = dbInstitution.nodes[0].rid
 	
 	institutions.push(institution)
       end

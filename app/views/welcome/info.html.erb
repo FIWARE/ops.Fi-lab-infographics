@@ -152,7 +152,23 @@
 		      FIWARE Lab Capacity is supported by <span id="parternCount"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"></span> institutions
 		    </h3>
 		    <div class="parternList">
-			    <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"> Loading...
+			    <span id="loadInst"><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." class="spinner" style="height:25px;"> Loading...</span>
+			    <span id="noInst" style="display:none;">No institutions found</span>
+			    <%
+					if @institutions.size
+						@institutions.each do |institution|
+							if institution["link"] != nil
+				%>
+								<a style="display:none;" class="node-institution node-<%= institution["node"] %>" href="<%= institution["link"] %>" target="_blank"><img alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>"/></a>
+				<%
+							else
+				%>
+								<img style="display:none;" class="node-institution node-<%= institution["node"] %>" alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>"/>							
+				<%
+							end
+						end
+					end
+			    %>
 			    <!--<img src="/assets/infographic/loghi/acreo.jpg"/>
 			    <img src="/assets/infographic/loghi/atos.jpg"/>
 			    <img src="/assets/infographic/loghi/cesnet.png"/>
@@ -724,7 +740,38 @@
 
 		  $('#world-map-vm').vectorMap('set', 'focus', 4.3, 0.5, 0.3);	*/	 
 		  
-		  function ajaxInstitutionsFun() { 
+		  function displayInstitutionsFun(allRegionsIds) { 	
+		  
+				$(".node-institution").hide();
+				$("#noInst").hide();
+				$("#loadInst").show();
+				$("#parternCount").html("<img src=\"/assets/infographic/spinner.gif\" title=\"Loading...\" alt=\"Loading...\" class=\"spinner\" style=\"height:25px;\">");
+				
+				var institutionsData = <%= raw @institutions.to_json %>
+				var parternCount = 0; 
+				
+				$("#loadInst").hide();
+				$.each(institutionsData, function( index, institution ){
+// 						console.log(institution["node"]);
+					if(allRegionsIds != null && $.inArray(institution["node"], allRegionsIds)>=0)
+					{
+// 						console.log("name:"+institution["name"]+";node:"+institution["node"]+";allNodes:"+allRegionsIds);
+						parternCount += 1;
+						$(".node-"+institution["node"]).show();
+					}
+				});  	  
+				
+				$("#parternCount").html(parternCount);
+				
+				if(parternCount==0) $("#noInst").show();
+				
+				  
+					
+				
+		  }
+		  
+		  
+		  function ajaxInstitutionsFun(allRegionsIds) { 
 		      $.ajax (
 				{
 				      type: "POST",
@@ -741,22 +788,29 @@
 					{
 					  $(".parternList").html("");
 					  
-					  var parternCount = institutionsData.length;
-					  $("#parternCount").html(parternCount);//("<span class=\"badge\">"+parternCount+"</span>");
+// 					  var parternCount = institutionsData.length;
+// 					  $("#parternCount").html(parternCount);//("<span class=\"badge\">"+parternCount+"</span>");
     // 				      var parternRows = Math.ceil(parternCount/3);
     // 				      var heightPanel = parternRows*130;
 					  
 					  
-					  
+					  var parternCount = 0;
+// 					  console.log(institutionsData);
 					  $.each(institutionsData, function( index, institution ){
-					  
-					    if(institution["link"]!= null && institution["link"] != "undefined")
-					      $(".parternList").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
-					    else
-					      $(".parternList").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+// 						console.log(institution["node"]);
+						if(allRegionsIds != null && $.inArray(institution["node"], allRegionsIds)>=0)
+						{
+							parternCount += 1;
+							if(institution["link"]!= null && institution["link"] != "undefined")
+							$(".parternList").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+							else
+							$(".parternList").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+							
+		// 					$('#parternList').css('height',$(".parternList").height()+10);
+						}
+					  });  
 					    
-    // 					$('#parternList').css('height',$(".parternList").height()+10);
-					    });  
+					    $("#parternCount").html(parternCount);
 					    
 					    if(parternCount==0) $(".parternList").html("No institutions found");
 					  
@@ -800,6 +854,13 @@
 					$( "#infographics" ).show();
 					$( "#error" ).hide();
 					
+					var allRegionsIds = null;
+					if("total_regions_ids" in totData) 
+						allRegionsIds = totData["total_regions_ids"];
+						
+					displayInstitutionsFun(allRegionsIds);
+// 					console.log(totData);
+					    
 					var nBasicUsers = parseInt(totData['basicUsers']);
 					var nTrialUsers = parseInt(totData['trialUsers']);
 					var nCommunityUsers = parseInt(totData['communityUsers']);
@@ -880,7 +941,6 @@
 					    selectedMarkersVm = [];
 					    selectedRegionsIp = [];
 					    selectedMarkersIp = [];				
-					    
 					    
 					    var actualTime = Math.floor(Date.now() / 1000)
 					    var deltaTime = 10800;
@@ -1103,7 +1163,7 @@
 
 		  /** ================================================================= **/
 		  //Chiamo il mio ajax la prima volta
-		  ajaxInstitutionsFun();//load only first time
+		  /*ajaxInstitutionsFun();*///load only first time
 		  ajaxFun();
 		  //e poi lo richiamo dopo 1 minuto
 		  setInterval(function(){ajaxFun()}, 60000);

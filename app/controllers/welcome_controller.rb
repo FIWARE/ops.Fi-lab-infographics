@@ -166,6 +166,21 @@ class WelcomeController < FiLabApp::ApplicationController
   end
   
   def info
+	@institutions = []
+	dbInstitutions = Institution.includes(:nodes).order(name: :asc)
+	if dbInstitutions      
+		dbInstitutions.each do |dbInstitution|
+			institution = Hash.new
+			institution["id"] = dbInstitution["id"]
+			institution["name"] = dbInstitution["name"]
+			institution["logo"] = dbInstitution["logo"]
+			institution["description"] = dbInstitution["description"]
+			institution["link"] = dbInstitution["link"]
+			institution["node"] = dbInstitution.nodes[0].rid
+			
+			@institutions.push(institution)
+		end
+	end
   end
 
   def status

@@ -378,29 +378,31 @@ class RegionController < ApplicationController
             
       attributesRegion = Hash.new
       attributesRegion["id"] = regionsData["id"]
-      if(regionsData["id"]=='Berlin2')
-         attributesRegion["name"] = 'Berlin'
-      elsif(regionsData["id"]=='Spain2')
-         attributesRegion["name"] = 'Spain'
-      elsif(regionsData["id"]=='Lannion2')
-         attributesRegion["name"] = 'Lannion'
-      elsif(regionsData["id"]=='Karlskrona2')
-         attributesRegion["name"] = 'Karlskrona'
-      elsif(regionsData["id"]=='Budapest2')
-         attributesRegion["name"] = 'Budapest'
-      elsif(regionsData["id"]=='Stockholm2')
-         attributesRegion["name"] = 'Stockholm'
-      elsif(regionsData["id"]=='Trento2')
-         attributesRegion["name"] = 'Trento'
-      else 
-        attributesRegion["name"] = regionsData["name"]
-      end
+#       if(regionsData["id"]=='Berlin2')
+#          attributesRegion["name"] = 'Berlin'
+#       elsif(regionsData["id"]=='Spain2')
+#          attributesRegion["name"] = 'Spain'
+#       elsif(regionsData["id"]=='Lannion2')
+#          attributesRegion["name"] = 'Lannion'
+#       elsif(regionsData["id"]=='Karlskrona2')
+#          attributesRegion["name"] = 'Karlskrona'
+#       elsif(regionsData["id"]=='Budapest2')
+#          attributesRegion["name"] = 'Budapest'
+#       elsif(regionsData["id"]=='Stockholm2')
+#          attributesRegion["name"] = 'Stockholm'
+#       elsif(regionsData["id"]=='Trento2')
+#          attributesRegion["name"] = 'Trento'
+#       else 
+#         attributesRegion["name"] = regionsData["name"]
+#       end
+	  
+	  attributesRegion["name"] = regionsData["name"]
 
       attributesRegion["country"] = regionsData["country"]
       attributesRegion["latitude"] = regionsData["latitude"]
       attributesRegion["longitude"] = regionsData["longitude"]
 	  
-	  if(attributesRegion["name"] == 'ZurichS' && attributesRegion["latitude"] != nil)
+	  if(attributesRegion["id"] == 'ZurichS' && attributesRegion["latitude"] != nil)
 		attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
 		attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
 	  end
@@ -1246,21 +1248,21 @@ class RegionController < ApplicationController
 
   def renderHistoricalForRegion
     idNode = params[:nodeId]
-    if idNode=="Spain"
-       idNode="Spain2"
-    elsif idNode=="Berlin"
-       idNode="Berlin2"
-    elsif idNode=="Lannion"
-       idNode="Lannion2"
-    elsif idNode=="Karlskrona"
-      idNode="Karlskrona2"
-    elsif idNode=="Budapest"
-      idNode="Budapest2"
-    elsif idNode=="Stockholm"
-      idNode="Stockholm2"
-#     elsif idNode=="Trento"
-#       idNode="Trento2"
-    end
+#     if idNode=="Spain"
+#        idNode="Spain2"
+#     elsif idNode=="Berlin"
+#        idNode="Berlin2"
+#     elsif idNode=="Lannion"
+#        idNode="Lannion2"
+#     elsif idNode=="Karlskrona"
+#       idNode="Karlskrona2"
+#     elsif idNode=="Budapest"
+#       idNode="Budapest2"
+#     elsif idNode=="Stockholm"
+#       idNode="Stockholm2"
+# #     elsif idNode=="Trento"
+# #       idNode="Trento2"
+#     end
 
     begin
       services = self.getHistoricalForNodeId(idNode)
@@ -1291,7 +1293,7 @@ class RegionController < ApplicationController
     #sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
 
     begin
-      timeago = Time.at(3.months.ago).strftime("%y-%m-%d")
+      timeago = Time.at(3.months.ago).strftime("%Y-%m-%d")
       servicesRegionHistoricalData = self.performRequest('regions/' + idNode + '/services?since=' + timeago + 'T00:00:00&aggregate=d', false)
       if servicesRegionHistoricalData != nil &&  servicesRegionHistoricalData["measures"] != nil
         #logger.info servicesRegionHistoricalData["measures"]
@@ -1324,21 +1326,21 @@ class RegionController < ApplicationController
     idNode = params[:nodeId]
     fromDate = params[:from]
     toDate = params[:to]
-    if idNode=="Spain"
-       idNode="Spain2"
-    elsif idNode=="Berlin"
-       idNode="Berlin2"
-    elsif idNode=="Lannion"
-       idNode="Lannion2"
-    elsif idNode=="Karlskrona"
-      idNode="Karlskrona2"
-    elsif idNode=="Budapest"
-      idNode="Budapest2"
-    elsif idNode=="Stockholm"
-      idNode="Stockholm2"
-#     elsif idNode=="Trento"
-#       idNode="Trento2"
-    end
+#     if idNode=="Spain"
+#        idNode="Spain2"
+#     elsif idNode=="Berlin"
+#        idNode="Berlin2"
+#     elsif idNode=="Lannion"
+#        idNode="Lannion2"
+#     elsif idNode=="Karlskrona"
+#       idNode="Karlskrona2"
+#     elsif idNode=="Budapest"
+#       idNode="Budapest2"
+#     elsif idNode=="Stockholm"
+#       idNode="Stockholm2"
+# #     elsif idNode=="Trento"
+# #       idNode="Trento2"
+#     end
 
     begin
       services = self.getHistoricalForNodeIdFromTo(idNode,fromDate,toDate)
@@ -1369,13 +1371,13 @@ class RegionController < ApplicationController
     #sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
 
     begin
-      timeago = Time.at(3.months.ago).strftime("%y-%m-%d")
-      timenow = Time.now.strftime("%y-%m-%d")
+      timeago = Time.at(3.months.ago).strftime("%Y-%m-%d")
+      timenow = Time.now.strftime("%Y-%m-%d")
       if fromDate!=nil
-	timeago = fromDate
+		timeago = fromDate
       end
       if toDate == nil
-	timenow = toDate
+		timenow = toDate
       end
       
       servicesRegionHistoricalData = self.performRequest('regions/' + idNode + '/services?since=' + timeago + 'T00:00:00&aggregate=d', false)

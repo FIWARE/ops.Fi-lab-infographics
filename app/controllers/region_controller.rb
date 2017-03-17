@@ -2,12 +2,12 @@ require 'oauth2'
 require 'time'
  
 class CustomException < Exception
-  attr_accessor :data
-  attr_accessor :status
-  def initialize(data, status)
-    @data = data
-    @status = status
-  end
+	attr_accessor :data
+	attr_accessor :status
+	def initialize(data, status)
+		@data = data
+		@status = status
+	end
 end
 
 class RegionController < ApplicationController
@@ -1538,8 +1538,13 @@ class RegionController < ApplicationController
     begin
       hostsData = self.performRequest('regions/'+idNode+'/hosts', true)
     rescue CustomException => e
-      raise e
-      return
+	  if e.status == "404"
+		hostsData = Hash.new
+		hostsData["hosts"] = []
+	  else
+		raise e
+		return
+	  end
     end
     
     

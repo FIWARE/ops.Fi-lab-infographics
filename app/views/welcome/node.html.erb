@@ -54,7 +54,7 @@
 			      <img src="/assets/infographic/iconCpu.png" height="35"/>
 		      </div>
 		      <div class="leftDetail">
-			      <span id="core"></span> cores
+			      <span id="core">0</span> cores
 		      </div>
 		      <div class="rightDetail" id="coreGauge" style="margin-top:3px;">
 		      </div>
@@ -68,7 +68,7 @@
 			      <img src="/assets/infographic/iconRam.png" height="35"/>			  
 		      </div>
 		      <div class="leftDetail">
-			    <span id="ram"></span> GB  
+			    <span id="ram">0</span> GB  
 		      </div>
 		      <div class="rightDetail" id="ramGauge" style="margin-top:3px;">
 			    
@@ -83,7 +83,7 @@
 			      <img src="/assets/infographic/iconDisk.png" height="35"/>
 		      </div>
 		      <div class="leftDetail">
-			      <span id="disk"></span> TB
+			      <span id="disk">0</span> TB
 		      </div>
 		      <div class="rightDetail" id="diskGauge" style="margin-top:3px;">
 		      </div>
@@ -169,8 +169,39 @@
     </div>
     
     <div id="errorMessageHosts" class="errorMessage"></div>
+    <div style="font-size:20px;color:#888;float:left;margin:-26px 0 36px 0;" id="hostsChecking">
+		Checking Computing Hosts <img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgSanity" style="height:25px;">
+    </div>
     <div class="clear"></div>
+    
     <div id="errorMessageSupported" class="errorMessage"></div>
+	<%
+		if @institutions.size
+	%>
+			<div class="services">
+				<header>Supported By</header>
+
+				<section class="services-list">
+					<div id="supported" class="parternList">
+	<%
+						@institutions.each do |institution|
+							if institution["link"] != nil
+	%>
+								<a class="node-institution node-<%= institution["node"] %>" href="<%= institution["link"] %>" target="_blank"><img alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>"/></a>
+	<%
+							else
+	%>
+								<img class="node-institution node-<%= institution["node"] %>" alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>"/>							
+	<%
+							end
+						end
+	%>
+					</div>
+				</section>
+			</div>
+	<%
+		end
+	%>
     
     <!--<div class="services">
       <header>
@@ -865,6 +896,7 @@
 			    cache: false,
 			    success: function(json){
 				
+				  $('#hostsChecking').hide();
 			      var totData = json;
 			      if(totData == null || totData == "undefined") 
 			      {
@@ -907,7 +939,7 @@
 				  var allRows ="<DIV CLASS='status-row-gauge row-status-service row-status-closed' id='"+theHostId+"' style='height:98px;'>"+
 						    "<DIV CLASS=\"field field-group field-group-expand\"></DIV>"+
 						    "<a name=\""+theHostId+"\"></a>"+
-						    "<DIV CLASS=\"field field-service field-service-node-gauge "+theHostId+"\" style='line-height:95px;white-space: nowrap;'>"+theHostId+"</DIV>"+
+						    "<DIV CLASS=\"field field-service field-service-node-gauge "+theHostId+"\" title='"+theHostId+"' style='line-height: 95px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;height: 95px;'>"+theHostId+"</DIV>"+
 						    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_cpu_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
 					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_ram_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
 					    "<DIV CLASS=\"field field-service field-service-gauge\"><div id=\"chart_div_disk_"+theHostId+"\" style=\"padding-left: 6px\"></div></DIV>"+
@@ -967,13 +999,16 @@
 // 				  console.log(totData["total_hosts_ids"]);
 // 				  console.log(i);
 // 				  console.log(theHostId);
-				  
+
+				 var hostSelector = theHostId.replace(/\./g , "\\.");
+				 $('.'+hostSelector).css('cursor','default');			  
 			      }
 			      
 			      
 			    },
 			    error: function(xhr, textStatus, errorThrown){
 			      //put a symbol in the raw to show that it has failed
+			    $('#hostsChecking').hide();
 				var errore = "<%= FiLabInfographics.nodata %>";
 				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					errore = xhr.responseText;
@@ -986,72 +1021,72 @@
 		      }
 		    );
 		    
-		    jsonToSend = {
-			    'idNode' : "<%= @idNode %>"
-			};
-		    $.ajax (
-			    {
-				  type: "POST",
-				  url: "../../api/v1/institution",//to get institutions
-				  contentType: "application/json; charset=utf-8",
-				  data: JSON.stringify(jsonToSend),
-				  dataType: "json",
-				  cache: false,
-				  success: function(json){
-				      
-				    var institutionsData = json;
-				    if(institutionsData == null || institutionsData == "undefined") 
-				    {
-				      $('#errorMessageSupported').html("Empty response");
-				      return;
-				    }
-				    $('#errorMessageSupported').html("");
-	  			      
-				    
-				    var parternCount = institutionsData.length;
-				    //draw container 
-				    if(parternCount > 0) 
-				    {
-				    
-				    
-				      $( "#errorMessageSupported" ).after( "<div class=\"services\">"+
-					"<header>"+
-					  "Supported By"+
-					"</header>"+
-
-					"<section class=\"services-list\">"+
-					  "<DIV ID=\"supported\" class='parternList'>"+
-					    
-					    
-					  "</DIV>"+
-					"</section>"+
-				      "</div>" );
-				      
-				      
-				      
-				      $.each(institutionsData, function( index, institution ){
-				      
-					if(institution["link"]!= null && institution["link"] != "undefined")
-					  $("#supported").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
-					else
-					  $("#supported").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
-					});  
-					
-				     }
-				       
-				  },
-				  error: function(xhr, textStatus, errorThrown){
-				    var errore = "<%= FiLabInfographics.nodata %>";
-				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
-					    errore = xhr.responseText;
-	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
-				    $("#errorMessageSupported").html(errore);
-	  //     				alert('request failed->'+textStatus);
-      //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
-// 				    $("#imgHistoryMessages").hide();
-				  } 
-			}
-		      );
+// 		    jsonToSend = {
+// 			    'idNode' : "<%= @idNode %>"
+// 			};
+// 		    $.ajax (
+// 			    {
+// 				  type: "POST",
+// 				  url: "../../api/v1/institution",//to get institutions
+// 				  contentType: "application/json; charset=utf-8",
+// 				  data: JSON.stringify(jsonToSend),
+// 				  dataType: "json",
+// 				  cache: false,
+// 				  success: function(json){
+// 				      
+// 				    var institutionsData = json;
+// 				    if(institutionsData == null || institutionsData == "undefined") 
+// 				    {
+// 				      $('#errorMessageSupported').html("Empty response");
+// 				      return;
+// 				    }
+// 				    $('#errorMessageSupported').html("");
+// 	  			      
+// 				    
+// 				    var parternCount = institutionsData.length;
+// 				    //draw container 
+// 				    if(parternCount > 0) 
+// 				    {
+// 				    
+// 				    
+// 				      $( "#errorMessageSupported" ).after( "<div class=\"services\">"+
+// 					"<header>"+
+// 					  "Supported By"+
+// 					"</header>"+
+// 
+// 					"<section class=\"services-list\">"+
+// 					  "<DIV ID=\"supported\" class='parternList'>"+
+// 					    
+// 					    
+// 					  "</DIV>"+
+// 					"</section>"+
+// 				      "</div>" );
+// 				      
+// 				      
+// 				      
+// 				      $.each(institutionsData, function( index, institution ){
+// 				      
+// 					if(institution["link"]!= null && institution["link"] != "undefined")
+// 					  $("#supported").append("<a href=\""+institution["link"]+"\" target=\"_blank\"><img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/></a>");
+// 					else
+// 					  $("#supported").append("<img alt=\""+institution["name"]+"\" title=\""+institution["name"]+"\" src=\"/assets/infographic/loghi/"+institution["logo"]+"\"/>");
+// 					});  
+// 					
+// 				     }
+// 				       
+// 				  },
+// 				  error: function(xhr, textStatus, errorThrown){
+// 				    var errore = "<%= FiLabInfographics.nodata %>";
+// 				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+// 					    errore = xhr.responseText;
+// 	  // 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+// 				    $("#errorMessageSupported").html(errore);
+// 	  //     				alert('request failed->'+textStatus);
+//       //         				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+// // 				    $("#imgHistoryMessages").hide();
+// 				  } 
+// 			}
+// 		      );
 	  });
 	  
 </script>

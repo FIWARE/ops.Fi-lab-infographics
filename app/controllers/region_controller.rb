@@ -208,48 +208,51 @@ class RegionController < ApplicationController
     return points
   end
   
-  #get all general data and specific data about all regions 
-  def getRegionsData (histogramData)
+	#get all general data and specific data about all regions 
+	def getRegionsData (histogramData)
+
+		begin
+			totRegionsData = self.getRegionsTotData
+		rescue CustomException => e
+			raise e
+			return
+		end
     
-    begin
-      totRegionsData = self.getRegionsTotData
-    rescue CustomException => e
-      raise e
-      return
-    end
-    
-    if totRegionsData != nil
+		if totRegionsData != nil
       
-      idRegions = totRegionsData["total_regions_ids"]
+			idRegions = totRegionsData["total_regions_ids"]
     
-      attributes = Hash.new
+			attributes = Hash.new
     
-      idRegions.each do |idRegion|
-	begin
+			idRegions.each do |idRegion|
+				begin
 # 	  if (histogramData != nil)
-	  attributesRegion = self.getRegionsDataForNodeId(idRegion,histogramData)
+					attributesRegion = self.getRegionsDataForNodeId(idRegion,histogramData)
 # 	  else
 # 	    attributesRegion = self.getRegionsDataForNodeIdWithoutHistogramData(idRegion)
 # 	  end
-	rescue CustomException => e
-	  raise e
-	  return
+				rescue CustomException => e
+					if e.status == "404"
+						attributesRegion = nil
+					else
+						raise e
+						return
+					end
+				end
+	
+				attributes[idRegion] = attributesRegion	
+			end    
+      
+			attributes = checkLatLong (attributes);
+			returnData = Hash.new
+			returnData ["regions"] = attributes;
+			returnData ["tot"] = totRegionsData;
+      
+			return returnData;
+      
+		end
+		return nil
 	end
-	
-	attributes[idRegion] = attributesRegion
-	
-      end    
-      
-      attributes = checkLatLong (attributes);
-      returnData = Hash.new
-      returnData ["regions"] = attributes;
-      returnData ["tot"] = totRegionsData;
-      
-      return returnData;
-      
-    end
-    return nil
-  end
   
   #render all general data and specific data about all regions 
   def renderRegions
@@ -362,6 +365,10 @@ class RegionController < ApplicationController
     Rails.logger.debug(histogramData)
     begin
       regionsData = self.performRequest('regions/' + idNode, false)
+      if(idNode == "Budapest2" or idNode == "Lannion3" or idNode == "Crete")
+		raise CustomException.new("Not Found", '404')
+		
+	  end
       #########################################################################
       #       For this first draft I take an hardcoded startintervall         #
       #########################################################################
@@ -1408,42 +1415,45 @@ class RegionController < ApplicationController
 
   end
   
-  #render data about services of all regions
-  def renderServices
-    histogramData = params[:histogramData]
-    begin
-      regionsData = self.getRegionsData(histogramData)
-    rescue CustomException => e
-      if e.status
-	render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => e.status
-      else
-	render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => :service_unavailable
-      end
-      return
-    end
+	#render data about services of all regions
+	def renderServices
+		histogramData = params[:histogramData]
+		begin
+			regionsData = self.getRegionsData(histogramData)
+		rescue CustomException => e
+			if e.status
+				render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => e.status
+			else
+				render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => :service_unavailable
+			end
+			return
+		end
     
-    if regionsData == nil
-      render :json=>"Problem in retrieving data: no data", :status => :service_unavailable
-      return
-    end
+		if regionsData == nil
+			render :json=>"Problem in retrieving data: no data", :status => :service_unavailable
+			return
+		end
     
-    attributesRegionsServices = regionsData["regions"]
+		attributesRegionsServices = regionsData["regions"]
     
     
-    attributesRegionsServices.each do |key,regionData|
+		attributesRegionsServices.each do |key,regionData|
       
-      begin
-	services = self.getServicesForNodeId(regionData["id"])
-      rescue CustomException => e
-	if e.status
-	  render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => e.status
-	else
-	  render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => :service_unavailable
-	end
-	return
-      end
-      
-      regionData["services"] = services;
+			if regionData != nil
+					  
+				begin
+					services = self.getServicesForNodeId(regionData["id"])
+				rescue CustomException => e
+					if e.status
+						render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => e.status
+					else
+						render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => :service_unavailable
+					end
+					return
+				end
+		
+				regionData["services"] = services;
+			end
       
       
 #       attributesRegionsServices[regionData["id"]]["Nova"]["value"] = serviceRegionData["novaServiceStatus"]["value"];
@@ -1490,11 +1500,11 @@ class RegionController < ApplicationController
 # 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_POK;
 #       end
 
-    end
+		end
 #     puts attributesRegionsServices
-    render :json => attributesRegionsServices.to_json
+		render :json => attributesRegionsServices.to_json
       
-  end
+	end
   
   def renderRegionIdListFromDb
     

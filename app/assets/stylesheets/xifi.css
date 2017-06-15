@@ -651,6 +651,10 @@ padding-bottom: 10px;
     width: 250px;
 }
 
+#infographics #buttonShowAll:hover {
+    color: #002d67;
+}
+
 #buttonShowAll:hover {
     color: #60c1cf;
 }
@@ -995,7 +999,7 @@ img.sprite
 {
 	background:url('/assets/infographic/status-icons.png') no-repeat;
 	border:0;
-	height:16px;
+	height:14px;
 	width:16px;
 }
 img.status-3

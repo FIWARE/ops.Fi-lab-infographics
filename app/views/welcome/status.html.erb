@@ -65,7 +65,7 @@
 	</div>
 	<div class="map-container" style="margin-top:0px;">		
 	    <div id="world-map-nodes"></div>
-	    <div id="loadingMap" class="aftermap">Loading <span id="regionsNum"></span> Nodes...</div>
+	    <div id="loadingMap" class="aftermap">Loading <!--<span id="regionsNum"></span> -->Nodes...</div>
 	    <DIV id="buttonShowAll" CLASS="collapsed" style="" onclick="$('.containerWithMargin').removeAttr('style');$(this).addClass('collapsed');$('.row-status-service').removeClass('collapsed');onChartChange('chart-histogram');$('#chart-cal').addClass('chartHidden');$('#chart-hist').show();$('#nodeLink').hide();">
 	      Show all FIWARE Lab Nodes Status
 	    </DIV>
@@ -787,7 +787,7 @@
 				    var idRegions = totData["total_regions_ids"];
 				    var idRegionsCount = totData["total_regions_count"];
 				    semaforo = parseInt(idRegionsCount);
-				    $('#regionsNum').html(idRegionsCount);
+// 				    $('#regionsNum').html(idRegionsCount);
 				    //draw table with # empty raws
 				    var allRows = "";
 				    for (var i=0;i<idRegionsCount;i++)
@@ -1085,6 +1085,10 @@
 							  if(semaforo == 0) //loading has finished
 							  {
 							      $( ".showHistogram" ).button().attr('disabled', false);
+							      $('#loadingMap').removeClass();
+								  $('#loadingMap').addClass('aftermaphide');
+								  $("#imgServices").hide();
+								  $("#imgHistorical").hide();
 							  }
 							  //put a symbol in the raw to show that it has failed
 							      var errore = "<%= FiLabInfographics.nodata %>";
@@ -1092,6 +1096,13 @@
 								      errore = xhr.responseText;
 			// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
 							      $('#errorMessage').html(errore);
+							      
+							      if(xhr.status==404)
+							      {
+							        $('.'+regionId).width("70%");
+									$('.'+regionId).html(regionId+" <img class='sprite status-2' />");									
+									$('#message-'+regionId).html("No updated data were found.");
+							      }
 			  //     				alert('request failed->'+textStatus);
 			  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
 							  } 
@@ -1166,6 +1177,7 @@
 				  success: function(json){
 				  
 					  semaforo = 0;
+					  
 					  $( ".showHistogram" ).button().attr('disabled', false);
 					  
 					  //in case first ajax call failed, loading background will be removed now
@@ -1174,15 +1186,29 @@
 					  
 					  var allHeaders = "";
 					  var allRows = "";
-					  var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
+					  var servicesNames = [];
 					  selectedMarkers = [];
 					  selectedRegions = [];
 					  sanitySuccess = [];
 				          var actualTime = Math.floor(Date.now() / 1000)
                                           var deltaTime = 10800;	  
 					  $.each(json, function(idRegion, regionAttributes) {
-						  if(idRegion != null && regionAttributes != null)
+						  if(regionAttributes == null)
 						  {
+							 allRows = allRows + "<DIV CLASS='status-row-min row-status-service row-status-closed' id='"+idRegion+"'>"+
+								  "<DIV CLASS='field field-group field-group-expand'>"+
+									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
+								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
+								  "<DIV CLASS='field field-service field-service-node-min "+idRegion+"' style='width:70%'>"+idRegion+" <img class='sprite status-2' /></DIV>"+			
+							  "</DIV><DIV CLASS='row-messageMin'><div style='overflow-y:auto; height:400px;width: 485px; height: 59px;' id='message-"+idRegion+"'>No updated data were found.</div></DIV>";						
+				    
+// 							 $('.'+idRegion).html("<div CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+idRegion+" <img class='sprite status-2' /></div>");
+// 							 $('#message-'+idRegion).html("");
+						  }
+						  else if(idRegion != null && regionAttributes != null)
+						  {
+							  if(regionAttributes["services"] != null)
+								servicesNames = Object.keys(regionAttributes["services"]);//I will get Nova,Cinder,...
 							  //for histogram chart
 							  sanitySuccess.push({idNode: idRegion, nameNode: regionAttributes['name'], success: regionAttributes['percSanitySuccess']});
                                                           //var my_time=new Date(regionAttributes['timestamp'])   
@@ -1311,22 +1337,24 @@
 // 						  "<DIV CLASS='field field-header field-header-support'>Support</DIV>";
 // 						  
 // 						  $('#tableHeaderContent').html(allHeaders);
-						  $('#tableContent').html(allRows);
-// 						  $('#buttonShowAll').addClass('collapsed');
-						  console.log(selected_chart_id);
-						  if(selected_chart_id == 'chart-calendar' && selected_node_id)
-						  {
-						    $('.row-status-service').addClass('collapsed');
-						    $('#'+selected_node_id).removeClass('collapsed');
-						  }
-// 						  onChartChange('chart-histogram');
-						  $('#errorMessage').html("");
 						  
-						  var height = $('#world-map-nodes').height()+$('#status').height()+80;
 // 						  $('.wrapper').css("cssText", "height: "+height+"px !important;");
 						  
 						  
 					  });
+					  
+					  $('#tableContent').html(allRows);
+	// 					$('#buttonShowAll').addClass('collapsed');
+						console.log(selected_chart_id);
+						if(selected_chart_id == 'chart-calendar' && selected_node_id)
+						{
+						$('.row-status-service').addClass('collapsed');
+						$('#'+selected_node_id).removeClass('collapsed');
+						}
+	// 						  onChartChange('chart-histogram');
+						$('#errorMessage').html("");
+						
+						var height = $('#world-map-nodes').height()+$('#status').height()+80;
 					  
 					  mapNodes.clearSelectedRegions();
 					  mapNodes.setSelectedRegions(selectedRegions);

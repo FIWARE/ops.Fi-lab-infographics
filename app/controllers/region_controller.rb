@@ -365,10 +365,10 @@ class RegionController < ApplicationController
     Rails.logger.debug(histogramData)
     begin
       regionsData = self.performRequest('regions/' + idNode, false)
-      if(idNode == "Budapest2" or idNode == "Lannion3" or idNode == "Crete")
-		raise CustomException.new("Not Found", '404')
-		
-	  end
+#       if(idNode == "Budapest2" or idNode == "Lannion3" or idNode == "Crete")
+# 		raise CustomException.new("Not Found", '404')
+# 		
+# 	  end
       #########################################################################
       #       For this first draft I take an hardcoded startintervall         #
       #########################################################################

@@ -107,11 +107,12 @@
 	    <div class="chartTitle"><img src="/assets/infographic/iconHealth.png" title="Services Sanity" alt="Services Sanity" id="imgSanity" style="width:40px;"><span id="chart-title">FIWARE Lab Nodes Sanity checks </span><img src="/assets/infographic/spinner.gif" title="Loading..." alt="Loading..." id="imgHistorical" style="display:none"></div>
 	      <div id="chart-hist">
 		<div class="floatLeft datePickerField">
-		  Data from September 2015. <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;display:none" disabled/>
+<!-- 		  Data from September 2015. <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;display:none" disabled/> -->
+			From: <input type="text" id="datepickerHistogramFrom" readonly="readonly" style="background:white;cursor:pointer;"/>
 		</div>
-<!--		<div class="floatLeft">
+		<div class="floatLeft">
 		  <button class="showHistogram">Show</button>
-		</div>-->
+		</div>
 		<div class="clear"></div>
 	      </div>
 	      
@@ -550,8 +551,8 @@
                 }		    
 		  });
 		  
-// 		  $( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(nowDate.getFullYear(), nmonth, 1));
-		$( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(2015, 8, 1));
+		  $( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(nowDate.getFullYear(), nmonth, 1));
+// 		$( "#datepickerHistogramFrom" ).datepicker('setDate', new Date(2015, 8, 1));
 // 		$( "#datepickerHistogramFrom" ).datepicker( "option", "disabled", true );
 // 		  alert(new Date(nowDate.getFullYear(), nmonth, 1));
 // 		  $( "#datepickerTo" ).datepicker({
@@ -878,7 +879,7 @@
 							      var dataRegion = json;
 // 							      
 							      //for histogram chart
-							      sanitySuccess.push({idNode: regionId, nameNode: dataRegion['name'], success: dataRegion['percSanitySuccess']});
+							      sanitySuccess.push({idNode: regionId, nameNode: dataRegion['name'], success: (dataRegion['percSanitySuccess']||0)});
 // 							      var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
 // 							      svg.selectAll(".bar").remove();
 // 							      svg.selectAll("text").remove();
@@ -895,7 +896,7 @@
 								markersData["id"] =  regionId;
 								markersData["latLng"] =  [parseFloat(dataRegion['latitude']),parseFloat(dataRegion['longitude'])];
 								
-								var actualTime = Math.floor(Date.now() / 1000)
+								/*var actualTime = Math.floor(Date.now() / 1000)
 								var deltaTime = 10800;
 								
 								var regionTime =( new Date(dataRegion['timestamp']).getTime() / 1000)
@@ -909,7 +910,7 @@
 								
 								if (actualTime>(regionTime+deltaTime))
 								  markersData["name"]=dataRegion['name']+": Last Update on "+the_time;
-								else markersData["name"] = dataRegion['name'];
+								else*/ markersData["name"] = dataRegion['name'];
 								
 								markersData["real_name"] = dataRegion['name'];
 								markersData["style"] = 'rgba(150,150,150,1)';	
@@ -950,33 +951,34 @@
 								      var servicesNames = Object.keys(services);								      
 								        
 								      var statusColor;
-								      if (actualTime>(regionTime+deltaTime)){
-									statusColor = 'rgba(150,150,150,1)';
-								      }
-								      else{
+// 								      if (actualTime>(regionTime+deltaTime)){
+// 										statusColor = 'rgba(150,150,150,1)';
+// 								      }
+// 								      else{
 									if(services['FiHealthStatus']!=null && 
 									services['FiHealthStatus']!="undefined" &&
 									services['FiHealthStatus']['value'] == 1)
 									{
-									    switch (services['overallStatus']['value']) {
-										  case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
-										  case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
-										  case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
-										  default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
-									    }
+										switch (services['overallStatus']['value']) {
+										case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
+										case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
+										case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
+										default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
+										}
 									}
 									else if(services['FiHealthStatus']!=null && 
 									services['FiHealthStatus']!="undefined")
 									{
-									    switch (services['FiHealthStatus']['value']) {
-										  case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
-										  case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
-										  case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
-										  default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
-									    }
+										switch (services['FiHealthStatus']['value']) {
+										case 0.0:    statusColor = 'rgba(255,0,0,1.0)';   break;
+										case 1:  statusColor = 'rgba(0,255,0,1.0)';   break;
+										case 0.75: statusColor = 'rgba(255,255,0,1.0)'; break;
+										default:     statusColor = 'rgba(150,150,150,1)';     /*gray*/
+										}
 									}
 									else statusColor = 'rgba(150,150,150,1)';     /*gray*/
-								      }
+// 								      }
+								      
 								      if(markers[regionId] != null)
 								      {
 										markers[regionId]["style"] = {fill: statusColor, r:5};
@@ -1010,7 +1012,7 @@
 									      {
 										      colorPng = services[value]["value"]+"light.png";
 // 										      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
-										      if (actualTime>(regionTime+deltaTime) || services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
+// 										      if (actualTime>(regionTime+deltaTime) || services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
 										      allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 									      }
 									      else if(value == "FiHealthStatus")
@@ -1022,7 +1024,7 @@
 											colorPng = RED+"light.png";
 										      else if (valuePng == 0.75)
 											colorPng = YELLOW+"light.png";
-										      if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
+// 										      if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
 										      allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 									      }
 								      });
@@ -1099,9 +1101,66 @@
 							      
 							      if(xhr.status==404)
 							      {
-							        $('.'+regionId).width("70%");
-									$('.'+regionId).html(regionId+" <img class='sprite status-2' />");									
-									$('#message-'+regionId).html("No updated data were found.");
+									if(xhr.responseText)
+									{
+										var dataRegion = $.parseJSON(xhr.responseText);
+										if(dataRegion && dataRegion!="undefined")
+										{
+											var ttl = (parseInt(dataRegion['ttl'])/60)/60;
+											var name = dataRegion['name'] || regionId;
+											var data = dataRegion['data'];
+// 											console.log(dataRegion);
+
+							
+											if(data && data!="undefined")
+											{
+												var markersData = {};
+												markersData["id"] =  regionId;
+												markersData["latLng"] =  [parseFloat(data[1]),parseFloat(data[2])];
+												
+												
+												markersData["name"] = name+": No updated data in the last "+ttl+" hours";
+						
+												markersData["real_name"] = name;
+												markersData["style"] = {fill: 'rgba(150,150,150,1)', r:5};	
+												markers[regionId] = markersData;
+	// 											console.log(markers[regionId]);
+												selectedMarkers.push(markers[regionId]);
+	// 											console.log(selectedMarkers);
+												if(regionId == "PiraeusN")
+												{
+													selectedMarkers = checkLatLong(selectedMarkers);
+												}
+										
+												mapNodes.removeAllMarkers();
+												mapNodes.addMarkers(selectedMarkers);
+	// 											console.log(selectedMarkers);
+										
+												if(data[0]!= null && data[0] != "undefined" &&  data[0] != "")
+												{
+													selectedRegions.push(data[0]);
+												}
+	// 											console.log(selectedRegions);
+												mapNodes.clearSelectedRegions();
+												mapNodes.setSelectedRegions(selectedRegions);
+											}
+											
+// 											console.log(selectedRegions);
+								
+											/*$('.'+regionId).width("70%");
+											$('.'+regionId).html(regionId+" <img class='sprite status-2' />");	*/		
+											$('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+name+"</a>");
+											$("#"+regionId).append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV>");
+											
+// 											<div class="status-row-min row-status-service row-status-closed" id="SophiaAntipolis2"><div class="field field-group field-group-expand"><img class="field-group-expand-icon sprite expand" src="/assets/infographic/blank.gif"></div><a name="SophiaAntipolis2"></a><div class="field field-service field-service-node-min SophiaAntipolis2"><a href="../node/SophiaAntipolis2" class="SophiaAntipolis2" style="color:#8C8C8C;">SophiaAntipolis</a></div><div class="field field-service field-service-status-field"><img src="/assets/infographic/greenlight.png" height="25"></div><div class="field field-service field-service-status-field"><img src="/assets/infographic/greenlight.png" height="25"></div><div class="field field-service field-service-status-field"><img src="/assets/infographic/greenlight.png" height="25"></div><div class="field field-service field-service-status-field"><img src="/assets/infographic/greenlight.png" height="25"></div><div class="field field-service field-service-status-field"><img src="/assets/infographic/greenlight.png" height="25"></div><div class="field field-service field-service-status-field"><img src="/assets/infographic/greenlight.png" height="25"></div></div>
+											
+											
+											if(ttl)
+												$('#message-'+regionId).html("No updated data in the last "+ttl+" hours");
+											else
+												$('#message-'+regionId).html("No updated data were found");
+										}
+									}
 							      }
 			  //     				alert('request failed->'+textStatus);
 			  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
@@ -1190,27 +1249,75 @@
 					  selectedMarkers = [];
 					  selectedRegions = [];
 					  sanitySuccess = [];
-				          var actualTime = Math.floor(Date.now() / 1000)
-                                          var deltaTime = 10800;	  
+				        /*  var actualTime = Math.floor(Date.now() / 1000)
+                                          var deltaTime = 10800;	*/  
+//                       console.log(json);
 					  $.each(json, function(idRegion, regionAttributes) {
-						  if(regionAttributes == null)
-						  {
-							 allRows = allRows + "<DIV CLASS='status-row-min row-status-service row-status-closed' id='"+idRegion+"'>"+
+						  if(regionAttributes == null || regionAttributes["ttl"] != null)
+						  {						    
+							if(regionAttributes == null)
+							{
+								allRows = allRows + "<DIV CLASS='status-row-min row-status-service row-status-closed' id='"+idRegion+"'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+
 									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
 								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
-								  "<DIV CLASS='field field-service field-service-node-min "+idRegion+"' style='width:70%'>"+idRegion+" <img class='sprite status-2' /></DIV>"+			
-							  "</DIV><DIV CLASS='row-messageMin'><div style='overflow-y:auto; height:400px;width: 485px; height: 59px;' id='message-"+idRegion+"'>No updated data were found.</div></DIV>";						
+								  "<DIV CLASS='field field-service field-service-node-min "+idRegion+"'><a href='../node/"+idRegion+"' CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+idRegion+"</a></DIV>"+			
+							  "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV></DIV><DIV CLASS='row-messageMin'><div style='overflow-y:auto; height:400px;width: 485px; height: 59px;' id='message-"+idRegion+"'>No updated data were found.</div></DIV>";
+							}
+							else
+							{
+								var ttl = (parseInt(regionAttributes['ttl'])/60)/60;
+								var name = regionAttributes['name'] || idRegion;
+	// 											console.log(dataRegion);
+
+				
+								if(regionAttributes['latitude'] && regionAttributes['longitude'])
+								{
+									var markersData = {};
+									markersData["id"] =  idRegion;
+									markersData["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+									
+									
+									markersData["name"] = name+": No updated data in the last "+ttl+" hours";
+			
+									markersData["real_name"] = name;
+									markersData["style"] = {fill: 'rgba(150,150,150,1)', r:5};	
+	// 											console.log(markers[regionId]);
+									selectedMarkers.push(markersData);
+	// 											console.log(selectedMarkers);
+									if(idRegion == "PiraeusN")
+									{
+										selectedMarkers = checkLatLong(selectedMarkers);
+									}
+
+	// 											console.log(selectedMarkers);
+							
+									if(regionAttributes['country']!= null && regionAttributes['country'] != "undefined" &&  regionAttributes['country'] != "")
+									{
+										selectedRegions.push(regionAttributes['country']);
+									}
+								}	
+								
+								allRows = allRows + "<DIV CLASS='status-row-min row-status-service row-status-closed' id='"+idRegion+"'>"+
+								  "<DIV CLASS='field field-group field-group-expand'>"+
+									  "<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
+								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
+								  "<DIV CLASS='field field-service field-service-node-min "+idRegion+"'><a href='../node/"+idRegion+"' CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+name+"</a></DIV>"+			
+							  "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV></DIV><DIV CLASS='row-messageMin'><div style='overflow-y:auto; height:400px;width: 485px; height: 59px;' id='message-"+idRegion+"'>No updated data in the last "+ttl+" hours.</div></DIV>";
+							}
+							  
+// 							  $('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+name+"</a>");
+// 											$("#"+regionId).append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV>");
 				    
 // 							 $('.'+idRegion).html("<div CLASS='"+idRegion+"' style='color:#8C8C8C;'>"+idRegion+" <img class='sprite status-2' /></div>");
 // 							 $('#message-'+idRegion).html("");
 						  }
-						  else if(idRegion != null && regionAttributes != null)
+						  else if(idRegion != null && regionAttributes != null && regionAttributes["services"]!=null)
 						  {
 							  if(regionAttributes["services"] != null)
 								servicesNames = Object.keys(regionAttributes["services"]);//I will get Nova,Cinder,...
 							  //for histogram chart
-							  sanitySuccess.push({idNode: idRegion, nameNode: regionAttributes['name'], success: regionAttributes['percSanitySuccess']});
+							  sanitySuccess.push({idNode: idRegion, nameNode: regionAttributes['name'], success: (regionAttributes['percSanitySuccess']||0)});
                                                           //var my_time=new Date(regionAttributes['timestamp'])   
                                                           if(regionAttributes['country']!= null && regionAttributes['country'] != "undefined" &&  regionAttributes['country'] != "")
 							  {
@@ -1226,22 +1333,22 @@
 							      regionTime =( new Date(regionAttributes['timestamp']).getTime() / 1000)
 
 							      //markers["name"] = idRegion;							  
-							      my_time=new Date(regionAttributes['timestamp']);                                                          
-							      month=my_time.getMonth()+1;if (month<10)month="0"+month;
-							      day=my_time.getDate();if (day<10)day="0"+day;
-							      hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
-							      mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
-							      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
+// 							      my_time=new Date(regionAttributes['timestamp']);                                                          
+// 							      month=my_time.getMonth()+1;if (month<10)month="0"+month;
+// 							      day=my_time.getDate();if (day<10)day="0"+day;
+// 							      hours=my_time.getUTCHours();if (hours<10)hours="0"+hours;
+// 							      mins=my_time.getUTCMinutes();if (mins<10)mins="0"+mins;
+// 							      the_time=my_time.getFullYear() + "-" + month + "-" + day + "  " + hours + ":" + mins;
 							      //markers["name"]=regionAttributes['name'];
-							      if (actualTime>(regionTime+deltaTime))
+							      /*if (actualTime>(regionTime+deltaTime))
 									markers["name"]=regionAttributes['name']+": Last Update on "+the_time;
-							      else markers["name"]=regionAttributes['name'];
+							      else */markers["name"]=regionAttributes['name'];
 							      markers["real_name"]=regionAttributes['name'];
 							      var statusColor;
-							      if (actualTime>(regionTime+deltaTime)){
-								statusColor = 'rgba(150,150,150,1)';
-							      }
-							      else{
+// 							      if (actualTime>(regionTime+deltaTime)){
+// 								statusColor = 'rgba(150,150,150,1)';
+// 							      }
+// 							      else{
 								if(regionAttributes['services']['FiHealthStatus']!=null && 
 								regionAttributes['services']['FiHealthStatus']!="undefined" &&
 								regionAttributes['services']['FiHealthStatus']['value'] == 1)
@@ -1264,7 +1371,7 @@
 								    }
 								}
 								else statusColor = 'rgba(150,150,150,1)';     /*gray*/
-							      }
+// 							      }
 							      markers["style"] = {fill: statusColor, r:5};
 							      selectedMarkers.push(markers);
 							  }
@@ -1282,7 +1389,7 @@
 								  if(value != "overallStatus" && value != "FiHealthStatus")
 								  {
 									  colorPng = regionAttributes["services"][value]["value"]+"light.png";
-                                                                          if (actualTime>(regionTime+deltaTime) || regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
+//                                                                           if (actualTime>(regionTime+deltaTime) || regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
 									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 								  }
 								  else if(value == "FiHealthStatus")
@@ -1295,7 +1402,7 @@
 									    colorPng = RED+"light.png";
 									  else if (valuePng == 0.75)
 									    colorPng = YELLOW+"light.png";
-                                                                          if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
+//                                                                           if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
 									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 								  }
 							  });

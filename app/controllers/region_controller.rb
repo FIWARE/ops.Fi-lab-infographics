@@ -139,8 +139,14 @@ class RegionController < ApplicationController
 #       return
 #     end
     if res.code == "404"
-      Rails.logger.info("THE HTTP STATUS: "+res.code);
-      raise CustomException.new("Not Found", res.code)
+      data = res.body   
+      if(data)
+          Rails.logger.info("THE HTTP STATUS with data: "+res.code);
+          raise CustomException.new(data, res.code)
+      else
+          Rails.logger.info("THE HTTP STATUS: "+res.code);
+          raise CustomException.new("Not Found", res.code)
+      end      
       return
     elsif res.code == "401"
       Rails.logger.info("THE HTTP STATUS: "+res.code);
@@ -225,6 +231,7 @@ class RegionController < ApplicationController
 			attributes = Hash.new
     
 			idRegions.each do |idRegion|
+				
 				begin
 # 	  if (histogramData != nil)
 					attributesRegion = self.getRegionsDataForNodeId(idRegion,histogramData)
@@ -232,22 +239,39 @@ class RegionController < ApplicationController
 # 	    attributesRegion = self.getRegionsDataForNodeIdWithoutHistogramData(idRegion)
 # 	  end
 				rescue CustomException => e
-					if e.status == "404"
-						attributesRegion = nil
+					if e.status == "404"						
+						if e.data != "Not Found"
+							begin
+								regionData = JSON.parse(e.data)  	
+								attributesRegion = Hash.new
+								attributesRegion["id"] = idRegion
+								attributesRegion["name"] = regionData["name"]
+								attributesRegion["country"] = regionData["data"][0]
+								attributesRegion["latitude"] = regionData["data"][1]
+								attributesRegion["longitude"] = regionData["data"][2]
+								attributesRegion["ttl"] = regionData["ttl"]
+								
+							rescue Exception => e
+								attributesRegion = nil
+							end							
+						else
+							attributesRegion = nil
+						end
 					else
 						raise e
 						return
 					end
 				end
-	
-				attributes[idRegion] = attributesRegion	
+				
+				attributes[idRegion] = attributesRegion
+				
 			end    
-      
+			
 			attributes = checkLatLong (attributes);
 			returnData = Hash.new
 			returnData ["regions"] = attributes;
 			returnData ["tot"] = totRegionsData;
-      
+
 			return returnData;
       
 		end
@@ -350,7 +374,7 @@ class RegionController < ApplicationController
       regionsData = self.getRegionsDataForNodeId(idNode, histogramData)
     rescue CustomException => e
       if e.status
-	render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => e.status
+	render :json=>e.data, :status => e.status
       else
 	render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
       end

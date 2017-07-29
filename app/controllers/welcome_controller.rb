@@ -204,6 +204,9 @@ class WelcomeController < FiLabApp::ApplicationController
 		if @idNode != nil
 			begin
 				nodeData = self.getRegionsDataForNodeId (@idNode)
+# 				if(@idNode == "Budapest2" or @idNode == "Lannion3" or @idNode == "Crete")
+# 					raise CustomException.new("Not Found", '404')
+# 				end
 				if(nodeData != nil)
 					@nameNode = nodeData["name"]
 					@theNode = nodeData.to_json

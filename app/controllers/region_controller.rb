@@ -437,6 +437,14 @@ class RegionController < ApplicationController
 		attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
 		attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
 	  end
+	  if(attributesRegion["id"] == 'Lannion4' && attributesRegion["latitude"] != nil)
+		attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+		attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
+	  end
+	  if(attributesRegion["id"] == 'Brittany' && attributesRegion["latitude"] != nil)
+		attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+		attributesRegion["longitude"] = attributesRegion["longitude"].to_f+0.5
+	  end
       
       if regionsData["measures"]!= nil && regionsData["measures"].length > 0 && regionsData["measures"][0]!= nil
 	

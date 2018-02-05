@@ -249,7 +249,15 @@ class RegionController < ApplicationController
 								attributesRegion["country"] = regionData["data"][0]
 								attributesRegion["latitude"] = regionData["data"][1]
 								attributesRegion["longitude"] = regionData["data"][2]
-								attributesRegion["ttl"] = regionData["ttl"]
+								if(attributesRegion["id"] == 'Lannion4' && attributesRegion["latitude"] != nil)
+		                                                	attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+									attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
+	  							end
+	  							if(attributesRegion["id"] == 'Brittany' && attributesRegion["latitude"] != nil)
+									attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+									attributesRegion["longitude"] = attributesRegion["longitude"].to_f+0.5
+	  							end
+                                                                attributesRegion["ttl"] = regionData["ttl"]
 								
 							rescue Exception => e
 								attributesRegion = nil

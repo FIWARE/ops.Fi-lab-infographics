@@ -1162,6 +1162,12 @@
 												$('#message-'+regionId).html("No updated data were found");
 										}
 									}
+								      	else
+									{
+								      		$('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+regionId+"</a>");
+										$("#"+regionId).append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV>");
+										$('#message-'+regionId).html("No updated data were found");
+									}
 							      }
 			  //     				alert('request failed->'+textStatus);
 			  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);

@@ -385,18 +385,21 @@ class RegionController < ApplicationController
 	if e.status == "404"						
 		if e.data != "Not Found"
 			begin
-				regionData = JSON.parse(e.data) 				
-				latitude = regionData["data"][1]
-				longitude = regionData["data"][2]
-				if(idNode == 'Lannion4' && latitude != nil)
-					regionData["data"][1] = latitude.to_f-0.5
-					regionData["data"][2] = longitude.to_f-0.5
-				end
-				if(idNode == 'Brittany' && latitude != nil)
-					regionData["data"][1] = latitude.to_f-0.5
-					regionData["data"][2] = longitude.to_f+0.5
-				end
-				render :json=>regionData, :status => e.status
+				regionData = JSON.parse(e.data) 
+				if regionData.key?("data")
+					latitude = regionData["data"][1]
+					longitude = regionData["data"][2]
+					if(idNode == 'Lannion4' && latitude != nil)
+						regionData["data"][1] = latitude.to_f-0.5
+						regionData["data"][2] = longitude.to_f-0.5
+					end
+					if(idNode == 'Brittany' && latitude != nil)
+						regionData["data"][1] = latitude.to_f-0.5
+						regionData["data"][2] = longitude.to_f+0.5
+					end
+					render :json=>regionData, :status => e.status
+				else
+					render :json=>"No data for region "+idNode+": "+e.data, :status => e.status
 			rescue Exception => e
 				render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
 			end							

@@ -1013,6 +1013,7 @@
 										      colorPng = services[value]["value"]+"light.png";
 // 										      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
 // 										      if (actualTime>(regionTime+deltaTime) || services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
+										      if (services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
 										      allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 									      }
 									      else if(value == "FiHealthStatus")
@@ -1390,6 +1391,7 @@
 								  {
 									  colorPng = regionAttributes["services"][value]["value"]+"light.png";
 //                                                                           if (actualTime>(regionTime+deltaTime) || regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
+									  if (regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
 									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 								  }
 								  else if(value == "FiHealthStatus")

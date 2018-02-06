@@ -400,6 +400,7 @@ class RegionController < ApplicationController
 					render :json=>regionData, :status => e.status
 				else
 					render :json=>"No data for region "+idNode+": "+e.data, :status => e.status
+				end
 			rescue Exception => e
 				render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
 			end							

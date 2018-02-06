@@ -382,7 +382,27 @@ class RegionController < ApplicationController
       regionsData = self.getRegionsDataForNodeId(idNode, histogramData)
     rescue CustomException => e
       if e.status
-	render :json=>e.data, :status => e.status
+	regionData = e.data
+	if e.status == "404"						
+		if e.data != "Not Found"
+			begin
+				regionData = JSON.parse(e.data) 				
+				latitude = regionData["data"][1]
+				longitude = regionData["data"][2]
+				if(idNode == 'Lannion4' && latitude != nil)
+					regionData["data"][1] = latitude.to_f-0.5
+					regionData["data"][2] = longitude.to_f-0.5
+				end
+				if(idNode == 'Brittany' && latitude != nil)
+					regionData["data"][1] = latitude.to_f-0.5
+					regionData["data"][2] = longitude.to_f+0.5
+				end
+			rescue Exception => e
+				regionData = e.data
+			end							
+		end
+	end
+	render :json=>regionData, :status => e.status
       else
 	render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
       end

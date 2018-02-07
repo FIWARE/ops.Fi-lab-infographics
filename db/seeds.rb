@@ -8,8 +8,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes')
 # 	Node.delete_all
-	Node.create([{rid: 'Lannion3', name: 'Lannion', jira_project_url: 'http://jira.fi-ware.org/browse/LAN', jira_project_id: 'LAN'},
-	             {rid: 'Prague', name: 'Prague', jira_project_url: 'http://jira.fi-ware.org/browse/PRAG', jira_project_id: 'PRAG'},
+	Node.create([{rid: 'Prague', name: 'Prague', jira_project_url: 'http://jira.fi-ware.org/browse/PRAG', jira_project_id: 'PRAG'},
 	             {rid: 'Spain2', name: 'Spain', jira_project_url: 'http://jira.fi-ware.org/browse/SEV', jira_project_id: 'SEV'},
 	             {rid: 'PiraeusU', name: 'PiraeusU', jira_project_url: 'http://jira.fi-ware.org/browse/UPRC', jira_project_id: 'UPRC'},
 	             {rid: 'Volos', name: 'Volos', jira_project_url: 'http://jira.fi-ware.org/browse/UTH', jira_project_id: 'UTH'},
@@ -27,8 +26,9 @@
 	             {rid: 'Hannover', name: 'Hannover'},
 	             {rid: 'Genoa', name: 'Genoa'},
 		     {rid: 'Mexico', name: 'Mexico'},
-		     {rid: 'Brittany', name: 'Brittany'},
-		     {rid: 'Wroclaw', name: 'Wroclaw'}])
+		     {rid: 'Wroclaw', name: 'Wroclaw'},
+		     {rid: 'Lannion4', name: 'Lannion'},
+		     {rid: 'Senegal', name: 'Senegal'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
 # 	Category.delete_all
@@ -38,7 +38,7 @@
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_institutions')
 	Institution.create([{name: 'Czech Education and Scientific NETwork (CESNET)', logo: 'P28-cesnet.png', link:'http://www.cesnet.cz/?lang=en'},
-	                    {name: 'Association Images & Réseaux (ILB)', logo: 'P23-ILB.jpg', link:'http://www.images-et-reseaux.com/en'},
+	                    {name: 'Association Images & Réseaux (ILB)', logo: 'IR-LOGO.png', link:'http://www.images-et-reseaux.com/en'},
 	                    {name: 'Association Plate-Forme Télécom (Com4Innov)', logo: 'P30-Com4Innov.jpg', link:'http://www.com4innov.com/association_presentation.en.htm?PHPSESSID=jrumlj2t7rtqt11ivv0nvhc126'},
 	                    {name: 'University of Piraeus Research Center', logo: 'P29-uni-piraeus.gif', link:'http://www.unipi.gr/eng_site/'},
 	                    {name: 'University of Thessaly (UTH)', logo: 'P34-UTH.png', link:'http://www.uth.gr/en/index.php'},
@@ -62,7 +62,6 @@
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
 	ActiveRecord::Base.connection.execute('INSERT INTO fi_lab_infographics_nodes_institutions VALUES(2,1),
-					      (1,2),
 					      (9,3),
 					      (9,18),
 					      (4,4),
@@ -80,5 +79,6 @@
 					      (17,16),
 					      (18,17),
 					      (19,19),
-					      (20,20),
-					      (21,21)')
+					      (14,20),
+					      (20,21),
+					      (21,2)')

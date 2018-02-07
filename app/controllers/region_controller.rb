@@ -504,7 +504,7 @@ class RegionController < ApplicationController
 	attributesRegion["ipTot"] = regionsData["measures"][0]["ipTot"]
 	attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
 	attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
-	attributesRegion["nb_vm"] = regionsData["nb_vm"]
+	attributesRegion["nb_vm"] = regionsData["measures"][0]["nb_vm"]
 	
       end
       #if (regionsData["id"]=="Berlin2")

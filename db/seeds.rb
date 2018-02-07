@@ -57,7 +57,8 @@
 	                    {name: 'Tasgroup', logo: 'tasgroup.png', link:'https://www.tasfrance.com/'},
 			    {name: 'INFOTEC', logo: 'logo_infotec.png', link:'http://lanif.infotec.mx/'},
 			    {name: 'Orange', logo: 'logo-orange.jpg', link:'http://www.orange.com'},
-			    {name: 'Politechnika Wrocławska', logo: 'logo_PWr_kolor_poziom_ang.png', link:'http://pwr.edu.pl'}
+			    {name: 'Politechnika Wrocławska', logo: 'logo_PWr_kolor_poziom_ang.png', link:'http://pwr.edu.pl'},
+			    {name: 'Sonatel', logo: 'sonatel.jpg', link:'http://www.sonatel.com/'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
@@ -81,4 +82,5 @@
 					      (18,19),
 					      (13,20),
 					      (19,21),
-					      (20,2)')
+					      (20,2),
+					      (21,22)')

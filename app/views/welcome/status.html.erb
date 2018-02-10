@@ -1013,6 +1013,7 @@
 										      colorPng = services[value]["value"]+"light.png";
 // 										      console.log(regionId+":if("+actualTime+">("+regionTime+"+"+deltaTime+")");
 // 										      if (actualTime>(regionTime+deltaTime) || services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
+										      if (services[value]["value"] == "undefined") 	{colorPng="graylight.png";}
 										      allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 									      }
 									      else if(value == "FiHealthStatus")
@@ -1103,7 +1104,13 @@
 							      {
 									if(xhr.responseText)
 									{
-										var dataRegion = $.parseJSON(xhr.responseText);
+										var dataRegion = undefined
+										try {
+											var dataRegion = $.parseJSON(xhr.responseText);
+    										} catch (e) {
+    											// error
+  										}
+  
 										if(dataRegion && dataRegion!="undefined")
 										{
 											var ttl = (parseInt(dataRegion['ttl'])/60)/60;
@@ -1160,6 +1167,18 @@
 											else
 												$('#message-'+regionId).html("No updated data were found");
 										}
+										else
+										{
+											$('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+regionId+"</a>");
+											$("#"+regionId).append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV>");
+											$('#message-'+regionId).html("No updated data were found");
+										}
+									}
+								      	else
+									{
+								      		$('.'+regionId).html("<a href='../node/"+regionId+"' CLASS='"+regionId+"' style='color:#8C8C8C;'>"+regionId+"</a>");
+										$("#"+regionId).append("<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV><DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/graylight.png\" height=\"25\"/></DIV>");
+										$('#message-'+regionId).html("No updated data were found");
 									}
 							      }
 			  //     				alert('request failed->'+textStatus);
@@ -1390,6 +1409,7 @@
 								  {
 									  colorPng = regionAttributes["services"][value]["value"]+"light.png";
 //                                                                           if (actualTime>(regionTime+deltaTime) || regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
+									  if (regionAttributes["services"][value]["value"] == "undefined") {colorPng="graylight.png";}
 									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 								  }
 								  else if(value == "FiHealthStatus")
@@ -1551,8 +1571,8 @@
 		
 		//Chiamo il mio ajax la prima volta
 		ajaxFunInit();
-		//e poi lo richiamo dopo 60 secondi
-		setInterval(function(){ajaxFun()}, 120000);
+		//e poi lo richiamo dopo 5 minuti
+		setInterval(function(){ajaxFun()}, 300000);
 	  });
 			    		  
   </script>

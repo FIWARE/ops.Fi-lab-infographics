@@ -249,7 +249,15 @@ class RegionController < ApplicationController
 								attributesRegion["country"] = regionData["data"][0]
 								attributesRegion["latitude"] = regionData["data"][1]
 								attributesRegion["longitude"] = regionData["data"][2]
-								attributesRegion["ttl"] = regionData["ttl"]
+								if(attributesRegion["id"] == 'Lannion4' && attributesRegion["latitude"] != nil)
+		                                                	attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+									attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
+	  							end
+	  							if(attributesRegion["id"] == 'Brittany' && attributesRegion["latitude"] != nil)
+									attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+									attributesRegion["longitude"] = attributesRegion["longitude"].to_f+0.5
+	  							end
+                                                                attributesRegion["ttl"] = regionData["ttl"]
 								
 							rescue Exception => e
 								attributesRegion = nil
@@ -374,7 +382,34 @@ class RegionController < ApplicationController
       regionsData = self.getRegionsDataForNodeId(idNode, histogramData)
     rescue CustomException => e
       if e.status
-	render :json=>e.data, :status => e.status
+	if e.status == "404"						
+		if e.data != "Not Found"
+			begin
+				regionData = JSON.parse(e.data) 
+				if regionData.key?("data")
+					latitude = regionData["data"][1]
+					longitude = regionData["data"][2]
+					if(idNode == 'Lannion4' && latitude != nil)
+						regionData["data"][1] = latitude.to_f-0.5
+						regionData["data"][2] = longitude.to_f-0.5
+					end
+					if(idNode == 'Brittany' && latitude != nil)
+						regionData["data"][1] = latitude.to_f-0.5
+						regionData["data"][2] = longitude.to_f+0.5
+					end
+					render :json=>regionData, :status => e.status
+				else
+					render :json=>"No data for region "+idNode+": "+e.data, :status => e.status
+				end
+			rescue Exception => e
+				render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
+			end							
+		else
+			render :json=>"No data for region "+idNode+": "+e.data, :status => e.status
+		end
+      	else
+		render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => e.status
+      	end
       else
 	render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
       end
@@ -427,16 +462,24 @@ class RegionController < ApplicationController
 #         attributesRegion["name"] = regionsData["name"]
 #       end
 	  
-	  attributesRegion["name"] = regionsData["name"]
+      attributesRegion["name"] = regionsData["name"]
 
       attributesRegion["country"] = regionsData["country"]
       attributesRegion["latitude"] = regionsData["latitude"]
       attributesRegion["longitude"] = regionsData["longitude"]
-	  
-	  if(attributesRegion["id"] == 'ZurichS' && attributesRegion["latitude"] != nil)
-		attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
-		attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
-	  end
+
+      if(attributesRegion["id"] == 'ZurichS' && attributesRegion["latitude"] != nil)
+        attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+        attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
+      end
+      if(attributesRegion["id"] == 'Lannion4' && attributesRegion["latitude"] != nil)
+        attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+        attributesRegion["longitude"] = attributesRegion["longitude"].to_f-0.5
+      end
+      if(attributesRegion["id"] == 'Brittany' && attributesRegion["latitude"] != nil)
+        attributesRegion["latitude"] = attributesRegion["latitude"].to_f-0.5
+        attributesRegion["longitude"] = attributesRegion["longitude"].to_f+0.5
+      end
       
       if regionsData["measures"]!= nil && regionsData["measures"].length > 0 && regionsData["measures"][0]!= nil
 	
@@ -461,7 +504,7 @@ class RegionController < ApplicationController
 	attributesRegion["ipTot"] = regionsData["measures"][0]["ipTot"]
 	attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
 	attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
-	attributesRegion["nb_vm"] = regionsData["nb_vm"]
+	attributesRegion["nb_vm"] = regionsData["measures"][0]["nb_vm"]
 	
       end
       #if (regionsData["id"]=="Berlin2")

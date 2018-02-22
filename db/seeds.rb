@@ -44,7 +44,7 @@
 	                    {name: 'University of Thessaly (UTH)', logo: 'P34-UTH.png', link:'http://www.uth.gr/en/index.php'},
 	                    {name: 'Wigner Research Centre for Physics', logo: 'P33-Wigner.png', link:'http://wigner.mta.hu/index_e.php'},
 	                    {name: 'Trentino Network SrL', logo: 'P19-TN.png', link:'http://www.trentinonetwork.it/'},
-	                    {name: 'Poznan Supercomputing and Networking Center (PSNC)', logo: 'P26-PSNC.jpg', link:'http://www.man.poznan.pl/online/en/'},
+	                    {name: 'Poznan Supercomputing and Networking Center (PSNC)', logo: 'P26-PSNC.jpg', link:'http://psnc.pl'},
 	                    {name: 'Entidad Pública Empresarial Red.es/RedIRIS', logo: 'P16-red-es.png', link:'http://www.rediris.es/'},
 	                    {name: 'Zurich University of Applied Sciences (ZHAW)', logo: 'P25-ZHAW.jpg', link:'http://www.zhaw.ch/en/zurich-university-of-applied-sciences.html'},
 	                    {name: 'Technical University of Crete', logo: 'Technical-University-of-Crete-TUC.jpg', link:'http://www.tuc.gr/3324.html'},

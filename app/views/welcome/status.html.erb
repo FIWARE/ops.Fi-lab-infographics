@@ -591,8 +591,8 @@
 				var fromString = from.getFullYear() + "-" + fmonth + "-" + fday;
 	// 			var to = $( "#datepickerTo" ).datepicker( "getDate" );
 				var to = new Date();
-				var tmonth = to.getMonth()+1;if (month<10)month="0"+month;
-				var tday = to.getDate();if (day<10)day="0"+day;
+				var tmonth = to.getMonth()+1;if (tmonth<10)tmonth="0"+tmonth;
+				var tday = to.getDate();if (tday<10)tday="0"+tday;
 				var toString = to.getFullYear() + "-" + tmonth + "-" + tday;
 				
 	// 			alert(fromString+" "+toString);

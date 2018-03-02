@@ -1511,12 +1511,15 @@ class RegionController < ApplicationController
 				begin
 					services = self.getServicesForNodeId(regionData["id"])
 				rescue CustomException => e
-					if e.status
+					if e.status && e.status == "404"
+						services = nil
+					elsif e.status
 						render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => e.status
+						return
 					else
 						render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => :service_unavailable
+						return
 					end
-					return
 				end
 		
 				regionData["services"] = services;

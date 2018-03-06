@@ -984,7 +984,7 @@
                                                                         markers[regionId]["style"] = {fill: statusColor, r:5};
                                                                     }
 								      
-                                                                    //selectedMarkers = $.map(markers, function(val, key) { return val; });
+//                                                                     selectedMarkers = $.map(markers, function(val, key) { return val; });
                                                                     
                                                                     if(markers[regionId] != null)
                                                                     {
@@ -994,7 +994,7 @@
                                                                     {
                                                                         selectedMarkers = checkLatLong(selectedMarkers);
                                                                     }
-	    // 							  console.log(selectedMarkers);
+                                                                    console.log(selectedMarkers);
                                                                     mapNodes.removeAllMarkers();
                                                                     mapNodes.addMarkers(selectedMarkers);
 								      
@@ -1021,13 +1021,20 @@
                                                                         }
                                                                         else if(value == "FiHealthStatus")
                                                                         {
-                                                                            valuePng = services[value]["value"];
-                                                                            if(valuePng == 1)
-                                                                                colorPng = GREEN+"light.png";
-                                                                            else if (valuePng == 0.0)
-                                                                                colorPng = RED+"light.png";
-                                                                            else if (valuePng == 0.75)
-                                                                                colorPng = YELLOW+"light.png";
+                                                                            
+                                                                            if (services[value]["value"] == "undefined") 	{
+                                                                                colorPng="graylight.png";
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                valuePng = services[value]["value"];
+                                                                                if(valuePng == 1)
+                                                                                    colorPng = GREEN+"light.png";
+                                                                                else if (valuePng == 0.0)
+                                                                                    colorPng = RED+"light.png";
+                                                                                else if (valuePng == 0.75)
+                                                                                    colorPng = YELLOW+"light.png";
+                                                                            }
 // 										      if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
                                                                             allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
                                                                         }
@@ -1060,10 +1067,7 @@
 								    if(markers[regionId] != null)
 								    {
 									markers[regionId]["style"] = {fill: statusColor, r:5};
-								    }
-								    //selectedMarkers = $.map(markers, function(val, key) { return val; });
-								    if(markers[regionId] != null)
-								    {
+									selectedMarkers = $.map(markers, function(val, key) { return val; });
 									selectedMarkers.push(markers[regionId]);
 								    }
 								    
@@ -1093,11 +1097,11 @@
 							  semaforo -= 1;
 							  if(semaforo == 0) //loading has finished
 							  {
-							      $( ".showHistogram" ).button().attr('disabled', false);
-							      $('#loadingMap').removeClass();
-								  $('#loadingMap').addClass('aftermaphide');
-								  $("#imgServices").hide();
-								  $("#imgHistorical").hide();
+                                                            $( ".showHistogram" ).button().attr('disabled', false);
+                                                            $('#loadingMap').removeClass();
+                                                            $('#loadingMap').addClass('aftermaphide');
+                                                            $("#imgServices").hide();
+                                                            $("#imgHistorical").hide();
 							  }
 							  //put a symbol in the raw to show that it has failed
 							      var errore = "<%= FiLabInfographics.nodata %>";
@@ -1420,6 +1424,12 @@
 								  }
 								  else if(value == "FiHealthStatus")
 								  {
+                                                                        if (regionAttributes["services"][value]["value"] == "undefined") 	
+                                                                        {
+                                                                            colorPng="graylight.png";
+                                                                        }
+                                                                        else
+                                                                        {
 									  valuePng = regionAttributes["services"][value]["value"];
 									  
 									  if(valuePng == 1)
@@ -1428,6 +1438,7 @@
 									    colorPng = RED+"light.png";
 									  else if (valuePng == 0.75)
 									    colorPng = YELLOW+"light.png";
+                                                                        }
 //                                                                           if (actualTime>(regionTime+deltaTime))colorPng="graylight.png";
 									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
 								  }

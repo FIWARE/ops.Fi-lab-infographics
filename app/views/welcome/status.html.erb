@@ -1019,7 +1019,9 @@
 									      else if(value == "FiHealthStatus")
 									      {
 										      valuePng = services[value]["value"];
-										      if(valuePng == 1)
+										      if(valuePng == "undefined")
+											colorPng = "graylight.png";      
+										      else if(valuePng == 1)
 											colorPng = GREEN+"light.png";
 										      else if (valuePng == 0.0)
 											colorPng = RED+"light.png";
@@ -1416,6 +1418,8 @@
 								  {
 									  valuePng = regionAttributes["services"][value]["value"];
 									  
+									  if(valuePng == "undefined")
+									    colorPng = "graylight.png";
 									  if(valuePng == 1)
 									    colorPng = GREEN+"light.png";
 									  else if (valuePng == 0.0)

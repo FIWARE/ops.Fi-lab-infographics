@@ -28,7 +28,8 @@
 		     {rid: 'Mexico', name: 'Mexico'},
 		     {rid: 'Wroclaw', name: 'Wroclaw'},
 		     {rid: 'Lannion4', name: 'Lannion'},
-		     {rid: 'Senegal', name: 'Senegal'}])
+		     {rid: 'Senegal', name: 'Senegal'},
+		     {rid: 'Noida', name: 'Noida'}])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_node_categories')
 # 	Category.delete_all
@@ -58,7 +59,8 @@
 			    {name: 'INFOTEC', logo: 'logo_infotec.png', link:'http://lanif.infotec.mx/'},
 			    {name: 'Orange', logo: 'logo-orange.jpg', link:'http://www.orange.com'},
 			    {name: 'SANTOSLAB', logo: 'logo-santos.png', link:'https://santos.pwr.edu.pl/'},
-			    {name: 'Sonatel', logo: 'sonatel.jpg', link:'http://www.sonatel.com/'}
+			    {name: 'Sonatel', logo: 'sonatel.jpg', link:'http://www.sonatel.com/'},
+		            {name: 'NEC', logo: 'necIndia.png', link:'https://in.nec.com/'}
 	                    ])
 	
 	ActiveRecord::Base.connection.execute('TRUNCATE fi_lab_infographics_nodes_institutions')
@@ -83,4 +85,5 @@
 					      (13,20),
 					      (19,21),
 					      (20,2),
-					      (21,22)')
+					      (21,22),
+                                              (22,23)')

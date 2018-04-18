@@ -160,11 +160,11 @@
 						@institutions.each do |institution|
 							if institution["link"] != nil
 				%>
-								<a style="display:none;" class="node-institution node-<%= institution["node"] %>" href="<%= institution["link"] %>" target="_blank"><img alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>"/></a>
+								<a style="display:none;" class="node-institution node-<%= institution["node"] %>" href="<%= institution["link"] %>" target="_blank"><img alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>" <% if institution["node"] == "Noida" %>style="max-width:200px"<% end %> /></a>
 				<%
 							else
 				%>
-								<img style="display:none;" class="node-institution node-<%= institution["node"] %>" alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>"/>							
+								<img style="display:none;" class="node-institution node-<%= institution["node"] %>" alt="<%= institution["name"] %>" title="<%= institution["name"] %>" src="/assets/infographic/loghi/<%= institution["logo"] %>" <% if institution["node"] == "Noida" %>style="max-width:200px"<% end %> />							
 				<%
 							end
 						end
